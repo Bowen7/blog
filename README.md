@@ -8,4 +8,4 @@ Bowen’s Blog
 
 文章列表：
 
--   [记录 react+antd 兼容 ie8 的一些坑](<url(https://github.com/Bowen7/Blog/issues/1)>)
+-   [记录 react+antd 兼容 ie8 的一些坑](https://github.com/Bowen7/Blog/issues/1)
