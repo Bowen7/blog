@@ -6,6 +6,8 @@ Bowen’s Blog
 
 请各位不要提 issue
 
+欢迎 star，你的 star 是对我最大的激励
+
 文章列表：
 
 -   [探究防抖(debounce)和节流(throttle)](https://github.com/Bowen7/Blog/issues/5)
