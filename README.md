@@ -10,6 +10,7 @@ Bowen’s Blog
 
 文章列表：
 
+-   [避免取值时出现 Cannot read property 'xx' of undefined](https://github.com/Bowen7/Blog/issues/6)
 -   [探究防抖(debounce)和节流(throttle)](https://github.com/Bowen7/Blog/issues/5)
 -   [极简欧洲史读后](https://github.com/Bowen7/Blog/issues/4)
 -   [chameleon 之强大的多态协议](https://github.com/Bowen7/Blog/issues/3)
