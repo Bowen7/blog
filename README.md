@@ -10,6 +10,7 @@ Bowen’s Blog
 
 文章列表：
 
+-   [实现拼写检查器(spell check)](https://github.com/Bowen7/Blog/issues/8)
 -   [使用 react hooks 实现自己的 context-redux](https://github.com/Bowen7/Blog/issues/7)
 -   [避免取值时出现 Cannot read property 'xx' of undefined](https://github.com/Bowen7/Blog/issues/6)
 -   [探究防抖(debounce)和节流(throttle)](https://github.com/Bowen7/Blog/issues/5)
