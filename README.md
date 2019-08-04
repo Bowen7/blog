@@ -1,15 +1,14 @@
-# Blog
-
-Bowen’s Blog
+# Bowen's Blog
 
 我的个人博客
 
-请各位不要提 issue
+每周尽量保证更新一篇，欢迎 star，你的 star 是对我最大的激励
 
-欢迎 star，你的 star 是对我最大的激励
+请各位不要提 issue 哈～
 
 文章列表：
 
+-   [每周一文 [7.29-8.04] 实现一个简单的 Vue](https://github.com/Bowen7/Blog/issues/9)
 -   [实现拼写检查器(spell check)](https://github.com/Bowen7/Blog/issues/8)
 -   [使用 react hooks 实现自己的 context-redux](https://github.com/Bowen7/Blog/issues/7)
 -   [避免取值时出现 Cannot read property 'xx' of undefined](https://github.com/Bowen7/Blog/issues/6)
