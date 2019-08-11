@@ -8,7 +8,7 @@
 
 文章列表：
 
--   [手写一个符合 A+规范的 Promise](https://github.com/Bowen7/Blog/issues/10)
+-   [每周一文 [8.05-8.11] 手写一个符合 A+规范的 Promise](https://github.com/Bowen7/Blog/issues/10)
 -   [每周一文 [7.29-8.04] 实现一个简单的 Vue](https://github.com/Bowen7/Blog/issues/9)
 -   [实现拼写检查器(spell check)](https://github.com/Bowen7/Blog/issues/8)
 -   [使用 react hooks 实现自己的 context-redux](https://github.com/Bowen7/Blog/issues/7)
