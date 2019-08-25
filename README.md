@@ -8,6 +8,8 @@
 
 文章列表：
 
+-   [[8.19-8.25] 如何实现 Vue 转小程序（二）](https://github.com/Bowen7/Blog/issues/12)
+-   [[8.12-8.18] 如何实现 Vue 转小程序（一）](https://github.com/Bowen7/Blog/issues/11)
 -   [[8.05-8.11] 手写一个符合 A+规范的 Promise](https://github.com/Bowen7/Blog/issues/10)
 -   [[7.29-8.04] 实现一个简单的 Vue](https://github.com/Bowen7/Blog/issues/9)
 -   [实现拼写检查器(spell check)](https://github.com/Bowen7/Blog/issues/8)
