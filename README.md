@@ -8,7 +8,7 @@
 
 文章列表：
 
-- [[9.02-9.08] 如何实现 Vue 转小程序（三）](https://github.com/Bowen7/Blog/issues/13)
+- [[9.02-9.08] 如何实现 Vue 转小程序（三）](https://github.com/Bowen7/Blog/issues/14)
 - [[8.26-9.01] 实现微信小程序的直接赋值、computed 和 watch 功能](https://github.com/Bowen7/Blog/issues/13)
 - [[8.19-8.25] 如何实现 Vue 转小程序（二）](https://github.com/Bowen7/Blog/issues/12)
 - [[8.12-8.18] 如何实现 Vue 转小程序（一）](https://github.com/Bowen7/Blog/issues/11)
