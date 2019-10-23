@@ -8,13 +8,14 @@
 
 文章列表：
 
-- [[9.09-9.15] 使用 npm link 遇到的一些坑](https://github.com/Bowen7/Blog/issues/15)
-- [[9.02-9.08] 如何实现 Vue 转小程序（三）](https://github.com/Bowen7/Blog/issues/14)
-- [[8.26-9.01] 实现微信小程序的直接赋值、computed 和 watch 功能](https://github.com/Bowen7/Blog/issues/13)
-- [[8.19-8.25] 如何实现 Vue 转小程序（二）](https://github.com/Bowen7/Blog/issues/12)
-- [[8.12-8.18] 如何实现 Vue 转小程序（一）](https://github.com/Bowen7/Blog/issues/11)
-- [[8.05-8.11] 手写一个符合 A+规范的 Promise](https://github.com/Bowen7/Blog/issues/10)
-- [[7.29-8.04] 实现一个简单的 Vue](https://github.com/Bowen7/Blog/issues/9)
+- [实现小程序的单文件开发模式](https://github.com/Bowen7/Blog/issues/16)
+- [使用 npm link 遇到的一些坑](https://github.com/Bowen7/Blog/issues/15)
+- [如何实现 Vue 转小程序（三）](https://github.com/Bowen7/Blog/issues/14)
+- [实现微信小程序的直接赋值、computed 和 watch 功能](https://github.com/Bowen7/Blog/issues/13)
+- [如何实现 Vue 转小程序（二）](https://github.com/Bowen7/Blog/issues/12)
+- [如何实现 Vue 转小程序（一）](https://github.com/Bowen7/Blog/issues/11)
+- [手写一个符合 A+规范的 Promise](https://github.com/Bowen7/Blog/issues/10)
+- [实现一个简单的 Vue](https://github.com/Bowen7/Blog/issues/9)
 - [实现拼写检查器(spell check)](https://github.com/Bowen7/Blog/issues/8)
 - [使用 react hooks 实现自己的 context-redux](https://github.com/Bowen7/Blog/issues/7)
 - [避免取值时出现 Cannot read property 'xx' of undefined](https://github.com/Bowen7/Blog/issues/6)
