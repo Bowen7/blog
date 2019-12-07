@@ -22,13 +22,13 @@ P(E)由于我们已知 E，这个概念是固定的，而我们需要对比的�
 
 ```js
 function SpellCheck(priorList) {
-    //to do trie
-	this.priorList = priorList;
-	this.priorHash = {};
-	priorList.forEach(item => {
-		!this.priorHash[item] && (this.priorHash[item] = 0);
-		this.priorHash[item]++;
-	});
+  //to do trie
+  this.priorList = priorList;
+  this.priorHash = {};
+  priorList.forEach(item => {
+    !this.priorHash[item] && (this.priorHash[item] = 0);
+    this.priorHash[item]++;
+  });
 }
 ```
 
@@ -38,7 +38,7 @@ function SpellCheck(priorList) {
 
 ```js
 SpellCheck.prototype.check = function(word) {
-	return this.priorList.indexOf(word) !== -1;
+  return this.priorList.indexOf(word) !== -1;
 };
 ```
 
@@ -46,51 +46,47 @@ SpellCheck.prototype.check = function(word) {
 
 ```js
 SpellCheck.prototype.getWordsByMaxDistance = function(wordList, maxDistance) {
-	if (maxDistance === 0) {
-		return wordList;
-	}
-	const listLength = wordList.length;
-	wordList[listLength] = [];
-	wordList[listLength - 1].forEach(item => {
-		wordList[listLength].push(...this.getWordsByOneDistance(item));
-	});
-	return this.getWordsByMaxDistance(wordList, maxDistance - 1);
+  if (maxDistance === 0) {
+    return wordList;
+  }
+  const listLength = wordList.length;
+  wordList[listLength] = [];
+  wordList[listLength - 1].forEach(item => {
+    wordList[listLength].push(...this.getWordsByOneDistance(item));
+  });
+  return this.getWordsByMaxDistance(wordList, maxDistance - 1);
 };
 SpellCheck.prototype.getWordsByOneDistance = function(word) {
-	const alphabet = "abcdefghijklmnopqrstuvwxyz";
-	let result = [];
-	for (let i = 0; i < word.length + 1; i++) {
-		for (let j = 0; j < alphabet.length; j++) {
-			//插入
-			result.push(
-				word.slice(0, i) + alphabet[j] + word.slice(i, word.length)
-			);
-			//替换
-			if (i > 0) {
-				result.push(
-					word.slice(0, i - 1) +
-						alphabet[j] +
-						word.slice(i, word.length)
-				);
-			}
-		}
-		if (i > 0) {
-			//删除
-			result.push(word.slice(0, i - 1) + word.slice(i, word.length));
-			//前后替换
-			if (i < word.length) {
-				result.push(
-					word.slice(0, i - 1) +
-						word[i] +
-						word[i - 1] +
-						word.slice(i + 1, word.length)
-				);
-			}
-		}
-	}
-	return result.filter((item, index) => {
-		return index === result.indexOf(item);
-	});
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+  let result = [];
+  for (let i = 0; i < word.length + 1; i++) {
+    for (let j = 0; j < alphabet.length; j++) {
+      //插入
+      result.push(word.slice(0, i) + alphabet[j] + word.slice(i, word.length));
+      //替换
+      if (i > 0) {
+        result.push(
+          word.slice(0, i - 1) + alphabet[j] + word.slice(i, word.length)
+        );
+      }
+    }
+    if (i > 0) {
+      //删除
+      result.push(word.slice(0, i - 1) + word.slice(i, word.length));
+      //前后替换
+      if (i < word.length) {
+        result.push(
+          word.slice(0, i - 1) +
+            word[i] +
+            word[i - 1] +
+            word.slice(i + 1, word.length)
+        );
+      }
+    }
+  }
+  return result.filter((item, index) => {
+    return index === result.indexOf(item);
+  });
 };
 ```
 
@@ -98,33 +94,33 @@ wordList 是一个数组，它的第一项是只有原始单词的数组，第�
 
 以下四种情况被视为编辑距离为 1:
 
--   插入一项，比如`ab`->`abc`
--   替换一项，比如`ab`->`ac`
--   删除一项，比如`ab`->`a`
--   前后替换，比如`ab`->`ba`
+- 插入一项，比如`ab`->`abc`
+- 替换一项，比如`ab`->`ac`
+- 删除一项，比如`ab`->`a`
+- 前后替换，比如`ab`->`ba`
 
 获取了所有在指定编辑距离的单词候选集，再比较它们的先验概率：
 
 ```js
 SpellCheck.prototype.getCorrections = function(word, maxDistance = 1) {
-	const candidate = this.getWordsByMaxDistance([[word]], maxDistance);
-	let result = [];
-	candidate
-		.map(candidateList => {
-			return candidateList
-				.filter(item => this.check(item))
-				.map(item => {
-					return [item, this.priorHash[item]];
-				})
-				.sort((item1, item2) => item2[1] - item1[1])
-				.map(item => item[0]);
-		})
-		.forEach(item => {
-			result.push(...item);
-		});
-	return result.filter((item, index) => {
-		return index === result.indexOf(item);
-	});
+  const candidate = this.getWordsByMaxDistance([[word]], maxDistance);
+  let result = [];
+  candidate
+    .map(candidateList => {
+      return candidateList
+        .filter(item => this.check(item))
+        .map(item => {
+          return [item, this.priorHash[item]];
+        })
+        .sort((item1, item2) => item2[1] - item1[1])
+        .map(item => item[0]);
+    })
+    .forEach(item => {
+      result.push(...item);
+    });
+  return result.filter((item, index) => {
+    return index === result.indexOf(item);
+  });
 };
 ```
 
@@ -134,11 +130,11 @@ SpellCheck.prototype.getCorrections = function(word, maxDistance = 1) {
 
 ```js
 const spellCheck = new SpellCheck([
-	"apple",
-	"apples",
-	"pear",
-	"grape",
-	"banana"
+  "apple",
+  "apples",
+  "pear",
+  "grape",
+  "banana"
 ]);
 spellCheck.getCorrectionsByCalcDistance("appel", 1); //[ 'apple' ]
 spellCheck.getCorrectionsByCalcDistance("appel", 2); //[ 'apple', 'apples' ]
@@ -154,12 +150,12 @@ spellCheck.getCorrectionsByCalcDistance("appel", 2); //[ 'apple', 'apples' ]
 
 leetcode 情况下的状态转换方程：
 
--   `dp[i][j]=0` `i===0,j===0`
+- `dp[i][j]=0` `i===0,j===0`
 
--   `dp[i][j]=j` `i===0,j>0`
+- `dp[i][j]=j` `i===0,j>0`
 
--   `dp[i][j]=i` `j===0,i>0`
--   `min(dp[i-1][j-1]+cost,dp[i-1][j]+1,dp[i][j-1]+1)` `i,j>0`
+- `dp[i][j]=i` `j===0,i>0`
+- `min(dp[i-1][j-1]+cost,dp[i-1][j]+1,dp[i][j-1]+1)` `i,j>0`
 
 其中当`word1[i-1]===word2[j-1]`时，cost 为 0，否则为 1
 
@@ -169,55 +165,55 @@ leetcode 情况下的状态转换方程：
 
 ```js
 SpellCheck.prototype.getCorrectionsByCalcDistance = function(
-	word,
-	maxDistance = 1
+  word,
+  maxDistance = 1
 ) {
-	const candidate = [];
-	for (let key in this.priorHash) {
-		this.calcDistance(key, word) <= maxDistance && candidate.push(key);
-	}
-	return candidate
-		.map(item => {
-			return [item, this.priorHash[item]];
-		})
-		.sort((item1, item2) => item2[1] - item1[1])
-		.map(item => item[0]);
+  const candidate = [];
+  for (let key in this.priorHash) {
+    this.calcDistance(key, word) <= maxDistance && candidate.push(key);
+  }
+  return candidate
+    .map(item => {
+      return [item, this.priorHash[item]];
+    })
+    .sort((item1, item2) => item2[1] - item1[1])
+    .map(item => item[0]);
 };
 SpellCheck.prototype.calcDistance = function(word1, word2) {
-	const length1 = word1.length;
-	const length2 = word2.length;
-	let dp = [];
-	for (let i = 0; i <= length1; i++) {
-		dp[i] = [];
-		for (let j = 0; j <= length2; j++) {
-			if (i === 0) {
-				dp[i][j] = j;
-				continue;
-			}
-			if (j === 0) {
-				dp[i][j] = i;
-				continue;
-			}
-			const replaceCost =
-				dp[i - 1][j - 1] + (word1[i - 1] === word2[j - 1] ? 0 : 1);
-			let transposeCost = Infinity;
-			if (
-				i > 1 &&
-				j > 1 &&
-				word1[i - 2] === word2[j - 1] &&
-				word1[i - 1] === word2[j - 2]
-			) {
-				transposeCost = dp[i - 2][i - 2] + 1;
-			}
-			dp[i][j] = Math.min(
-				replaceCost,
-				transposeCost,
-				dp[i - 1][j] + 1,
-				dp[i][j - 1] + 1
-			);
-		}
-	}
-	return dp[length1][length2];
+  const length1 = word1.length;
+  const length2 = word2.length;
+  let dp = [];
+  for (let i = 0; i <= length1; i++) {
+    dp[i] = [];
+    for (let j = 0; j <= length2; j++) {
+      if (i === 0) {
+        dp[i][j] = j;
+        continue;
+      }
+      if (j === 0) {
+        dp[i][j] = i;
+        continue;
+      }
+      const replaceCost =
+        dp[i - 1][j - 1] + (word1[i - 1] === word2[j - 1] ? 0 : 1);
+      let transposeCost = Infinity;
+      if (
+        i > 1 &&
+        j > 1 &&
+        word1[i - 2] === word2[j - 1] &&
+        word1[i - 1] === word2[j - 2]
+      ) {
+        transposeCost = dp[i - 2][i - 2] + 1;
+      }
+      dp[i][j] = Math.min(
+        replaceCost,
+        transposeCost,
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1
+      );
+    }
+  }
+  return dp[length1][length2];
 };
 ```
 
