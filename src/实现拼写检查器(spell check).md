@@ -22,7 +22,7 @@ P(E)由于我们已知 E，这个概念是固定的，而我们需要对比的�
 
 ```js
 function SpellCheck(priorList) {
-	//to do trie
+    //to do trie
 	this.priorList = priorList;
 	this.priorHash = {};
 	priorList.forEach(item => {
