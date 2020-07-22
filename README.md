@@ -8,6 +8,7 @@
 
 文章列表：
 
+- [大数组优化&双向链表](https://github.com/Bowen7/Blog/issues/18)
 - [实现小程序的单文件开发模式](https://github.com/Bowen7/Blog/issues/16)
 - [使用 npm link 遇到的一些坑](https://github.com/Bowen7/Blog/issues/15)
 - [如何实现 Vue 转小程序（三）](https://github.com/Bowen7/Blog/issues/14)
