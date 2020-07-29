@@ -8,6 +8,7 @@
 
 文章列表：
 
+- [数组随机排序算法](https://github.com/Bowen7/Blog/issues/19)
 - [ js 中的双向链表](https://github.com/Bowen7/Blog/issues/18)
 - [实现小程序的单文件开发模式](https://github.com/Bowen7/Blog/issues/16)
 - [使用 npm link 遇到的一些坑](https://github.com/Bowen7/Blog/issues/15)
