@@ -21,7 +21,7 @@ async function updatePosts() {
 	for (let key in postsObj) {
 		posts.push({ id: key, ...postsObj[key] })
 	}
-	posts.sort((a, b) => +a.id - +b.id)
+	posts.sort((a, b) => +b.id - +a.id)
 	try {
 		fs.mkdirSync(DIST_PATH)
 	} catch (error) {
