@@ -8,9 +8,6 @@ async function main() {
 	if (update.length === 0 && add.length === 0 && !result.updateReadme) {
 		return
 	}
-	if (result.updateReadme) {
-		await repo.updatePosts()
-	}
 	await utils.asyncForEach(update, async item => {
 		await issue.update(item)
 	})
@@ -19,6 +16,9 @@ async function main() {
 		patch({ id: item.id, number })
 	})
 	next()
+	if (result.updateReadme) {
+		await repo.updatePosts()
+	}
 	await repo.updatePostList([...add, ...update])
 }
 main()
