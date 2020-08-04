@@ -2,9 +2,8 @@
 
 <h2 align="center">Bowen的个人博客</h2>
 
-- 当前更新频率：不定时
-- 欢迎 star，你的 star 是对我最大的激励
-- 联系方式：zwxdyx@foxmail.com
+欢迎 star，你的 star 是对我最大的激励
+联系方式：zwxdyx@foxmail.com
 
 请各位不要提 issue 哈～
 
