@@ -23,8 +23,9 @@ function generateHashObject() {
 		const filePath = path.join(POSTS_ROOT_PATH, file)
 		const index = file.split('.')[0]
 		const content = getFileContent(filePath)
+		const title = path.basename(file, '.md')
 		// use post number as key
-		postsHash[index] = { title: file, content, hash: hash(content) }
+		postsHash[index] = { title, content, hash: hash(content) }
 	})
 	return {
 		repo_readme: repoReadmeHash,
