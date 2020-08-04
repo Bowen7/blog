@@ -31,7 +31,7 @@ async function updatePosts() {
 
 	const finalPath = path.join(DIST_PATH, './posts.json')
 	fs.writeFileSync(finalPath, JSON.stringify(posts))
-	await client.put('dist/post.json', finalPath)
+	await client.put('dist/posts.json', finalPath)
 }
 async function updatePost({ id, content, title }) {
 	content = md.render(content)
