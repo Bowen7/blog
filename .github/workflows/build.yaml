@@ -24,10 +24,10 @@ jobs:
     - run: npm run build --if-present
       env:
         CI: true
-				ALI_OSS_ACCESS_KEY_ID: ${{ secrets.ALI_OSS_ACCESS_KEY_ID }}
-				ALI_OSS_ACCESS_KEY_SECRET: ${{ secrets.ALI_OSS_ACCESS_KEY_SECRET }}
-				ALI_OSS_BUCKET: ${{ secrets.ALI_OSS_BUCKET }}
-				ALI_OSS_REGION: ${{ secrets.ALI_OSS_REGION }}
+        ALI_OSS_ACCESS_KEY_ID: ${{ secrets.ALI_OSS_ACCESS_KEY_ID }}
+        ALI_OSS_ACCESS_KEY_SECRET: ${{ secrets.ALI_OSS_ACCESS_KEY_SECRET }}
+        ALI_OSS_BUCKET: ${{ secrets.ALI_OSS_BUCKET }}
+        ALI_OSS_REGION: ${{ secrets.ALI_OSS_REGION }}
 
     - uses: EndBug/add-and-commit@v4 # You can change this to use a specific version
       with:
