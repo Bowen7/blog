@@ -6,7 +6,7 @@ const octokit = new Octokit({
 async function add({ title, content }) {
 	const response = await octokit.request('POST /repos/{owner}/{repo}/issues', {
 		owner: 'Bowen7',
-		repo: 'blog-bot',
+		repo: 'Blog',
 		title: title,
 		body: content,
 	})
@@ -15,7 +15,7 @@ async function add({ title, content }) {
 async function update({ number, title, content }) {
 	await octokit.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}', {
 		owner: 'Bowen7',
-		repo: 'blog-bot',
+		repo: 'Blog',
 		issue_number: number,
 		title: title,
 		body: content,
