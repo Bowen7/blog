@@ -1,6 +1,8 @@
 const marked = require('marked')
 
 let flag = false
+// code without background
+// if need, should rewrite code render
 function render(str) {
 	if (!flag) {
 		flag = true

@@ -1,5 +1,6 @@
 const OSS = require('ali-oss')
 const ejs = require('ejs')
+const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
 const process = require('process')
@@ -13,7 +14,10 @@ const client = OSS({
 	bucket: process.env.ALI_OSS_BUCKET,
 	region: process.env.ALI_OSS_REGION,
 })
+const cacheKey = process.env.CACHE_KEY
+const CACHE_URL = `https://zhangwenxiang.cn/cache/${cacheKey}`
 let hashObj = {}
+// update posts.json and readme
 async function updatePosts() {
 	hashObj = JSON.parse(fs.readFileSync(HASH_PATH).toString())
 	const postsObj = hashObj.posts
@@ -33,6 +37,8 @@ async function updatePosts() {
 	fs.writeFileSync(finalPath, JSON.stringify(posts))
 	await client.put('dist/posts.json', finalPath)
 }
+
+// update sigle post
 async function updatePost({ id, content, title }) {
 	content = md.render(content)
 	const post = {
@@ -44,11 +50,19 @@ async function updatePost({ id, content, title }) {
 	fs.writeFileSync(finalPath, JSON.stringify(post))
 	await client.put(`dist/post_${id}.json`, finalPath)
 }
-async function updatePostList(updateList) {
-	await utils.asyncForEach(updateList, async post => {
+
+// update multiple post
+async function forEachUpdatePost(addList, updateList) {
+	await utils.asyncForEach(addList, async post => {
 		await updatePost(post)
 	})
+	// if post is already exist, would send a request to tell blog-engine remove cache
+	await utils.asyncForEach(updateList, async post => {
+		await updatePost(post)
+		await axios.get(`${CACHE_URL}/${post.id}`)
+	})
 }
+
 async function updateReadme(posts) {
 	const readmeTemplate = fs
 		.readFileSync(path.resolve(__dirname, './templates/readme.html'))
@@ -56,7 +70,8 @@ async function updateReadme(posts) {
 	const readme = ejs.render(readmeTemplate, { posts })
 	fs.writeFileSync(path.resolve(__dirname, '../README.md'), readme)
 }
+
 module.exports = {
 	updatePosts,
-	updatePostList,
+	forEachUpdatePost,
 }

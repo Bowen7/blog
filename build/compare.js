@@ -39,13 +39,13 @@ function generateHashObject() {
 	}
 }
 
-function compareHash() {
-	const oldHashObj = JSON.parse(fs.readFileSync(OLD_HASH_PATH).toString())
+function compare() {
+	const oldHashObj = JSON.parse(getFileContent(OLD_HASH_PATH))
 	const newHashObj = generateHashObject()
 	const result = {
 		updateReadme: false,
-		add: [],
-		update: [],
+		addList: [],
+		updateList: [],
 	}
 	if (oldHashObj.repo_readme !== newHashObj.repo_readme) {
 		result.updateReadme = true
@@ -60,23 +60,29 @@ function compareHash() {
 			title: newPost.title,
 			content: newPost.content,
 		}
+		// this post will be included in the posts.json, so need not content
 		delete newPost.content
+
+		// add post
 		if (!oldPost) {
 			result.updateReadme = true
-			result.add.push(item)
+			result.addList.push(item)
 			continue
 		}
+		// update post
 		newPost.number = oldPost.number
 		item.number = oldPost.number
+		// if title change, readme would update
 		if (oldPost.title !== newPost.title) {
 			result.updateReadme = true
-			result.update.push(item)
+			result.updateList.push(item)
 			continue
 		}
 		if (oldPost.hash !== newPost.hash) {
-			result.update.push(item)
+			result.updateList.push(item)
 		}
 	}
+	// new post should patch id&number
 	function patch({ id, number }) {
 		newPosts[id].number = number
 	}
@@ -85,4 +91,4 @@ function compareHash() {
 	}
 	return { result, patch, next }
 }
-module.exports = compareHash
+module.exports = compare
