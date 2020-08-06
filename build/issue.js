@@ -1,5 +1,4 @@
 const { Octokit } = require('@octokit/core')
-const request = require('request')
 const process = require('process')
 const octokit = new Octokit({
 	auth: process.env.GITHUB_TOKEN,
@@ -26,4 +25,3 @@ module.exports = {
 	add,
 	update,
 }
-console.log(request)
