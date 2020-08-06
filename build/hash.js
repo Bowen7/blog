@@ -14,6 +14,12 @@ function getFileContent(filePath) {
 	}
 }
 
+function getTitle(filename) {
+	const start = filename.indexOf('.')
+	const end = filename.lastIndexOf('.')
+	return filename.slice(start + 1, end)
+}
+
 function generateHashObject() {
 	const repoReadmeHash = hash(getFileContent(README_TEMPLATE_PATH))
 
@@ -23,7 +29,7 @@ function generateHashObject() {
 		const filePath = path.join(POSTS_ROOT_PATH, file)
 		const index = file.split('.')[0]
 		const content = getFileContent(filePath)
-		const title = path.basename(file, '.md')
+		const title = getTitle(file)
 		// use post number as key
 		postsHash[index] = { title, content, hash: hash(content) }
 	})
