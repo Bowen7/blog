@@ -26,11 +26,6 @@ async function updatePosts() {
 		posts.push({ id: key, ...postsObj[key] })
 	}
 	posts.sort((a, b) => +b.id - +a.id)
-	try {
-		fs.mkdirSync(DIST_PATH)
-	} catch (error) {
-		console.log(error)
-	}
 	updateReadme(posts)
 
 	const finalPath = path.join(DIST_PATH, './posts.json')
