@@ -1,4 +1,5 @@
 const hash = require('hash-sum')
+const ejs = require('ejs')
 const path = require('path')
 const fs = require('fs')
 
@@ -6,6 +7,9 @@ const README_TEMPLATE_PATH = path.resolve(__dirname, './templates/readme.html')
 const POSTS_ROOT_PATH = path.resolve(__dirname, '../posts')
 const OLD_HASH_PATH = path.resolve(__dirname, './hash.json')
 
+const POST_TEMPLATE = fs
+	.readFileSync(path.resolve(__dirname, './templates/post.html'))
+	.toString()
 function getFileContent(filePath) {
 	try {
 		return fs.readFileSync(filePath).toString()
@@ -28,7 +32,10 @@ function generateHashObject() {
 	files.forEach(file => {
 		const filePath = path.join(POSTS_ROOT_PATH, file)
 		const index = file.split('.')[0]
-		const content = getFileContent(filePath)
+		const content = ejs.render(POST_TEMPLATE, {
+			id: index,
+			content: getFileContent(filePath),
+		})
 		const title = getTitle(file)
 		// use post number as key
 		postsHash[index] = { title, content, hash: hash(content) }

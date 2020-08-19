@@ -33,7 +33,7 @@ async function updatePosts() {
 	await client.put('dist/posts.json', finalPath)
 }
 
-// update sigle post
+// update single post
 async function updatePost({ id, content, title }) {
 	content = md.render(content)
 	const post = {
