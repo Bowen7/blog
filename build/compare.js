@@ -32,13 +32,14 @@ function generateHashObject() {
 	files.forEach(file => {
 		const filePath = path.join(POSTS_ROOT_PATH, file)
 		const index = file.split('.')[0]
-		const content = ejs.render(POST_TEMPLATE, {
+		const content = getFileContent(filePath)
+		const postContent = ejs.render(POST_TEMPLATE, {
 			id: index,
-			content: getFileContent(filePath),
+			content: content,
 		})
 		const title = getTitle(file)
 		// use post number as key
-		postsHash[index] = { title, content, hash: hash(content) }
+		postsHash[index] = { title, content, hash: hash(postContent) }
 	})
 	return {
 		repo_readme: repoReadmeHash,
