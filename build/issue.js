@@ -1,14 +1,26 @@
 const { Octokit } = require('@octokit/core')
+const ejs = require('ejs')
 const process = require('process')
+const fs = require('fs')
+const path = require('path')
+
 const octokit = new Octokit({
 	auth: process.env.GITHUB_TOKEN,
 })
-async function add({ title, content }) {
+
+const POST_TEMPLATE = fs
+	.readFileSync(path.resolve(__dirname, './templates/post.html'))
+	.toString()
+async function add({ title, content, id }) {
+	const postContent = ejs.render(POST_TEMPLATE, {
+		id,
+		content: content,
+	})
 	const response = await octokit.request('POST /repos/{owner}/{repo}/issues', {
 		owner: 'Bowen7',
 		repo: 'Blog',
 		title: title,
-		body: content,
+		body: postContent,
 	})
 	return response.data.number
 }
