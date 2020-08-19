@@ -24,13 +24,17 @@ async function add({ title, content, id }) {
 	})
 	return response.data.number
 }
-async function update({ number, title, content }) {
+async function update({ number, title, content, id }) {
+	const postContent = ejs.render(POST_TEMPLATE, {
+		id,
+		content: content,
+	})
 	await octokit.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}', {
 		owner: 'Bowen7',
 		repo: 'Blog',
 		issue_number: number,
 		title: title,
-		body: content,
+		body: postContent,
 	})
 }
 module.exports = {
