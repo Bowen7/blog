@@ -10,7 +10,7 @@ const octokit = new Octokit({
 })
 
 const POST_TEMPLATE = fs
-	.readFileSync(path.resolve(__dirname, './templates/post.html'))
+	.readFileSync(path.resolve(__dirname, './templates/issue.html'))
 	.toString()
 async function add({ title, content, index }) {
 	const postContent = ejs.render(POST_TEMPLATE, {
