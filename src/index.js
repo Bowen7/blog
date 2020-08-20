@@ -31,8 +31,7 @@ diff success.The diff result is:
 	issueUpdateList: ${issueUpdateList},
 	dbUpdateList: ${dbUpdateList}
 `)
-
-	asyncForEach(addList, async index => {
+	await asyncForEach(addList, async index => {
 		const item = getPostByIndexFromLocal(index)
 		const number = await issue.add({ ...item })
 		const post = new PostModel({
@@ -44,14 +43,14 @@ diff success.The diff result is:
 		await post.save()
 	})
 	core.info('add issue&db success')
-	asyncForEach(issueUpdateList, async index => {
+	await asyncForEach(issueUpdateList, async index => {
 		const item = getPostByIndexFromLocal(index)
 		await issue.update({ ...item })
 	})
-	core.info('update issue&db success')
-	asyncForEach(dbUpdateList, async index => {
+	core.info('update issue success')
+	await asyncForEach(dbUpdateList, async index => {
 		const item = getPostByIndexFromLocal(index)
-		await PostModel.update({ index }, { ...item })
+		await PostModel.updateOne({ index }, { ...item })
 	})
 	core.info('update db success')
 
@@ -61,7 +60,7 @@ diff success.The diff result is:
 			{ title: 1, number: 1, _id: -1 },
 			{
 				sort: {
-					index: 1,
+					index: -1,
 				},
 			}
 		).exec()
@@ -69,7 +68,7 @@ diff success.The diff result is:
 		const readme = ejs.render(readmeTemplate, { posts })
 		fs.writeFileSync(path.resolve(__dirname, '../README.md'), readme)
 
-		await PostModel.update(
+		await PostModel.updateOne(
 			{
 				type: 2,
 			},
@@ -79,7 +78,7 @@ diff success.The diff result is:
 	}
 
 	if (issueHash) {
-		await PostModel.update(
+		await PostModel.updateOne(
 			{
 				type: 3,
 			},

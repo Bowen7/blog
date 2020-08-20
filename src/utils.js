@@ -35,6 +35,7 @@ function getPostsFromLocal() {
 	if (posts) {
 		return posts
 	}
+	posts = {}
 	const postFiles = fs.readdirSync(POSTS_ROOT_PATH)
 	postFiles.forEach(postFile => {
 		const filePath = path.join(POSTS_ROOT_PATH, postFile)

@@ -54,20 +54,20 @@ async function diff() {
 
 	let issueTemplateChanged = oldIssue !== newIssue
 
-	let readmeHash = oldReadme.hash !== newReadme.hash ? newHash : ''
+	let readmeHash = oldReadme !== newReadme ? newReadme : ''
 	let issueHash = oldIssue !== newIssue ? newIssue : ''
 
 	newPosts.forEach(newPost => {
 		const { index, hash, title } = newPost
 		let shouldIssueUpdate = false
 		const oldPost = oldPosts.find(oldPost => {
-			return oldPost.index === index
+			return +oldPost.index === +index
 		})
 		// if create a new post
 		// should add issue&db, and update readme
 		if (!oldPost) {
 			addList.push(index)
-			readmeHash = newReadme.hash
+			readmeHash = newReadme
 			return
 		}
 
@@ -78,7 +78,7 @@ async function diff() {
 		}
 		// if a post's title change, should update readme, update issue&db
 		if (title !== oldPost.title) {
-			readmeHash = newReadme.hash
+			readmeHash = newReadme
 			!shouldIssueUpdate && issueUpdateList.push(index)
 			dbUpdateList.push(index)
 			return
