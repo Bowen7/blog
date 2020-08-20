@@ -45,5 +45,5 @@
 
   - [chameleon 使用体验](https://github.com/Bowen7/Blog/issues/2)
 
-  - [记录 react+antd 兼容 ie8 的一些坑](https://github.com/Bowen7/Blog/issues/1)
+  - [记录 react+antd 兼容 ie8 的一些坑2](https://github.com/Bowen7/Blog/issues/1)
 
