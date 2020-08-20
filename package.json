@@ -4,7 +4,7 @@
   "description": "Bowen's Blog",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && node build/index.js"
+    "build": "rm -rf dist && node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,17 +17,19 @@
   },
   "homepage": "https://github.com/Bowen7/Blog#readme",
   "devDependencies": {
+    "@actions/core": "^1.2.4",
     "@actions/exec": "^1.0.4",
     "@octokit/core": "^3.1.1",
     "ali-oss": "^6.10.0",
-    "ejs": "^3.1.3",
     "babel-eslint": "^10.0.3",
+    "ejs": "^3.1.3",
+    "eslint": "^6.8.0",
     "hash-sum": "^2.0.0",
     "highlight.js": "^10.1.2",
-    "marked": "^1.1.1",
-    "eslint": "^6.8.0"
+    "marked": "^1.1.1"
   },
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "mongoose": "^5.10.0"
   }
 }
