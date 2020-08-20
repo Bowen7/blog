@@ -45,12 +45,15 @@ diff success.The diff result is:
 	core.info('add issue&db success')
 	await asyncForEach(issueUpdateList, async index => {
 		const item = getPostByIndexFromLocal(index)
-		await issue.update({ ...item, content: md.render(item.content) })
+		await issue.update({ ...item })
 	})
 	core.info('update issue success')
 	await asyncForEach(dbUpdateList, async index => {
 		const item = getPostByIndexFromLocal(index)
-		await PostModel.updateOne({ index }, { ...item })
+		await PostModel.updateOne(
+			{ index },
+			{ ...item, content: md.render(item.content) }
+		)
 	})
 	core.info('update db success')
 
