@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/Bowen7/Blog#readme",
   "devDependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "@actions/exec": "^1.0.4",
     "@octokit/core": "^3.1.1",
     "ali-oss": "^6.10.0",
