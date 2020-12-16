@@ -8,7 +8,7 @@
 
 请各位不要提 issue 哈～
 
-访问 [https://bowencodes.com/](https://bowencodes.com/) 以获得最佳体验
+访问 [https://bowencodes.com](https://bowencodes.com) 以获得最佳体验
 
 
   - [数组随机排序算法](https://github.com/Bowen7/Blog/issues/19)
