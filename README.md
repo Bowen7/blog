@@ -1,4 +1,4 @@
-<p align="center"><a href="https://www.zhangwenxiang.cn" target="_blank" rel="noopener noreferrer"><img width="100" src="https://blog-mars.oss-cn-hangzhou.aliyuncs.com/logo.png" alt="blog logo"></a></p>
+<p align="center"><a href="https://www.zhangwenxiang.cn" target="_blank" rel="noopener noreferrer"><img width="100" src="https://bowencodes.com/logo.svg" alt="blog logo"></a></p>
 
 <h2 align="center">Bowen的个人博客</h2>
 
@@ -8,7 +8,7 @@
 
 请各位不要提 issue 哈～
 
-文章也会同步发布在[https://zhangwenxiang.cn](https://zhangwenxiang.cn)
+访问 [https://bowencodes.com/](https://bowencodes.com/) 以获得最佳体验
 
 
   - [数组随机排序算法](https://github.com/Bowen7/Blog/issues/19)
