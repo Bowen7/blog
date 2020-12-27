@@ -8,8 +8,9 @@
 
 请各位不要提 issue 哈～
 
-访问 [https://bowencodes.com](https://bowencodes.com) 以获得最佳体验
+访问 [我的个人博客网站：https://bowencodes.com](https://bowencodes.com) ，获取更好的阅读体验
 
+  - [实现 O(n) 时间的高斯模糊算法](https://github.com/Bowen7/Blog/issues/23)
 
   - [数组随机排序算法](https://github.com/Bowen7/Blog/issues/19)
 
