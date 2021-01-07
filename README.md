@@ -1,4 +1,4 @@
-<p align="center"><a href="https://www.zhangwenxiang.cn" target="_blank" rel="noopener noreferrer"><img width="100" src="https://bowencodes.com/logo.svg" alt="blog logo"></a></p>
+<p align="center"><a href="https://bowencodes.com" target="_blank" rel="noopener noreferrer"><img width="100" src="https://bowencodes.com/icons/logo.svg" alt="blog logo"></a></p>
 
 <h2 align="center">Bowen的个人博客</h2>
 
