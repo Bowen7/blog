@@ -1,0 +1,350 @@
+export const meta = {
+  title: '实现小程序的单文件开发模式',
+  time: '20191017',
+  tags: ['小程序']
+}
+
+一个微信小程序页面（Page）/组件（Component）通常由四个文件组成：wxml（模版）、wxss（样式）、js（逻辑）、json（配置），而在大部分情况下将一个页面/组件分为 4 个文件过于冗余，这篇文章教大家如何实现小程序的单文件开发模式
+
+### 单文件模版
+
+我定义了一个单文件模版，只要像下面一样写，就能被我的 webpack loader 识别并处理成微信的文件结构：
+
+```html
+<template>
+  <index-com></index-com>
+</template>
+
+<script>
+  Page({});
+</script>
+
+<style></style>
+
+<script mp-type="json">
+  export default {
+    usingComponents: {
+      "index-com": "../../components/index_com/index_com"
+    }
+  };
+</script>
+```
+
+文件结构类似于 vue 的形式，template 包裹的会被处理为.wxml 的内容，script 标签对应.js，style 对应.wxss 文件，加上`my-type="json"`属性的会被处理生成.json 文件。
+
+需要注意的是，我这里的 json 并不是真正的 json，而是`export default`一个对象，再被 loader 处理为 json 格式。这样做的好处有两点，第一：在 script 标签内直接写 json，有些代码检查插件会报错；第二，改为对象形式可以更方便的添加注释
+
+### loader 部分
+
+webpack loader 的强大之处在于它不仅仅能处理 js 文件，还能处理其他任何格式的文件，只要你有相对应的 loader
+
+loader 的写法也很简单，简单来看就是一个函数，接收 source(字符串形式的文件内容)，再返回你处理过后的结果(或者通过 this.callback)。
+
+这里我写了一个名为 sfm-loader（single file miniprogram）的 loader
+
+loader 单纯的返回处理后的结果只会生成.js 文件，而小程序需要的是 4 个文件，在这里，我使用 loader 的 emitFile 方法生成.json 和.wxml 文件，利用 mini-css-extract-plugin 产生.wxss 文件
+
+##### 生成.json 和.wxml 文件
+
+```js
+// loader
+module.exports = function(source) {
+  const emitPath = path
+    .relative(`${this.rootContext}/src`, this.resourcePath)
+    .replace(/\..*/, "");
+
+  const json = selector(source, { type: "json" });
+  this.emitFile(`${emitPath}.json`, getJsonStr(json));
+
+  const template = selector(source, { type: "template" });
+  this.emitFile(`${emitPath}.wxml`, template);
+
+  return ``;
+};
+```
+
+很简单，计算出生成文件的路径，再拿到相应的代码块，执行 this.emitFile 即可
+
+其中 selector 的实现如下：
+
+```js
+const posthtml = require("posthtml");
+const select = (source, query = {}) => {
+  let result;
+  if (!"type" in query) {
+    return result;
+  }
+  const tree = posthtml().process(source, {
+    sync: true
+  }).tree;
+  const { type } = query;
+  tree.forEach(block => {
+    switch (type) {
+      case "json": {
+        let mpType = "";
+        try {
+          mpType = block.attrs["mp-type"];
+        } catch (error) {}
+        if (block.tag === "script" && mpType === "json") {
+          result = block;
+        }
+        break;
+      }
+      case "script": {
+        let mpType = "";
+        try {
+          mpType = block.attrs["mp-type"];
+        } catch (error) {}
+        if (block.tag === "script" && mpType !== "json") {
+          result = block;
+        }
+        break;
+      }
+      default:
+        if (block.tag === type) {
+          result = block;
+        }
+    }
+  });
+  if (!result) {
+    return "";
+  }
+  if (type === "template") {
+    return posthtml().process(result.content, {
+      sync: true,
+      skipParse: true
+    }).html;
+  } else {
+    return result.content.join("");
+  }
+};
+```
+
+我使用了 posthtml 库来解析标签，也可以使用我之前写的 parser，为了更加稳定和便于维护，我在这里直接就用成熟的代码库
+
+解析标签之后通过标签名和属性确定各个代码块并返回。由于 template 内的标签都被解析了，所以需要再转化为字符串形式
+
+而 json 部分，获取的代码块是像下面的格式:
+
+```js
+export default {
+  usingComponents: {}
+};
+```
+
+在 json 文件中，我们不需要 export default，并且对象也要转换为 json 格式，所以我们不能直接生成 json 文件，而是通过 getJsonStr 方法：
+
+```js
+const parser = require("@babel/parser");
+const generate = require("@babel/generator")["default"];
+const traverse = require("@babel/traverse")["default"];
+const t = require("@babel/types");
+
+const helpers = (module.exports = {});
+helpers.getJson = source => {
+  let json = {};
+  const ast = parser.parse(source, {
+    sourceType: "module"
+  });
+  traverse(ast, {
+    ExportDefaultDeclaration(rootPath) {
+      let declarationPath = rootPath.get("declaration");
+      if (t.isObjectExpression(declarationPath)) {
+        const code = generate(declarationPath.node).code;
+        json = eval("(" + code + ")");
+      }
+    }
+  });
+  return json;
+};
+helpers.getJsonStr = source => {
+  return JSON.stringify(helpers.getJson(source), null, 2);
+};
+```
+
+先通过@babel/parser 将代码转化为 ast 树，再使用@babel/traverse 遍历 ast 树，拿到 export default 后的对象，用@babel/traverse 再转化为字符串（这部分过程也可以通过简单的字符串匹配）。现在我们拿到字符串依然不是标准的 json 格式，我使用了 eval 方法，将这部分字符串转化为 js 对象，再调用 JSON.stringify 生成标准的 json 格式字符串。
+
+这里，可能很多人一看到 eval 就会感到不放心，认为它是一个不安全的函数，其实，我觉得，只要你知道你在做什么，完全是可以使用的，webpack 在很多种 devtool 中也是直接使用了 eval 函数
+
+##### 生成.wxss 文件
+
+再来看 wxss 部分，我采用了 mini-css-extract-plugin 去提取 css 并生成 wxss。很简单：我们将 style 标签内的 css 部分先交由 css-loader（这里可以拓展 less，sass，stylus 等语言），再由 mini-css-extract-plugin 的 loader 处理，配合 webpack 的配置：
+
+```js
+plugins: [
+  new MiniCssExtractPlugin({
+    filename: "[name].wxss"
+  })
+];
+```
+
+最后就会生成我们需要的 wxss 文件。
+
+好，开始编码，首先思考如何让 css-loader 拿到 style 标签内的内容：
+
+```js
+const basename = path.basename(this.resourcePath);
+const styleQuery = JSON.stringify({ type: "style" });
+const style = `const __v2mp__style__ = require('!!mini-css-extract-plugin/dist/loader.js!css-loader!sfm?${styleQuery}!./${basename}');`;
+```
+
+我们利用 webpack 的特殊写法，让这个文件再过一遍 sfm-loader、css-loader、mini-css-extract-plugin/dist/loader.js。
+
+在 sfm-loader 最前面我们加上判断逻辑，如果 this.query 存在，则按照 query 拿到相应的代码片段：
+
+```js
+if (this.query) {
+  return selector(source, JSON.parse(this.query.slice(1)));
+}
+```
+
+##### 生成.js 文件
+
+webapck 是为 web 端设计的，而小程序和 web 端的运行环境不同，小程序不存在 window 的概念，并且可以直接识别 require 语法
+
+```js
+const script = selector(source, { type: "script" });
+return `${style}\n${script}`;
+```
+
+我们先取到 script 部分，在 loader 的最后和 style 一起返回；这部分代码会被 mini-css-extract-plugin 和我们自定义的 plugin 处理。
+
+### plugin 部分
+
+自定义 plugin 如下：
+
+```js
+const path = require("path");
+const ConcatSource = require("webpack-sources").ConcatSource;
+function V2mpPlugin(options) {}
+const name = "V2mpPlugin";
+V2mpPlugin.prototype.apply = function(compiler) {
+  compiler.hooks.emit.tapAsync(name, (compilation, callback) => {
+    compilation.chunkGroups.forEach((chunkGroup, index) => {
+      chunkGroup.chunks.forEach(chunk => {
+        if (chunk.id === "manifest") {
+          index === 0 && chunkHandler(chunk, compilation, true);
+        } else {
+          chunkHandler(chunk, compilation, false);
+        }
+      });
+    });
+    callback();
+  });
+};
+function chunkHandler(chunk, compilation, isRuntime) {
+  const files = chunk.files.filter(file => {
+    return path.extname(file) === ".js";
+  });
+  files.forEach(file => {
+    const originalSource = compilation.assets[file];
+    const relativePath = path.relative(path.dirname(file), "./manifest.js");
+    const source = new ConcatSource();
+    if (isRuntime) {
+      source.add("const window = {};\n");
+      source.add(originalSource);
+      source.add("\nmodule.exports=window;");
+    } else {
+      source.add(`const window=require('${relativePath}');\n`);
+      source.add(originalSource);
+    }
+    compilation.assets[file] = source;
+  });
+}
+```
+
+这个 plugin 做的事很简单，就是遍历要生成的 js 文件，判断是否为 manifest 文件，如果是，则加上`const window = {};\n`和`\nmodule.exports=window;`;如果不是，则加上`const window=require('${relativePath}');\n`，relativePath 是该文件到 manifest 文件的相对路径
+
+因为我们在用 webpack 打包时，通过挂载在 window 上的 webpackJsonp 函数去加载各个 chunk，由于小程序不存在 window 全局变量，我们在 manifest 人为创建一个 window 变量，并在各个 chunk 中引入
+
+### webpack 配置
+
+基本 webpack 配置如下：
+
+```js
+var path = require("path");
+const V2mpPlugin = require("sfm/src/plugin.js");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { getEntries } = require("sfm/src/entry");
+module.exports = {
+  mode: "development",
+  devtool: "cheap-source-map",
+  entry: getEntries("./src/app.vue"),
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        use: [
+          {
+            loader: "sfm"
+          }
+        ]
+      }
+    ]
+  },
+  output: {
+    filename: "[name].js",
+    publicPath: "/",
+    path: path.resolve("dist")
+  },
+  optimization: {
+    noEmitOnErrors: false,
+    runtimeChunk: {
+      name: "manifest"
+    }
+  },
+  plugins: [
+    new V2mpPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].wxss"
+    })
+  ]
+};
+```
+
+将.vue 后缀的文件交由 sfm.loader 处理；生成 runtimeChunk；引入自定义 plugin 和 MiniCssExtractPlugin
+
+这其中重要的一点就是 getEntries 函数，我们知道，webpack 默认是将所有文件打包成一个文件，但由于小程序的规则，我们需要一个页面/组件单独对应一个 js 文件，这就要求我们将每一个页面/组件都看作一个 chunk，在打包之前通过 getEntries 先获取到所有的 chunk：
+
+```js
+const selector = require("./selector");
+const path = require("path");
+const fs = require("fs");
+const { getJson } = require("./helpers");
+
+const getComponents = (pagePath, rootPath) => {
+  const components = [];
+  const page = fs.readFileSync(pagePath).toString();
+  const pageJson = selector(page, { type: "json" });
+  const pageJsonContent = getJson(pageJson);
+  const usingComponents = pageJsonContent.usingComponents || {};
+  for (let key in usingComponents) {
+    const componentPath = path.join(
+      path.dirname(pagePath),
+      usingComponents[key]
+    );
+    components.push(path.relative(rootPath, componentPath));
+  }
+  return components;
+};
+module.exports.getEntries = appPath => {
+  const rootPath = path.join(process.cwd(), path.dirname(appPath));
+  let entryies = { app: path.resolve(appPath) };
+  const appAbPath = path.join(process.cwd(), appPath);
+  const app = fs.readFileSync(appAbPath).toString();
+  const appJson = selector(app, { type: "json" });
+  const appJsonContent = getJson(appJson);
+  const pages = appJsonContent.pages || [];
+  pages.forEach(page => {
+    const pagePath = `${path.join(rootPath, page)}.vue`;
+    entryies[page] = pagePath;
+    const components = getComponents(pagePath, rootPath);
+    components.forEach(component => {
+      entryies[component] = `${path.join(rootPath, component)}.vue`;
+    });
+  });
+  return entryies;
+};
+```
+
+原理很简单，先获取到 app.js 里 json 配置里的 pages 属性，这就是小程序所有的页面；再遍历这些页面 json 配置的 usingComponents 属性，获取其引用的所有组件（这里没有做判重和判断循环引用）。最后返回的 entryies 包括了 app、所有的 page、所有的 components，这也就是 webpack 配置中的 entry 属性。

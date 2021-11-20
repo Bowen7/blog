@@ -1,0 +1,189 @@
+export const meta = {
+  title: '使用 react hooks 实现自己的 context-redux',
+  time: '20190228',
+  tags: ['React Hooks']
+}
+
+注：如要运行本文的代码，请先确认自己的 react 版本已支持 hooks
+
+react hooks 出来已经有段时间了，本文不对 hooks 的具体用法作介绍，而是使用 hooks 实现一个简易的基于 context 的 redux
+
+### 使用 useReducer 实现初版 redux
+
+React hooks 自带了 useReducer 供我们使用，它接受两个参数，一是 reducer 函数，二是初始 state，并返回 state 和 dispatch 函数，如下
+
+```js
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+这个函数自己实现的话也不难，如下：
+
+```js
+const useMyReducer = (reducer, initialState) => {
+  const [state, setState] = useState(initialState);
+  const dispatch = action => {
+    const newState = reducer(action, state);
+    setState(newState);
+  };
+  return [state, dispatch];
+};
+```
+
+即将 initialState 作为 state 的初始状态传入 useState，dispatch 则是一个函数，它会将接受的 action 和 state 传给 reducer，并获取 reducer 的返回值赋给 state
+
+我们先利用 useReducer 实现一个计数器的简单页面
+
+reducer 函数和 initialState 如下：
+
+```js
+const initialState = {
+  count: 0
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "increase":
+      return { ...state, count: state.count + 1 };
+    case "decrease":
+      return { ...state, count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+```
+
+计数器组件：
+
+```jsx
+const Demo = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <div>
+      counter:{state.count}
+      <div>
+        <button
+          onClick={() => {
+            dispatch({ type: "increase" });
+          }}
+        >
+          increase
+        </button>
+        <button
+          onClick={() => {
+            dispatch({ type: "decrease" });
+          }}
+        >
+          decrease
+        </button>
+      </div>
+    </div>
+  );
+};
+```
+
+这就是初版的 redux 了，但这个 redux 有些问题，就是它的 state 和 dispatch 是属于自己的，其他组件并不能拿到，也就是说，如果我们的页面有两个 Demo 组件，它们的 state 是各自独立，互不影响的
+
+### 将 state 和 dispatch 存在 context 中
+
+为了解决上述问题，我们必须拥有一个全局状态，并将 state 和 dispatch 放入这个全局状态中。这里，我们选用 context 作为我们的全局状态，context 在旧版 React 中不推荐使用，但在改进之后，官方开始推荐大家使用
+
+我们先创建一个 context：
+
+```js
+const context = React.createContext();
+```
+
+为了各个组件都能拿到 context 的数据，我们需要有一个 Provider 组件包在最外层：
+
+```jsx
+const Provider = props => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <context.Provider value={{ state, dispatch }}>
+      {props.children}
+    </context.Provider>
+  );
+};
+```
+
+我们将 useReducer 返回的 state、dispatch 传入 context.Provider 中，让它的 children 都能拿到
+
+然后，我们像下面一样用 Provider 包在组件外层：
+
+```jsx
+<Provider>
+  <Demo />
+  <Demo />
+</Provider>
+```
+
+我们删去计数器 Demo 组件中的：
+
+```js
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+加上通过 useContext 函数拿到 context 上的数据：
+
+```js
+const { state, dispatch } = useContext(context);
+```
+
+要注意的是，传入 useContext 函数的 context 必须是我们之前通过`React.createContext()`创建的 context
+
+这样，即使是两个 Demo 组件，它们也是共用一份数据了
+
+### 解决异步的问题
+
+很显然，现在的 context-redux 和单纯的 redux 一样，只能 dispatch 一个对象，也就是说，这个 dispatch 操作是同步的，如果我们要做异步的操作呢？很简单，我们借鉴 redux-thunk 的方法，让 dispatch 可以接受函数参数
+
+改造 Provider 函数组件如下：
+
+```jsx
+const Provider = props => {
+  const [state, origin_dispatch] = useReducer(reducer, initialState);
+  const dispatch = action => {
+    if (typeof action === "function") {
+      return action(origin_dispatch);
+    }
+    return origin_dispatch(action);
+  };
+  return (
+    <context.Provider value={{ state, dispatch }}>
+      {props.children}
+    </context.Provider>
+  );
+};
+```
+
+我们将 userReducer 函数返回的原始 dispath 命名为`origin_dispatch`，自定义 dispatch 函数，当 action 为函数的时候，我们执行 action 函数，并将`origin_dispatch`当作参数传进去；action 不是函数，直接调用`origin_dispatch`，不做处理
+
+我们测试一下：
+
+```js
+const sleep = wait => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), wait);
+  });
+};
+const increaseCount = async dispatch => {
+  await sleep(1000);
+  dispatch({ type: "increase" });
+};
+```
+
+```jsx
+<button
+  onClick={() => {
+    dispatch(increaseCount);
+  }}
+>
+  increase
+</button>
+```
+
+`increaseCount`是一个异步函数，我们将它当作参数传入我们封装的新 dispatch 中，点击 increase 按钮，1s 之后，计数器的数字加 1，至此，我们的 context-redux 也支持 dispatch 异步操作了
+
+### 最后
+
+本文的代码，我放在了自己的 github 上，这是[传送门](https://github.com/Bowen7/context-redux-demo)

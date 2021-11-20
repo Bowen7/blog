@@ -1,0 +1,62 @@
+export const meta = {
+  title: '数组随机排序算法',
+  time: '20200729',
+  tags: ['算法']
+}
+
+之前被问到数组随机排序算法，我很快地写了如下代码：
+
+```js
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5)
+}
+```
+
+利用数组的sort算法，比较函数返回一个-0.5到0.5的随机数，这个方法看似可行，其实有很大的问题。
+
+### V8 sort
+
+从v8 blog[https://v8.dev/blog/array-sort](https://v8.dev/blog/array-sort)上可以看到，v8 sort现在是采用Timsort算法，TimSort算法是一种起源于归并排序和插入排序的混合排序算法；而在以前，则是采用插入排序(长度小于10时)+快排的算法
+
+既然怎样都跑不开插入排序，那就以插入排序为排序算法，以数组`[1, 2, 3]` 为样例，计算得出通过random sort后得到`[1, 2, 3]`的概率为25%（第一次插入得到`[1, 2]`概率为50%，得到`[1, 2]`后3直接插入队尾的概率为50%），而我们知道，真正的随机算法得到`[1, 2, 3]`的概率应该为1/6
+
+除了插入排序，其他排序算法也会有这些问题，可以在这个网站上测试你的随机排序算法：[https://bost.ocks.org/mike/shuffle/compare.html](https://bost.ocks.org/mike/shuffle/compare.html)
+
+### 改进
+
+究其原因，这种方式在每次比较时的概率都是独立的。我们可以在算法开始为每一项生成一个随机数，利用这个随机数作为比较的依据：
+
+```js
+function shuffle(array) {
+  const random = {}
+  array.forEach(item => {
+    random[item] = Math.random()
+  })
+  return array.sort((a, b) => {
+    return random[a] - random[b]
+  })
+}
+```
+
+这样做解决了上述问题，每个数在比较时的概率不再独立。但也有缺点：会有额外的空间，时间复杂度为O(nlogn)，有没有更好的方法呢？
+
+### 再次改进：Fisher–Yates算法
+
+Fisher–Yates算法是由Ronald Fisher和Frank Yates共同提出，其用js的实现如下：
+
+```js
+function shuffle(array) {
+  let n = array.length;
+  while (n > 0) {
+    const i = Math.floor(Math.random() * n--)
+    const tmp = array[i]
+    array[i] = array[n]
+    array[n] = tmp
+  }
+  return array
+}
+```
+
+核心思想：每次从剩余的项里随机取一个项，记录并剔除该项再进入下次循环
+
+Fisher–Yates算法做到了不额外申请空间&O(n)的时间复杂度，可以说是最优的随机排序算法了

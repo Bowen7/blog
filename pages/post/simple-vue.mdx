@@ -1,0 +1,256 @@
+export const meta = {
+  title: '实现一个简单的 Vue',
+  time: '20190804'
+}
+
+这周参考了一些博文，自己写了一个简单的 vue，网上这类实现很多，我的实现也没什么新奇，权当一个自我练习吧
+
+### 具体实现
+
+首先，得先有一个 Vue 类，当然，我写的一个很粗糙的 Vue 类，所以我把它叫做 BabyVue：
+
+```js
+function BabyVue(options) {
+  const { data, root, template, methods } = options;
+  this.data = data;
+  this.root = root;
+  this.template = template;
+  this.methods = methods;
+  this.observe();
+  this.resolveTemplate();
+}
+```
+
+BabtVue 构造函数接受一个 options，options 中包含 data，root（即 html 中指定的根结点），template 模版，methods 四个 option，我们把这些 option 挂载到 this 方法上，以便后续的函数能轻松地拿到他们。然后执行 observe 和 resolveTemplate 方法
+
+observe 方法：
+
+```js
+BabyVue.prototype.observe = function() {
+  Object.keys(this.data).forEach(key => {
+    let val = this.data[key];
+    const observer = new Observer();
+    Object.defineProperty(this.data, key, {
+      get: () => {
+        if (Observer.target) {
+          observer.subscribe(Observer.target);
+        }
+        return val;
+      },
+      set: newValue => {
+        if (val === newValue) {
+          return;
+        }
+        val = newValue;
+        observer.publish(newValue);
+      }
+    });
+  });
+};
+```
+
+observe 方法中先对 this.data 中的数据进行遍历，这里没有考虑更深层的结构，只对第一层数据进行遍历，利用闭包缓存它的当前值 val 和一个观察者 observer，并用`Object.defineProperty`方法设置它的 get 和 set 属性，在获取值的时候判断 Observer.target 是否存在，若存在，则将 Observer.target 加入订阅者（后面再详述其作用）,最后返回 val；设置值的时候，将新值与 val 对比，若不同，则更新 val 值，并通知订阅者更新
+
+下面是 Observer 的代码，实现了一个简单的观察者模式：
+
+```js
+function Observer() {
+  this.subscribers = [];
+}
+Observer.prototype.subscribe = function(subscriber) {
+  !~this.subscribers.indexOf(subscriber) && this.subscribers.push(subscriber);
+};
+Observer.prototype.publish = function(newVal) {
+  this.subscribers.forEach(subscriber => {
+    const ele = document.querySelector(`[${subscriber}]`);
+    ele && (ele.innerHTML = newVal);
+  });
+};
+```
+
+订阅者用其特殊属性进行标识，在更新时，先通过属性选择器拿到目标 dom 再更新其值
+
+下面是 resolveTemplate 的代码，其主要是渲染模版、增加元素标识和挂载事件，Vue 中对模版解析使用的应当是更高级的方法，我这里只是对 template 字符串一些简单的解析
+
+```js
+BabyVue.prototype.resolveTemplate = function() {
+  const root = document.createElement("div");
+  root.innerHTML = this.template;
+  const children = root.children;
+  const nodes = [].slice.call(children);
+  let index = 0;
+  const events = [];
+  while (nodes.length !== 0) {
+    const node = nodes.shift();
+    const _index = index++;
+    node.setAttribute(`v-${_index}`, "");
+    if (node.children.length > 0) {
+      nodes.push(...node.children);
+    } else {
+      if (/\{\{(.*)\}\}/.test(node.innerHTML)) {
+        const key = node.innerHTML.replace(/\{\{(.*)\}\}/, "$1");
+        Observer.target = `v-${_index}`;
+        node.innerHTML = this.data[key];
+        Observer.target = null;
+      }
+
+      const method = node.getAttribute("v-on:click");
+      if (method) {
+        events.push({
+          key: `v-${_index}`,
+          type: "click",
+          method
+        });
+      }
+    }
+  }
+  this.root.innerHTML = root.innerHTML;
+  events.forEach(event => {
+    const { key, type, method } = event;
+    const ele = document.querySelector(`[${key}]`);
+    ele.addEventListener(type, this.methods[method].bind(this));
+  });
+};
+```
+
+我对模版中的每一个元素增加一个特殊标示，形似`v-xxx`，方便根据表示标示获取真实 dom（为什么不直接保存 node？可以试试使用了`createElement`创建的元素再设置`innerHTML`，会出现一些问题）。
+
+先根据正则匹配`{}`，若符合条件，获取了大括号的标识符后，先将`Object.target`设为元素的标识，在将元素的 innerHTML 置为 data 中的数据，要注意，在此时，我们获取了一次`this.data[key]`，会触发之前设置的 get 属性，在其中判断`Observer.target`是否存在，因为我们刚刚设置过，`Observer.target`当前为元素的标识，所以，它被加到订阅者中。
+
+再获取其事件属性，我们这里只简单地获取`v-on:click`属性，我们将它的属性值和元素标识保存到 events 中
+
+最后等待模版挂载在 root 元素中后，我们遍历 events 数组，挂载事件
+
+至此，我的 BabyVue 已基本实现了
+
+### Demo
+
+实现的是一个简单的计数器：
+![image](https://user-images.githubusercontent.com/27432981/62422373-2e792200-b6e4-11e9-9b25-1c7e9b1c2c81.png)
+
+有兴趣的小伙伴可以复制以下代码运行查看效果：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>BabyVue</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script>
+      function BabyVue(options) {
+        const { data, root, template, methods } = options;
+        this.data = data;
+        this.root = root;
+        this.template = template;
+        this.methods = methods;
+        this.observe();
+        this.resolveTemplate();
+      }
+      BabyVue.prototype.observe = function() {
+        Object.keys(this.data).forEach(key => {
+          let val = this.data[key];
+          const observer = new Observer();
+          Object.defineProperty(this.data, key, {
+            get: () => {
+              if (Observer.target) {
+                observer.subscribe(Observer.target);
+              }
+              return val;
+            },
+            set: newValue => {
+              if (val === newValue) {
+                return;
+              }
+              val = newValue;
+              observer.publish(newValue);
+            }
+          });
+        });
+      };
+      BabyVue.prototype.resolveTemplate = function() {
+        const root = document.createElement("div");
+        root.innerHTML = this.template;
+        const children = root.children;
+        const nodes = [].slice.call(children);
+        let index = 0;
+        const events = [];
+        while (nodes.length !== 0) {
+          const node = nodes.shift();
+          const _index = index++;
+          node.setAttribute(`v-${_index}`, "");
+          if (node.children.length > 0) {
+            nodes.push(...node.children);
+          } else {
+            if (/\{\{(.*)\}\}/.test(node.innerHTML)) {
+              const key = node.innerHTML.replace(/\{\{(.*)\}\}/, "$1");
+              Observer.target = `v-${_index}`;
+              node.innerHTML = this.data[key];
+              Observer.target = null;
+            }
+
+            const method = node.getAttribute("v-on:click");
+            if (method) {
+              events.push({
+                key: `v-${_index}`,
+                type: "click",
+                method
+              });
+            }
+          }
+        }
+        this.root.innerHTML = root.innerHTML;
+        events.forEach(event => {
+          const { key, type, method } = event;
+          const ele = document.querySelector(`[${key}]`);
+          ele.addEventListener(type, this.methods[method].bind(this));
+        });
+      };
+
+      function Observer() {
+        this.subscribers = [];
+      }
+      Observer.prototype.subscribe = function(subscriber) {
+        !~this.subscribers.indexOf(subscriber) &&
+          this.subscribers.push(subscriber);
+      };
+      Observer.prototype.publish = function(newVal) {
+        this.subscribers.forEach(subscriber => {
+          const ele = document.querySelector(`[${subscriber}]`);
+          ele && (ele.innerHTML = newVal);
+        });
+      };
+      const root = document.getElementById("root");
+      const vm = new BabyVue({
+        data: {
+          value: 0
+        },
+        root,
+        template: `
+        <div>
+          <p>{{value}}</p>
+          <button v-on:click="add">add</button>
+          <button v-on:click="reset">reset</button>
+        </div>`,
+        methods: {
+          add: function() {
+            this.data.value++;
+          },
+          reset: function() {
+            this.data.value = 0;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+```
+
+### 最后
+
+今天是我的生日，哈哈哈，祝我生日快乐～

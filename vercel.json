@@ -1,0 +1,84 @@
+{
+  "redirects": [
+    {
+      "source": "/post/1",
+      "destination": "/post/react-antd-with-ie8",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/4",
+      "destination": "/post/read-the-shortest-history-of-europe",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/5",
+      "destination": "/post/debounce-and-throttle",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/6",
+      "destination": "/post/avoid-cannot-read-property-of-undefined",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/7",
+      "destination": "/post/use-react-hooks-implement-redux",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/8",
+      "destination": "/post/spell-check",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/9",
+      "destination": "/post/simple-vue",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/10",
+      "destination": "/post/a+-promise",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/11",
+      "destination": "/post/vue-to-miniprogram-1",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/12",
+      "destination": "/post/vue-to-miniprogram-2",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/13",
+      "destination": "/post/miniprogram-computed-watch",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/14",
+      "destination": "/post/vue-to-miniprogram-3",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/15",
+      "destination": "/post/npm-link",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/16",
+      "destination": "/post/simply-file-miniprogram",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/17",
+      "destination": "/post/doubly-linked-list-in-js",
+      "statusCode": 301
+    },
+    {
+      "source": "/post/18",
+      "destination": "/post/random-sort",
+      "statusCode": 301
+    }
+  ]
+}

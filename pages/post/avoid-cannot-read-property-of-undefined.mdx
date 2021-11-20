@@ -1,0 +1,168 @@
+export const meta = {
+  title: '避免取值时出现 Cannot read property \'xx\' of undefined',
+  time: '20190221'
+}
+
+我们在取值特别是链式取值的时候，常常会遇到`Cannot read property 'xx' of undefined`的错误，如何避免这种情况的发生呢？这里有几种方法以供参考
+
+### 使用成熟的库方法
+
+这是最简单的一种手段：只用引入 lodash，使用`_.get`方法；或者引入 Ramda，使用`R.path`方法，我们就能规避出现上述错误的风险
+
+尽管这种方法十分奏效且方便，但我还是希望你能看完其他方法
+
+### 巧用&&和||
+
+我们知道，在 JavaScript 中，使用&&或者||操作符，最后返回的值不一定是 boolean 类型的，比如下面这个例子：
+
+```js
+console.log(undefined && "a"); //undefined
+console.log("a" && "b"); //b
+console.log(undefined || "a"); //a
+console.log("a" || "b"); //a
+```
+
+&&：如果第一项是 falsy(虚值，Boolean 上下文中已认定可转换为‘假‘的值)，则返回第一项，否则返回第二项
+
+||：如果第一项是 falsy，返回第二项，否则返回第一项
+
+我们可以利用这种规则进行取值
+
+我们先拟一个数据
+
+```js
+const artcle = {
+  authorInfo: {
+    author: "Bowen"
+  },
+  artcleInfo: {
+    title: "title",
+    timeInfo: {
+      publishTime: "today"
+    }
+  }
+};
+```
+
+接下来利用&&和||进行安全取值：
+
+```js
+console.log(artcle.authorInfo && artcle.authorInfo.author); //Bowen
+console.log(artcle.timeInfo && artcle.timeInfo.publishTime); //undefined
+console.log(
+  artcle.artcleInfo &&
+    artcle.artcleInfo.timeInfo &&
+    artcle.artcleInfo.timeInfo.publishTime
+); //today
+
+console.log((artcle.authorInfo || {}).author); //Bowen
+console.log((artcle.timeInfo || {}).publishTime); //undefined
+console.log(((artcle.artcleInfo || {}).timeInfo || {}).publishTime); //today
+```
+
+不难看出，这两种方法都不算优雅，只适用短链式取值，一旦嵌套过深，使用&&需要写一长段代码，而使用||需要嵌套很多括号
+
+### 利用解构赋值的默认值
+
+我们可以利用 es6 的解构赋值，给属性一个默认值，避免出现错误。以上文的 artcle 数据为例，如下：
+
+```js
+const { authorInfo: { author } = {} } = artcle;
+console.log(author); //Bowen
+```
+
+上面这么做会暴露很多变量出来，我们可以简单地封装一个函数，如下：
+
+```js
+const getAuthor = ({ authorInfo: { author } = {} } = {}) => author;
+console.log(getAuthor(artcle)); //Bowen
+```
+
+这样做不会将变量暴露出来，同时 getAuthor 函数也能复用，优雅多了
+
+### 利用 try catch
+
+既然在取值的过程中会出现错误，那我们自然可以利用`try catch`提前将错误捕获：
+
+```js
+let author, publishTime;
+try {
+  author = artcle.authorInfo.author;
+} catch (error) {
+  author = null;
+}
+try {
+  publishTime = artcle.timeInfo.publishTime;
+} catch (error) {
+  publishTime = null;
+}
+console.log(author); //Bowen
+console.log(publishTime); //null
+```
+
+这个方法不好的地方在于：我们无法在一个 try catch 语句里进行多次取值，因为只要有任一错误，就会进入 catch 语句中去
+
+我们可以写一个通用函数优化这一流程：
+
+```js
+const getValue = (fn, defaultVaule) => {
+  try {
+    return fn();
+  } catch (error) {
+    return defaultVaule;
+  }
+};
+const author = getValue(() => artcle.authorInfo.author);
+const publishTime = getValue(() => artcle.timeInfo.publishTime);
+console.log(author); //Bowen
+console.log(publishTime); //undefined
+```
+
+### 利用 proxy
+
+这是我在网上看到的一个十分有意思的写法，利用了 es6 中的 proxy 完成的：
+
+```js
+const pointer = function(obj, path = []) {
+  return new Proxy(function() {}, {
+    get: function(target, key) {
+      return pointer(obj, path.concat(key));
+    },
+    apply: function(target, object, args) {
+      let value = obj;
+      for (let i = 0; i < path.length; i++) {
+        if (value == null) {
+          break;
+        }
+        value = value[path[i]];
+      }
+      if (value === undefined) {
+        value = args[0];
+      }
+      return value;
+    }
+  });
+};
+const proxyArtcle = pointer(artcle);
+console.log(proxyArtcle.authorInfo.author()); //Bowen
+console.log(proxyArtcle.publishTime()); //undefined
+```
+
+原理比较简单，我们可以看到，pointer 方法返回的是一个以空函数为代理对象的 Proxy 实例，而在每次取值的时候会将 key 保存下来，以`proxyArtcle.authorInfo.author`为例，它其实等价于`pointer(artcle, ["authorInfo", "author"])`。由于是以空函数为代理对象，我们可以将执行它，触发 apply。apply 中会遍历 path 数组依次取值，如果发现无法继续取值则 break，跳出循环。
+
+如果你还没有学习 proxy，可以花几分钟了解一下：[proxy](http://es6.ruanyifeng.com/#docs/proxy)
+
+这种方法在我看来已是比较优雅的解决方法，但由于 proxy 对浏览器和 node 版本有所限制，且不可能有 polyfill，真正应用起来需要考虑太多
+
+### optional chaining
+
+这是一个新特性，尚在提案阶段，具体可以看[tc39/proposal-optional-chaining](https://github.com/tc39/proposal-optional-chaining)，不过已经有 babel 可以使用了：[babel-plugin-proposal-optional-chaining](https://babeljs.io/docs/en/next/babel-plugin-proposal-optional-chaining)
+
+我们可以像下面一样使用这个特性：
+
+```js
+console.log(artcle?.authorInfo?.author); //Bowen
+console.log(artcle?.timeInfo?.publishTime); //undefined
+```
+
+这种方法已接近完美，我们可以期待它的真正落实

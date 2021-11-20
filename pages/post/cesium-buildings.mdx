@@ -1,0 +1,91 @@
+export const meta = {
+  title: 'Cesium 实现建筑夜景贴图',
+  time: '20211120'
+}
+
+![preview](/demos/buildings/preview.png)
+[在线预览](/demos/buildings) [Demo 源码](https://github.com/Bowen7/Blog/tree/main/demos/buildings)
+
+在新版本的 Cesium(1.87.0)，支持了 CustomShader，可以为 Cesium3DTileset 编写自定义的 GLSL 代码。在此之前，要修改 3D Tileset 的样式，只能通过 style 属性，能做的最多也就是根据高度使不同建筑展示不同颜色这种程度。
+
+CustomShader 的基础用法可以查看[官方文档](https://github.com/CesiumGS/cesium/blob/main/Source/Scene/ModelExperimental/CustomShaderGuide/README.md)，这里不再赘述，主要是介绍如何利用 CustomShader 实现建筑贴图。
+
+### 楼顶着色
+
+首先，楼顶不会和四周贴一样的图，先统一处理成深色。
+
+并没有直接的属性表明当前点位于哪块墙上，但阅读文档可以发现，Cesium 提供了 normalMC 属性，也就是这个点所在平面的单位法向量。而楼顶一般是于地面平行的，将其法向量与地面的法向量比较，如果夹角较小，就可以把它看作楼顶。
+
+FragmentShader 代码如下（normalMC 在片段着色器不可用，需要在顶点着色器中通过 varying 传递过来，这里省略了过程）：
+
+```shader
+void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+  if (dot(vec3(0.0, 0.0, 1.0), v_normalMC) > 0.95) {
+    material.diffuse = vec3(0.079, 0.107, 0.111);
+  }
+}
+```
+
+对两个向量做 dot（点积），可以得到这两个向量夹角的余弦值，再做反余弦，即可得到夹角，但反余弦操作比较慢，并且这里不需要精确的夹角值，所以对余弦值的大小做判断就行了
+
+楼顶着色完整代码
+
+### 四周贴图
+
+处理完楼顶，再处理四个侧面。贴图的关键是确定一个二维坐标，然后直接调用 texture2D 方法获取图片上对应颜色。从视觉上看，Shader 中的 Z 坐标肯定是对应图片的纵坐标，问题在于 Shader 中的 X，Y 坐标如何对应到图片的横坐标
+
+其实这里不能使用单一的 X，Y 坐标，这样做会有很多建筑的某个侧面是单一的颜色，达不到贴图的效果。我最后还是利用了法向量属性，计算他们与 vec3(1.0, 0.0, 0.0) & vec3(0.0, 1.0, 0.0) 的夹角，如果与 vec3(1.0, 0.0, 0.0) 的夹角较小，就使用它的 Y 坐标，反之亦然。
+
+建筑 Shader 代码：
+
+```jsx
+const createBuildingShader = () => {
+  return new Cesium.CustomShader({
+    lightingModel: Cesium.LightingModel.UNLIT,
+    varyings: {
+      v_normalMC: Cesium.VaryingType.VEC3
+    },
+    uniforms: {
+      u_texture: {
+        value: new Cesium.TextureUniform({
+          url: '/demos/buildings/wall.png'
+        }),
+        type: Cesium.UniformType.SAMPLER_2D
+      }
+    },
+    vertexShaderText: `
+void vertexMain(VertexInput vsInput, inout vec3 positionMC) {
+  v_normalMC = vsInput.attributes.normalMC;
+}`,
+    fragmentShaderText: /* 见下 */ ``
+  })
+}
+```
+
+片段着色器代码：
+
+```shader
+void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+  vec3 positionMC = fsInput.attributes.positionMC;
+  float width = 75.0;
+  float height = 75.0;
+  if (dot(vec3(0.0, 0.0, 1.0), v_normalMC) > 0.95) {
+    material.diffuse = vec3(0.079, 0.107, 0.111);
+  } else {
+    float textureX = 0.0;
+    float dotYAxis = dot(vec3(0.0, 1.0, 0.0), v_normalMC);
+    // cos(45deg) 约等于 0.71
+    if (dotYAxis > 0.71 || dotYAxis < -0.71) {
+      textureX = mod(positionMC.x, width) / width;
+    } else {
+      textureX = mod(positionMC.y, width) / width;
+    }
+
+    float textureY = mod(positionMC.z, height) / height;
+    vec3 rgb = texture2D(u_texture, vec2(textureX, textureY)).rgb;
+    material.diffuse = rgb;
+  }
+}
+```
+
+最后可以加上一些道路流光，使城市显得更加现代，就是文章开头的效果了。

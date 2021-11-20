@@ -1,0 +1,44 @@
+export const meta = {
+  title: '使用 npm link 遇到的一些坑',
+  time: '20190918'
+}
+
+上周因为不可抗力的因素，没能写出文章出来（实在没有办法，中秋假期花了两天，还是没弄懂），这次正好工作中遇到了一个小坑，写出来，当作补上周的吧
+
+在一个项目中，由于项目很大，不便多人协作开发，遂拆分一些业务代码单独成一个 npm 包，这些包通过主包传的 store 和一些基础方法与主包通信，而在这种情况下，我们一般都会使用 npm link 的方式进行开发调试：
+
+```js
+// 姑且主包名为project，分出的npm包名为module
+cd module
+npm link
+cd project
+npm link module
+```
+
+很简单的几句命令，module 就被链接到 project 的 node_modules 下了，正常情况下，我们能很轻松地进行开发和调试。但由于 module 并不是真正地移动到了 project 的 node_modules 下，而是以一种链接的形式，所以，module 无法使用 project 的 node_modules 下的其他包，而是单独维护一个 node_modules，这在一般情况下并无异常，但在有些情况下却会发生出意外的错误
+
+这就是在 project 和 module 有相同的依赖包，且这个包会因为存在两个实例出现问题时。
+
+比如我在 npm link 时对 project 里的 A 包做了一些操作，同时 module 里也有 A 包，这时两个 A 包并不是一个实例，它们互不影响。而在通过 npm 安装 module 时，它们用的都是一个 A 实例，这时可能就会出现一些问题
+
+那有没有比较好的解决方案呢？
+
+~~我暂时还没有找到，如果你有完美的解决方案，请告诉我~~
+
+~~但我提供了一种稍好一些的方法：~~
+
+~~在 npm link 发生问题时，我们可能会想到通过 npm publish 再 npm install 的方式去调试，但这样会频繁的发布 npm 包，显然是不太好和不规范的（有时甚至没有权限发布）；我想到的一种替代方式是，将 package.json 中模块的版本号改为 git+ssh://[git 地址]#[分支名]，这样就不会去 npm 资源里拉取了，而是去 git 里拉取，而且可以指定分支，操控性比较大。~~
+
+~~但即使是这样，在实际开发中，我们也不可能通过不停提交代码、npm install 再 npm run dev 的方式开发。这就要求我们拆分的 npm 包，要么完全解耦，如组件库这种，不依赖主包；要么理清两者的依赖，分析会不会产生问题，有没有解决方法；要么就是这个包能通过 mock 的方式完美实现独立运行，在自测的时候可以使用上述修改版本号为 git 地址的方式（我就是这种情况）~~
+
+可以在 project 中配置 A 的别名，以 webpack 为例：
+
+```js
+resolve: {
+  alias: {
+    'a': path.resolve(__dirname, './node_modules/a')
+  }
+}
+```
+
+这样就能较为完美地解决问题。同时也可在项目中使用`duplicate-package-checker-webpack-plugin`，检查重复依赖，及早发现问题

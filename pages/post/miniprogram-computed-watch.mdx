@@ -1,0 +1,343 @@
+export const meta = {
+  title: '实现微信小程序的直接赋值、computed 和 watch 功能',
+  time: '20190831',
+  tags: ['小程序']
+}
+
+微信小程序的结构和 vue 类似，但在拿数据时要通过 this.data.key 的方式，更新数据则是要使用 this.setData，这点又与 react 相似，并且小程序没有计算属性 computed 和侦听属性 watch，这在实际使用中大为不便。
+
+这篇文章主要是通过微信的 behaviors 一步步实现小程序的直接赋值、计算属性和侦听属性
+
+### 什么是 behaviors
+
+本文不会对 behaviors 的使用进行介绍，因为[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)已经介绍得很详细，如果想了解可以看[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
+
+### 基本结构
+
+我们最终实现的是一个 behavior，并在 component 中引入，behavior 文件的结构如下：
+
+```js
+const data = {};
+let subscriber;
+module.exports = Behavior({
+  lifetimes: {
+    created() {}
+  },
+  definitionFilter(defFields) {}
+});
+
+function defineReactive(scope, key, isprop, watchDef, computedDef) {}
+
+function updateDepends(scope, subscribers) {}
+```
+
+接下来就是向其中填充代码了
+
+### 直接赋值
+
+这一步，我们将实现 this.key 直接读取 this.data.key，this.key = value 直接赋值
+
+首先，我们在 definitonFilter 中拿到初始定义的 data，并将其 key 保存在全局变量 data 中：
+
+```js
+definitionFilter(defFields) {
+  const { data: originData } = defFields;
+  for (const originDataKey in originData) {
+    data[originDataKey] = {};
+  }
+}
+```
+
+然后再 creared 生命周期中遍历 data，实现响应式数据：
+
+```js
+created() {
+  for (const dataKey in data) {
+    defineReactive(this, dataKey);
+  }
+}
+```
+
+```js
+function defineReactive(scope, key, isprop, watchDef, computedDef) {
+  let val = scope.data[key];
+  Object.defineProperty(scope, key, {
+    configurable: true,
+    enumerable: true,
+    get() {
+      return val;
+    },
+    set: function(newval) {
+      if (newval === val) {
+        return;
+      }
+      val = newval;
+      scope.setData({
+        [key]: val
+      });
+    }
+  });
+}
+```
+
+在 defineReactive 方法中，我们拿到组件的 this 和 data 的 key，先使用 scope.data[key]拿到初始值，再利用 Object.defineProperty 方法定义它的 getter 和 setter 属性，在 setter 中，先是将闭包中的 val 更新为 newval，再调用 scope.setData 唤起小程序渲染流程
+
+### 实现 watch
+
+实现 watch 很简单，同样，我们先在 definitionFilter 方法中拿到初始 watch 对象并进行处理：
+
+```js
+const { data: originData, watch = {} } = defFields;
+for (const originDataKey in originData) {
+      ...
+}
+
+for (const watchKey in watch) {
+	data[watchKey].watchDef = watch[watchKey];
+}
+```
+
+再在 created 中将 watch 方法传入 defineReactive（第三个参数先不管，后面会说）：
+
+```js
+for (const dataKey in data) {
+  const dataItem = data[dataKey];
+  const { watchDef } = dataItem;
+  defineReactive(this, dataKey, false, watchDef);
+}
+```
+
+最后在 defineReactive 中的 set 方法加一句`watchDef && watchDef.call(scope, newval, val);`，也就是在数据更新时，调用用户定义的 watch 方法，并传入 newval 和 oldval
+
+```js
+set: function(newval) {
+  if (newval === val) {
+    return;
+  }
+  watchDef && watchDef.call(scope, newval, val);
+  val = newval;
+  scope.setData({
+    [key]: val
+  });
+}
+```
+
+### 实现 computed
+
+接下来就是重头戏了，也是本文比较难的一个部分：实现 computed。
+
+computed 是计算属性，要实现它，其中的重点也就是如何获取并保存它的依赖。
+
+在看微信官方的 computed 源码（1.x）时，它的解决方案竟然是：当有 data 更新，即全量计算 computed。这样的解决方案无疑是不好的，某个 data 更新，即使是不依赖于它的计算属性也要重新计算。
+
+而我在实现这部分时，则是利用了闭包保存订阅者，避免了更新后不必要的计算
+
+还是先从 definitionFilter 中拿到 computed 进行处理：
+
+```js
+const { data: originData, watch = {}, computed = {} } = defFields;
+for (const originDataKey in originData) {
+  ...
+}
+
+for (const computedKey in computed) {
+  const computedDef = computed[computedKey];
+  const computedVal = computedDef.call(originData);
+  originData[computedKey] = computedVal;
+  data[computedKey] = {
+    computedDef
+  };
+}
+
+for (const watchKey in watch) {
+  ...
+}
+```
+
+由于 computed 中的值也是能直接使用 this.key 读取的，所以我们要将它的所有 key 挂载在 originData 上，并且需要计算一次它的初始值。这里有个小点：即为什么要在这里就要计算初始值，为什么不在 created 生命周期调用 defineReactive 计算，其实是因为 created 中调用 setData 是无效的，如果只在 defineReactive 中计算，它的第一次值就渲染不出来了，必须要在 definitionFilter 中计算并挂载到 data 上
+
+然后是 created 中拿到 computedDef 并传入 defineReactive：
+
+```js
+const dataItem = data[dataKey];
+const { watchDef, computedDef } = dataItem;
+defineReactive(this, dataKey, false, watchDef, computedDef);
+```
+
+defineReactive 代码如下：
+
+```js
+let val;
+if (computedDef) {
+  subscriber = key;
+  val = computedDef.call(scope);
+  subscriber = void 0;
+} else {
+  val = scope.data[key];
+}
+const subscribers = [];
+Object.defineProperty(scope, key, {
+  ...
+  get() {
+    if (subscriber) {
+      subscribers.push(subscriber);
+    }
+    return val;
+  },
+  set: function(newval) {
+    ...
+    val = newval;
+    updateDepends(scope, subscribers);
+    scope.setData({
+      [key]: val
+    });
+  }
+});
+```
+
+如果传入 computedDef，则将 key 赋值给全局变量 subscriber，然后调用一次 computedDef，这里调用 computedDef 并不是用来计算初始值，因为之前已经计算过一次了。而是用来触发它依赖的属性的 getter 属性，举个例子，有以下 computed：
+
+```js
+computed: {
+  countAddOne() {
+    return this.count + 1;
+  }
+}
+```
+
+countAddOne 的值是依赖于 count 的，它的 computedDef 也就是：
+
+```js
+function() {
+  return this.count + 1;
+}
+```
+
+调用它的 computedDef 自然会触发 this.count 的 getter 属性，而在 getter 中：
+
+```js
+get() {
+  if (subscriber) {
+    subscribers.push(subscriber);
+  }
+  return val;
+}
+```
+
+会判断 subscriber 是否存在，若存在，则存入 subscribers 数组中
+
+再 count 下次更新时会触发 setter：
+
+```js
+set: function(newval) {
+  ...
+  val = newval;
+  updateDepends(scope, subscribers);
+  scope.setData({
+    [key]: val
+  });
+}
+```
+
+它会调用 updateDepends 方法更新依赖于它的属性值：
+
+```js
+function updateDepends(scope, subscribers) {
+  subscribers.forEach(key => {
+    const computedDef = data[key].computedDef;
+    scope[key] = computedDef.call(scope);
+  });
+}
+```
+
+### 处理 properties
+
+在解决了 computed 这一难题后，其实直接赋值、computed 和 watch 都已经实现，但是这时的 computed 和 watch 只能作用于 data，对于 properties 并不起作用，我们需要对 props 进行一些单独的处理
+
+在 definitionFilter 中初始处理 properties，加上标记 isprop：
+
+```js
+const {
+  watch = {},
+  data: originData = {},
+  computed = {},
+  properties = {}
+} = defFields;
+
+for (const propKey in properties) {
+  data[propKey] = {
+    isprop: true
+  };
+}
+...
+```
+
+created 中传入：
+
+```js
+for (const dataKey in data) {
+  const dataItem = data[dataKey];
+  const { watchDef, computedDef, isprop = false } = dataItem;
+  defineReactive(this, dataKey, isprop, watchDef, computedDef);
+}
+```
+
+众所周知，我们说不能通过 this.key 直接修改 props 上的值的，所以，我们要屏蔽它的 set 方法：
+
+```js
+Object.defineProperty(scope, key, {
+  configurable: true,
+  enumerable: true,
+  get() {
+    if (subscriber) {
+      subscribers.push(subscriber);
+    }
+    return val;
+  },
+  set: isprop
+    ? void 0
+    : function(newval) {
+        if (newval === val) {
+          return;
+        }
+        watchDef && watchDef.call(scope, newval, val);
+        val = newval;
+        updateDepends(scope, subscribers);
+        scope.setData({
+          [key]: val
+        });
+      }
+});
+```
+
+但是我们需要知道 props 何时更新，所以我们设置了 this.data.key 的 setter 属性，得以监听 props 的变化：
+
+```js
+isprop &&
+  Object.defineProperty(scope.data, key, {
+    configurable: true,
+    enumerable: true,
+    set(newval) {
+      if (newval === val) {
+        return;
+      }
+      watchDef && watchDef.call(scope, newval, val);
+      val = newval;
+      updateDepends(scope, subscribers);
+    }
+  });
+```
+
+### 完结
+
+至此一个支持直接赋值、computed 和 watch 的 Behavior 就完成了。
+
+其实最开始，我是想跟着微信官方实现的 computed 来做，没想到它 1.0 版本的 computed 是全量计算，而 2.0 版本使用的是 observers 来实现，对我来说实现价值不大。后来就去看了看 vue 的 computed 源码，自己又鼓捣鼓捣，实现了本文的代码
+
+#### demo
+
+git 地址：[https://github.com/Bowen7/playground](https://github.com/Bowen7/playground)，在 computed-demo 目录下
+
+#### 源码
+
+[https://github.com/Bowen7/playground/blob/master/computed-demo/components/computed/computed-min.js](https://github.com/Bowen7/playground/blob/master/computed-demo/components/computed/computed-min.js)

@@ -1,0 +1,42 @@
+{
+  "name": "blog",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "@geist-ui/react": "^2.1.0-canary.2",
+    "@mdx-js/loader": "^1.6.22",
+    "@mdx-js/mdx": "^1.6.22",
+    "@mdx-js/react": "^1.6.22",
+    "@next/mdx": "^10.0.3",
+    "clipboard": "^2.0.6",
+    "mdast-util-gfm-strikethrough": "^0.2.3",
+    "mdast-util-to-markdown": "^0.6.1",
+    "next": "^10.0.0",
+    "next-compose-plugins": "^2.2.1",
+    "next-transpile-modules": "^6.0.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "rehype-katex": "^3.0.0",
+    "remark-math": "^2.0.0",
+    "shiki": "^0.9.12",
+    "styled-components": "^5.2.1"
+  },
+  "devDependencies": {
+    "babel-plugin-styled-components": "^1.12.0",
+    "eslint": "^7.15.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.21.5",
+    "globby": "^11.0.2",
+    "prettier": "^2.2.1"
+  }
+}
