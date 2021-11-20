@@ -1,10 +1,10 @@
 export const meta = {
-  title: 'Cesium 实现建筑夜景贴图',
-  time: '20211120'
+	title: 'Cesium 实现建筑夜景贴图',
+	time: '20211120'
 }
 
 ![preview](/demos/buildings/preview.png)
-[在线预览](/demos/buildings) [Demo 源码](https://github.com/Bowen7/Blog/tree/main/demos/buildings)
+[在线预览](/demos/buildings) [Demo 源码](https://github.com/Bowen7/Blog/tree/master/demos/buildings)
 
 在新版本的 Cesium(1.87.0)，支持了 CustomShader，可以为 Cesium3DTileset 编写自定义的 GLSL 代码。在此之前，要修改 3D Tileset 的样式，只能通过 style 属性，能做的最多也就是根据高度使不同建筑展示不同颜色这种程度。
 
@@ -40,25 +40,25 @@ void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
 
 ```jsx
 const createBuildingShader = () => {
-  return new Cesium.CustomShader({
-    lightingModel: Cesium.LightingModel.UNLIT,
-    varyings: {
-      v_normalMC: Cesium.VaryingType.VEC3
-    },
-    uniforms: {
-      u_texture: {
-        value: new Cesium.TextureUniform({
-          url: '/demos/buildings/wall.png'
-        }),
-        type: Cesium.UniformType.SAMPLER_2D
-      }
-    },
-    vertexShaderText: `
+	return new Cesium.CustomShader({
+		lightingModel: Cesium.LightingModel.UNLIT,
+		varyings: {
+			v_normalMC: Cesium.VaryingType.VEC3
+		},
+		uniforms: {
+			u_texture: {
+				value: new Cesium.TextureUniform({
+					url: '/demos/buildings/wall.png'
+				}),
+				type: Cesium.UniformType.SAMPLER_2D
+			}
+		},
+		vertexShaderText: `
 void vertexMain(VertexInput vsInput, inout vec3 positionMC) {
   v_normalMC = vsInput.attributes.normalMC;
 }`,
-    fragmentShaderText: /* 见下 */ ``
-  })
+		fragmentShaderText: /* 见下 */ ``
+	})
 }
 ```
 
