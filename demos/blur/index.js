@@ -1,23 +1,10 @@
 import { useRef, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import Slider from '@geist-ui/react/esm/slider'
 import Button from '@geist-ui/react/esm/button'
 import Radio from '@geist-ui/react/esm/radio'
 import Loading from '@geist-ui/react/esm/loading'
 import { genSrcAndDest, mergeChannels } from './utils'
 import { blurMap, blurOptions } from './constants'
-
-const Wrapper = styled.div`
-  width: 100%;
-  padding: 0 0.5rem;
-`
-const SliderWrap = styled.div`
-  margin-bottom: 1rem;
-`
-const ButtonWrap = styled.div`
-  margin-top: 1rem;
-  text-align: center;
-`
 function Blur() {
   const [sigma, setSigma] = useState(5)
   const [time, setTime] = useState()
@@ -82,7 +69,7 @@ function Blur() {
     setLoading(true)
   }
   return (
-    <Wrapper>
+    <>
       <div ref={canvasWrapRef}>
         <canvas
           ref={srcRef}
@@ -99,7 +86,7 @@ function Blur() {
         )}
       </div>
       {time && <p>耗时: {time}ms</p>}
-      <SliderWrap width={canvasWidth}>
+      <div className="slider-container" width={canvasWidth}>
         <p>
           {blurMap[type].sigma ? 'Sigma' : 'Radius'}: {sigma}
         </p>
@@ -111,7 +98,7 @@ function Blur() {
           value={sigma}
           onChange={handleSigmaChange}
         />
-      </SliderWrap>
+      </div>
       <Radio.Group value={type} onChange={handleTypeChange}>
         {blurOptions.map(({ value, text }) => (
           <Radio value={value} key={value}>
@@ -119,13 +106,28 @@ function Blur() {
           </Radio>
         ))}
       </Radio.Group>
-      <p>注：简单方框模糊、水平模糊、垂直模糊的参数为 radius，其余模糊为 sigma</p>
-      <ButtonWrap>
+      <p>
+        注：简单方框模糊、水平模糊、垂直模糊的参数为 radius，其余模糊为 sigma
+      </p>
+      <div className="btn-container">
         <Button auto loading={loading} onClick={handleClick}>
           生成
         </Button>
-      </ButtonWrap>
-    </Wrapper>
+      </div>
+      <style jsx>{`
+        .container {
+          width: 100%;
+          padding: 0 0.5rem;
+        }
+        .slider-container {
+          margin-bottom: 1rem;
+        }
+        .btn-container {
+          margin-top: 1rem;
+          text-align: center;
+        }
+      `}</style>
+    </>
   )
 }
 export default Blur

@@ -39,13 +39,16 @@ function CodePre({ children }) {
         theme: THEME,
         langs: [language]
       })
-      .then((highlighter) => {
-        const codeHtml = highlighter.codeToHtml(
-          childrenProps.children,
-          language
-        )
-        setCodeHtml(codeHtml)
-      })
+      .then(
+        (highlighter) => {
+          const codeHtml = highlighter.codeToHtml(
+            childrenProps.children,
+            language
+          )
+          setCodeHtml(codeHtml)
+        },
+        () => {}
+      )
   }, [])
   return (
     <>

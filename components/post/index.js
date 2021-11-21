@@ -1,34 +1,36 @@
 import Link from 'next/link'
-import styled from 'styled-components'
 import { timeFormat } from '../../utils'
 
-const StyledPost = styled.div`
-  margin-left: 0.5rem;
-  margin-bottom: 1.5rem;
-`
-const TitleWrap = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-const Title = styled.a`
-  text-decoration: none;
-`
-
 const Post = ({ time, title, name, tags = [] }) => (
-  <StyledPost>
-    <TitleWrap>
-      <Link key={title} href={'/post/' + name} passHref>
-        <Title>{title}</Title>
-      </Link>
-      {tags.map((tag) => (
-        <span className="tag" key={tag}>
-          {tag}
-        </span>
-      ))}
-    </TitleWrap>
-    <time>{timeFormat(time)}</time>
-  </StyledPost>
+  <>
+    <div className="post">
+      <div className="title-container">
+        <Link key={title} href={'/post/' + name} passHref>
+          <a className="title">{title}</a>
+        </Link>
+        {tags.map((tag) => (
+          <span className="tag" key={tag}>
+            {tag}
+          </span>
+        ))}
+      </div>
+      <time>{timeFormat(time)}</time>
+    </div>
+    <style jsx>{`
+      .post {
+        margin-left: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .title-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      .title {
+        text-decoration: none;
+      }
+    `}</style>
+  </>
 )
 
 export default Post

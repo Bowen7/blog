@@ -1,15 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
-import styled from 'styled-components'
 import { basename } from 'path'
 import Post from '../components/post'
-
-const Year = styled.p`
-  color: #434343;
-  font-size: 1.25rem;
-  margin-left: 0.5rem;
-  margin-bottom: 0.5rem;
-`
 
 export async function getStaticProps() {
   const sourceContext = require.context('./post', false, /\.mdx$/)
@@ -46,13 +38,21 @@ export default function Home({ postYears }) {
       </Head>
       {postYears.map(({ year, posts }) => (
         <React.Fragment key={year}>
-          <Year>{year}</Year>
+          <p className="year">{year}</p>
           <hr />
           {posts.map((post) => (
             <Post {...post} key={post.name} />
           ))}
         </React.Fragment>
       ))}
+      <style jsx>{`
+        .year {
+          color: #434343;
+          font-size: 1.25rem;
+          margin-left: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+      `}</style>
     </>
   )
 }
