@@ -1,7 +1,11 @@
 const withPlugins = require('next-compose-plugins')
 const remarkMath = require('remark-math')
 const rehypeKatex = require('rehype-katex')
-const withTM = require('next-transpile-modules')(['@geist-ui/react'])
+const withTM = require('next-transpile-modules')([
+  '@geist-ui/react',
+  'echarts',
+  'zrender'
+])
 const { resolve } = require('path')
 
 const withMDX = require('@next/mdx')({

@@ -1,21 +1,31 @@
 import Head from 'next/head'
 import React from 'react'
-import { basename } from 'path'
+import extractMeta from '../customs/extract-meta'
+import { basename, resolve } from 'path'
+import fs from 'fs'
 import Post from '../components/post'
 
 export async function getStaticProps() {
-  const sourceContext = require.context('./post', false, /\.mdx$/)
-  let metas = sourceContext.keys().map((key) => {
-    return { name: basename(key, '.mdx'), ...sourceContext(key).meta }
-  })
-  metas = metas.filter(({ ready }) => !(ready === false))
+  const postDirPath = resolve(process.cwd(), './pages/post')
+  const files = fs.readdirSync(postDirPath)
+  const metas = await Promise.all(
+    files.map(async (file) => {
+      const source = fs.readFileSync(resolve(postDirPath, file)).toString()
+      const meta = await extractMeta(source)
+      console.log(meta)
+      return {
+        name: basename(file, '.mdx'),
+        ...meta
+      }
+    })
+  )
   metas.sort(({ time: time1 }, { time: time2 }) => {
     return time2 - time1
   })
   const postYears = []
   let curYear = ''
   metas.forEach((meta) => {
-    const { time } = meta
+    const time = meta.time
     const year = time.slice(0, 4)
     if (year !== curYear) {
       curYear = year

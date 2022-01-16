@@ -71,14 +71,16 @@ function CodePre({ children }) {
       <style jsx>{`
         .code-wrapper {
           position: relative;
+          border-radius: 6px;
+          margin-bottom: 1em;
         }
         .copy {
           display: none;
-          width: 1rem;
-          height: 1rem;
+          width: 1em;
+          height: 1em;
           position: absolute;
-          top: 0;
-          right: 0rem;
+          top: 0.5em;
+          right: 0.5em;
           // reset
           max-width: initial;
           cursor: pointer;
@@ -88,7 +90,8 @@ function CodePre({ children }) {
         }
         .code-pre,
         .code > :global(pre) {
-          padding: 1em 1em 0 1em;
+          background-color: #f9f9f9 !important;
+          padding: 1em;
           overflow: auto;
           font-size: 14px;
           margin: 0;
