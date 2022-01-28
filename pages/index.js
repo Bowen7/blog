@@ -12,7 +12,6 @@ export async function getStaticProps() {
     files.map(async (file) => {
       const source = fs.readFileSync(resolve(postDirPath, file)).toString()
       const meta = await extractMeta(source)
-      console.log(meta)
       return {
         name: basename(file, '.mdx'),
         ...meta
