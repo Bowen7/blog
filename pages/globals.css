@@ -266,3 +266,17 @@ time {
 table {
 	width: 100%;
 }
+
+code {
+	display: inline-block;
+  font-size: 0.875rem;
+	padding: 0 0.25rem;
+  border-radius: 0.2rem;
+	line-height: 1.5;
+  background: rgb(234, 234, 234);
+}
+
+pre code {
+  border-radius: none;
+  background: inherit;
+}
