@@ -1,0 +1,35 @@
+export const meta = {
+  title: 'Paper reading: Methods for Visual Understanding of Hierarchical System Structures',
+  time: '20220830'
+}
+
+### Some Definitions
+
+- Element A "Hierarchical" layout of vertices.
+- Element B "Less-crossings" of edges.
+- Element C "Straightness" of edges. C1 one-span edge; C2 long span edge
+- Element D "Close" layout of vertices connected to each other
+- Element E "Balanced" layout of lines coming into orgoing from a vertex.
+
+- Rule a: Verticesareplacedonhorizontallinesineach level of the hierarchy without overlapping.
+- Rule b: Each edge is drawn with a straight line
+
+- Step I: A"proper"hierarchy is formed from a given set of directed pairwise relations among elements of a system
+  if the hierarchy has long span edges, it is converted into a proper hierarchy by adding dummy vertices and edges.
+- Step II: Thenumberofcrossingsofedgesinthe proper hierarchy is reduced by permuting orders of vertices in each level.
+- Step II: Horizontal positions of vertices are de- termined by considering three elements C2, D, and E.
+- Step IV: A(two-dimensional) picture of the hierarchy is automatically drawn where the dummy vertices and edges are
+  deleted and the corre-sponding long span edges are regenerated.
+
+- PM method: penalty minimization, to slove the "minimum feedback arc set" problem
+- BC method: barycentric
+- QP layout method: quadratic programming
+- PR layout method: priority. cost is less then QP
+
+0. graph(V, E), V vertices, E edges
+1. V = V1 ∪ V2 ∪ ... ∪ Vn, V1, V2, ..., Vn are sets of vertices
+2. e = (vi, vj) ∈ E, vi ∈ Vi and vj ∈ Vj, i < j
+   G = (V, E, n)
+3. E = E1 ∪ E2 ∪ ... ∪ En, E1, E2, ..., En are sets of edges
+4. an order σi of Vi, a sequence of all vertices of Vi
+   G = (V, E, n, a)
