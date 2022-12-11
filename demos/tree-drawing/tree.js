@@ -53,7 +53,12 @@ export const root = {
           children: [
             {
               title: 'k',
-              children: []
+              children: [
+                {
+                  title: 'q',
+                  children: []
+                }
+              ]
             },
             {
               title: 'l',
@@ -74,3 +79,34 @@ export const root = {
     }
   ]
 }
+export const maxLevel = 5
+
+export const binaryRoot = {
+  title: 'a',
+  left: {
+    title: 'b',
+    left: {
+      title: 'd'
+    },
+    right: {
+      title: 'e',
+      left: { title: 'g' },
+      right: { title: 'h' }
+    }
+  },
+  right: {
+    title: 'c',
+    left: {
+      title: 'f',
+      left: {
+        title: 'i',
+        left: {
+          title: 'j',
+          left: { title: 'k', left: { title: 'm' }, right: { title: 'n' } },
+          right: { title: 'l' }
+        }
+      }
+    }
+  }
+}
+export const binaryMaxLevel = 7
