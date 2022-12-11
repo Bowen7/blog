@@ -96,9 +96,9 @@ export const binaryRoot = {
   },
   right: {
     title: 'c',
-    left: {
+    right: {
       title: 'f',
-      left: {
+      right: {
         title: 'i',
         left: {
           title: 'j',
