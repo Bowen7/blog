@@ -6,16 +6,20 @@ export const LEVEL_SEPARATION = 50
 export const GRAPH_PADDING = 10
 const FONT_SIZE = 18
 
+const getX = (x) =>
+  (x + 1) * NODE_WIDTH + x * +SIBLING_SEPARATION + GRAPH_PADDING
+const getY = (y) => (y + 1) * NODE_HEIGHT + y * LEVEL_SEPARATION + GRAPH_PADDING
+
 const renderNodesAndEdges = (nodes, edges, maxX, maxY) => (
   <svg
-    width={maxX + GRAPH_PADDING + NODE_WIDTH}
-    height={maxY + GRAPH_PADDING + NODE_HEIGHT}
+    width={getX(maxX) + GRAPH_PADDING + NODE_WIDTH}
+    height={getY(maxY) + GRAPH_PADDING + NODE_HEIGHT}
   >
     {edges.map(({ x1, y1, x2, y2, key }) => (
       <path
-        d={`M${x1 + NODE_WIDTH / 2},${y1 + NODE_HEIGHT / 2}L${
-          x2 + NODE_WIDTH / 2
-        },${y2 + NODE_HEIGHT / 2}`}
+        d={`M${getX(x1) + NODE_WIDTH / 2},${getY(y1) + NODE_HEIGHT / 2}L${
+          getX(x2) + NODE_WIDTH / 2
+        },${getY(y2) + NODE_HEIGHT / 2}`}
         key={key}
         stroke="#000"
         strokeWidth={2}
@@ -25,16 +29,16 @@ const renderNodesAndEdges = (nodes, edges, maxX, maxY) => (
     {nodes.map(({ x, y, title }) => (
       <Fragment key={title}>
         <circle
-          cx={x + NODE_WIDTH / 2}
-          cy={y + NODE_HEIGHT / 2}
+          cx={getX(x) + NODE_WIDTH / 2}
+          cy={getY(y) + NODE_HEIGHT / 2}
           r={NODE_WIDTH / 2}
           stroke="black"
           strokeWidth="2"
           fill="#fff"
         />
         <text
-          x={x + NODE_WIDTH / 2}
-          y={y + NODE_HEIGHT / 2}
+          x={getX(x) + NODE_WIDTH / 2}
+          y={getY(y) + NODE_HEIGHT / 2}
           r={NODE_HEIGHT / 2}
           textAnchor="middle"
           fontSize={FONT_SIZE}
