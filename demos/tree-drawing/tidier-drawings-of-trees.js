@@ -5,7 +5,7 @@ import { renderBinaryTree } from './utils'
 
 const MIN_SEPARATION = 1
 const TRAlgorithm = (root) => {
-  const walk = (node, level, leftmost, rightmost) => {
+  const setup = (node, level, leftmost, rightmost) => {
     let { left, right } = node
     const ll = { addr: null, offset: 0, level: 0 }
     const lr = { addr: null, offset: 0, level: 0 }
@@ -56,9 +56,50 @@ const TRAlgorithm = (root) => {
           right = right.right
         }
       }
+
+      node.offset = (rootSep + 1) / 2
+      leftOffsetSum -= node.offset
+      rightOffsetSum += node.offset
+
+      if (rl.level > ll.level || !node.left) {
+        leftmost.addr = rl.addr
+        leftmost.level = rl.level
+        leftmost.offset = rl.offset + node.offset
+      } else {
+        leftmost.addr = ll.addr
+        leftmost.level = ll.level
+        leftmost.offset = ll.offset - node.offset
+      }
+      if (lr.level > rr.level || !node.right) {
+        rightmost.addr = lr.addr
+        rightmost.level = lr.level
+        rightmost.offset = lr.offset - node.offset
+      } else {
+        rightmost.addr = rr.addr
+        rightmost.level = rr.level
+        rightmost.offset = rr.offset + node.offset
+      }
+
+      if (left && left !== node.left) {
+        rr.addr.thread = true
+        rr.addr.offset = Math.abs(rr.offset + node.offset - rightOffsetSum)
+        if (leftOffsetSum - node.offset <= rr.offset) {
+          rr.addr.left = left
+        } else {
+          rr.addr.right = left
+        }
+      } else if (right && right !== node.right) {
+        ll.addr.thread = true
+        ll.addr.offset = Math.abs(ll.offset - node.offset - rightOffsetSum)
+        if (rightOffsetSum + node.offset >= ll.offset) {
+          ll.addr.right = right
+        } else {
+          ll.addr.left = right
+        }
+      }
     }
   }
-  walk(root, 0)
+  setup(root, 0)
   return root
 }
 
