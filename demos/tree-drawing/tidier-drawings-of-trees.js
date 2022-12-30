@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
-import { binaryRoot } from './tree'
+import { trRoot } from './tree'
 import { renderBinaryTree } from './utils'
 
 const MIN_SEPARATION = 1
@@ -12,10 +12,10 @@ const TRAlgorithm = (root) => {
     const rl = { addr: null, offset: 0, level: 0 }
     const rr = { addr: null, offset: 0, level: 0 }
     if (left) {
-      walk(left, level + 1, ll, lr)
+      setup(left, level + 1, ll, lr)
     }
     if (right) {
-      walk(right, level + 1, rl, rr)
+      setup(right, level + 1, rl, rr)
     }
     node.y = level
     // leaf node
@@ -99,12 +99,34 @@ const TRAlgorithm = (root) => {
       }
     }
   }
-  setup(root, 0)
+
+  const petrify = (node, x) => {
+    node.x = x
+    if (node.thread) {
+      node.thread = false
+      node.left = null
+      node.right = null
+    }
+    const { left, right } = node
+    if (left) {
+      petrify(left, x - node.offset)
+    }
+    if (right) {
+      petrify(right, x + node.offset)
+    }
+  }
+  setup(
+    root,
+    0,
+    { addr: null, offset: 0, level: 0 },
+    { addr: null, offset: 0, level: 0 }
+  )
+  petrify(root, 0)
   return root
 }
 
 export const TRAlgorithmDemo = memo(() => {
-  const laidoutRoot = TRAlgorithm(cloneDeep(binaryRoot))
+  const laidoutRoot = TRAlgorithm(cloneDeep(trRoot))
   return renderBinaryTree(laidoutRoot)
 })
 
