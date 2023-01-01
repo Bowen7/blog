@@ -117,7 +117,13 @@ export const trRoot = {
     title: 'b',
     left: {
       title: 'd',
-      left: { title: 'h', right: { title: 'l' } }
+      left: {
+        title: 'h',
+        right: {
+          title: 'l',
+          right: { title: 'n' }
+        }
+      }
     },
     right: {
       title: 'e',
@@ -129,7 +135,13 @@ export const trRoot = {
     left: {
       title: 'f',
       left: {
-        title: 'j'
+        title: 'j',
+        left: {
+          title: 'm',
+          left: {
+            title: 'o'
+          }
+        }
       },
       right: { title: 'k' }
     },
