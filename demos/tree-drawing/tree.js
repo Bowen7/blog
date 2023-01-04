@@ -110,3 +110,41 @@ export const binaryRoot = {
   }
 }
 export const binaryMaxLevel = 7
+
+export const trRoot = {
+  title: 'a',
+  left: {
+    title: 'b',
+    left: {
+      title: 'd',
+      left: {
+        title: 'h',
+        right: {
+          title: 'l',
+          right: { title: 'n' }
+        }
+      }
+    },
+    right: {
+      title: 'e',
+      left: { title: 'i' }
+    }
+  },
+  right: {
+    title: 'c',
+    left: {
+      title: 'f',
+      left: {
+        title: 'j',
+        left: {
+          title: 'm',
+          left: {
+            title: 'o'
+          }
+        }
+      },
+      right: { title: 'k' }
+    },
+    right: { title: 'g' }
+  }
+}
