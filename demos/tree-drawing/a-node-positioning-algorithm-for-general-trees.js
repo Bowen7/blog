@@ -1,4 +1,8 @@
-const isLeaf = (node) => node.children?.length === 0
+import { memo } from 'react'
+import cloneDeep from 'lodash/cloneDeep'
+import { maryRoot } from './tree.js'
+import { renderMaryTree } from './utils'
+const isLeaf = (node) => !node.children || node.children.length === 0
 
 const hasLeftSibling = (node) => node.parent?.children.indexOf(node) > 0
 
@@ -40,6 +44,9 @@ export const walkerAlgorithm = (root) => {
   const apportion = (node, level) => {
     let leftmost = node.children[0]
     const neighbor = getLeftNeighbor(leftmost)
+    if (!neighbor) {
+      return
+    }
     let compareDepth = 1
     const depthToStop = maxDepth - level
     while (leftmost && compareDepth <= depthToStop) {
@@ -100,10 +107,13 @@ export const walkerAlgorithm = (root) => {
         node.prelim = 0
       }
     } else {
-      const { children } = node
+      const { children = [] } = node
       const leftmost = children[0]
       const rightmost = children[children.length - 1]
-      children.forEach((child) => firstWalk(child, level + 1))
+      children.forEach((child) => {
+        child.parent = node
+        firstWalk(child, level + 1)
+      })
       const midPoint = (leftmost.prelim + rightmost.prelim) / 2
       if (hasLeftSibling(node)) {
         const leftSibling = getLeftSibling(node)
@@ -116,8 +126,23 @@ export const walkerAlgorithm = (root) => {
     }
   }
 
-  const secondWalk = (node, level, modSum) => {}
+  const secondWalk = (node, level, modSum) => {
+    node.x = node.prelim + modSum
+    node.y = level
+    node.children?.forEach((child) =>
+      secondWalk(child, level + 1, modSum + node.modifier)
+    )
+  }
 
   firstWalk(root, 0)
   secondWalk(root, 0, 0)
+
+  return root
 }
+
+export const WalkerAlgorithmDemo = memo(() => {
+  const laidoutRoot = walkerAlgorithm(cloneDeep(maryRoot))
+  return renderMaryTree(laidoutRoot)
+})
+
+WalkerAlgorithmDemo.displayName = 'WalkerAlgorithmDemo'

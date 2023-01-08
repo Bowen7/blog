@@ -120,3 +120,33 @@ export const renderBinaryTree = (root) => {
   }
   return renderNodesAndEdges(nodes, edges, minX, maxX, maxY)
 }
+
+export const renderMaryTree = (root) => {
+  const nodes = []
+  const edges = []
+  const stack = [root]
+  let minX = Infinity
+  let maxX = 0
+  let maxY = 0
+  while (stack.length > 0) {
+    const cur = stack.pop()
+    const { title, children = [], x, y } = cur
+    minX = Math.min(minX, x)
+    maxX = Math.max(maxX, x)
+    maxY = Math.max(maxY, y)
+    nodes.push({ title, x, y })
+
+    children.forEach((child) => {
+      const { x: x2, y: y2, title: childTitle } = child
+      stack.push(child)
+      edges.push({
+        x1: x,
+        y1: y,
+        x2,
+        y2,
+        key: `${title}-${childTitle}`
+      })
+    })
+  }
+  return renderNodesAndEdges(nodes, edges, minX, maxX, maxY)
+}
