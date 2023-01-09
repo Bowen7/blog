@@ -8,11 +8,21 @@ import { WalkerAlgorithmDemo } from '../../demos/tree-drawing/a-node-positioning
 function TreeDrawing() {
   return (
     <>
-      <Algorithm1Demo />
-      <Algorithm2Demo />
-      <Algorithm3Demo />
-      <TRAlgorithmDemo />
-      <WalkerAlgorithmDemo />
+      <div>
+        <Algorithm1Demo />
+      </div>
+      <div>
+        <Algorithm2Demo />
+      </div>
+      <div>
+        <Algorithm3Demo />
+      </div>
+      <div>
+        <TRAlgorithmDemo />
+      </div>
+      <div>
+        <WalkerAlgorithmDemo />
+      </div>
     </>
   )
 }

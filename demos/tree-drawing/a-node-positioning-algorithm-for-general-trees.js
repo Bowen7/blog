@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import { maryRoot } from './tree.js'
-import { renderMaryTree } from './utils'
+import { LEVEL_SEPARATION, NODE_HEIGHT, renderMaryTree } from './utils'
 const isLeaf = (node) => !node.children || node.children.length === 0
 
 const hasLeftSibling = (node) => node.parent?.children.indexOf(node) > 0
@@ -43,13 +43,13 @@ export const walkerAlgorithm = (root) => {
 
   const apportion = (node, level) => {
     let leftmost = node.children[0]
-    const neighbor = getLeftNeighbor(leftmost)
+    let neighbor = getLeftNeighbor(leftmost)
     if (!neighbor) {
       return
     }
     let compareDepth = 1
     const depthToStop = maxDepth - level
-    while (leftmost && compareDepth <= depthToStop) {
+    while (leftmost && neighbor && compareDepth <= depthToStop) {
       let leftModSum = 0
       let rightModSum = 0
       let ancestorLeftmost = leftmost
@@ -69,19 +69,21 @@ export const walkerAlgorithm = (root) => {
       if (moveDistance > 0) {
         let tempPtr = node
         let leftSiblings = 0
-        while (tempPtr && tempPtr !== ancestorLeftmost) {
+        while (tempPtr && tempPtr !== ancestorNeighbor) {
           leftSiblings++
           tempPtr = getLeftSibling(tempPtr)
         }
         if (tempPtr) {
           const portion = moveDistance / leftSiblings
           tempPtr = node
-          while (tempPtr !== ancestorLeftmost) {
+          while (tempPtr !== ancestorNeighbor) {
             tempPtr.prelim += moveDistance
             tempPtr.modifier += moveDistance
             moveDistance -= portion
             tempPtr = getLeftSibling(tempPtr)
           }
+        } else {
+          return
         }
       }
 
@@ -90,6 +92,9 @@ export const walkerAlgorithm = (root) => {
         leftmost = getLeftmost(node, 0, compareDepth)
       } else {
         leftmost = leftmost.children[0]
+      }
+      if (leftmost) {
+        neighbor = getLeftNeighbor(leftmost)
       }
     }
   }
@@ -128,7 +133,7 @@ export const walkerAlgorithm = (root) => {
 
   const secondWalk = (node, level, modSum) => {
     node.x = node.prelim + modSum
-    node.y = level
+    node.y = level * (LEVEL_SEPARATION + NODE_HEIGHT)
     node.children?.forEach((child) =>
       secondWalk(child, level + 1, modSum + node.modifier)
     )
@@ -136,7 +141,6 @@ export const walkerAlgorithm = (root) => {
 
   firstWalk(root, 0)
   secondWalk(root, 0, 0)
-
   return root
 }
 

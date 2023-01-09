@@ -1,9 +1,13 @@
 import { memo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import { trRoot } from './tree'
-import { renderBinaryTree } from './utils'
+import {
+  renderBinaryTree,
+  SIBLING_SEPARATION,
+  LEVEL_SEPARATION,
+  NODE_HEIGHT
+} from './utils'
 
-const MIN_SEPARATION = 1
 const TRAlgorithm = (root) => {
   const setup = (node, level, leftmost, rightmost) => {
     let { left, right } = node
@@ -17,7 +21,7 @@ const TRAlgorithm = (root) => {
     if (right) {
       setup(right, level + 1, rl, rr)
     }
-    node.y = level
+    node.y = level * (NODE_HEIGHT + LEVEL_SEPARATION)
     // leaf node
     if (!left && !right) {
       leftmost.addr = node
@@ -28,14 +32,14 @@ const TRAlgorithm = (root) => {
       rightmost.offset = 0
       node.offset = 0
     } else {
-      let curSep = MIN_SEPARATION
-      let rootSep = MIN_SEPARATION
+      let curSep = SIBLING_SEPARATION
+      let rootSep = SIBLING_SEPARATION
       let leftOffsetSum = 0
       let rightOffsetSum = 0
       while (left && right) {
-        if (curSep < MIN_SEPARATION) {
-          rootSep += MIN_SEPARATION - curSep
-          curSep = MIN_SEPARATION
+        if (curSep < SIBLING_SEPARATION) {
+          rootSep += SIBLING_SEPARATION - curSep
+          curSep = SIBLING_SEPARATION
         }
         if (left.right) {
           leftOffsetSum += left.offset
