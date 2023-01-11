@@ -6,7 +6,14 @@ import {
   binaryRoot,
   binaryMaxLevel
 } from './tree'
-import { renderTree, renderBinaryTree } from './utils'
+import {
+  renderBinaryTree,
+  renderMaryTree,
+  SIBLING_SEPARATION,
+  NODE_WIDTH,
+  LEVEL_SEPARATION,
+  NODE_HEIGHT
+} from './utils'
 
 const algorithm1 = (root, maxLevel) => {
   const nextPos = new Array(maxLevel).fill(0)
@@ -16,8 +23,8 @@ const algorithm1 = (root, maxLevel) => {
       walk(child, level + 1)
     })
     node.x = nextPos[level]
-    node.y = level
-    nextPos[level] += 1
+    node.y = level * (LEVEL_SEPARATION + NODE_HEIGHT)
+    nextPos[level] += SIBLING_SEPARATION + NODE_WIDTH
   }
   walk(root, 0)
   return root
@@ -31,8 +38,8 @@ const algorithm2 = (root) => {
       inOrder(left, level + 1)
     }
     node.x = nextPos
-    nextPos += 1
-    node.y = level
+    nextPos += NODE_WIDTH + SIBLING_SEPARATION
+    node.y = level * (LEVEL_SEPARATION + NODE_HEIGHT)
     if (right) {
       inOrder(right, level + 1)
     }
@@ -70,7 +77,7 @@ const algorithm3 = (root, maxLevel) => {
     } else {
       node.x = place + modifier[level]
     }
-    nextPos[level] = node.x + 2
+    nextPos[level] = node.x + NODE_WIDTH + SIBLING_SEPARATION
     node.modifier = modifier[level]
   }
 
@@ -78,7 +85,7 @@ const algorithm3 = (root, maxLevel) => {
     const { left, right } = node
     node.x += modifierSum
     modifierSum += node.modifier
-    node.y = level
+    node.y = level * (LEVEL_SEPARATION + NODE_HEIGHT)
     if (left) {
       secondWalk(left, level + 1)
     }
@@ -95,7 +102,7 @@ const algorithm3 = (root, maxLevel) => {
 
 export const Algorithm1Demo = memo(() => {
   const laidoutRoot = algorithm1(cloneDeep(treeRoot), treeMaxLevel)
-  return renderTree(laidoutRoot)
+  return renderMaryTree(laidoutRoot)
 })
 Algorithm1Demo.displayName = 'Algorithm1Demo'
 

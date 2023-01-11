@@ -148,3 +148,33 @@ export const trRoot = {
     right: { title: 'g' }
   }
 }
+
+export const maryRoot = {
+  title: 'o',
+  children: [
+    {
+      title: 'e',
+      children: [
+        { title: 'a' },
+        { title: 'd', children: [{ title: 'b' }, { title: 'c' }] }
+      ]
+    },
+    { title: 'f' },
+    {
+      title: 'n',
+      children: [
+        { title: 'g' },
+        {
+          title: 'm',
+          children: [
+            { title: 'h' },
+            { title: 'i' },
+            { title: 'j' },
+            { title: 'k' },
+            { title: 'l' }
+          ]
+        }
+      ]
+    }
+  ]
+}
