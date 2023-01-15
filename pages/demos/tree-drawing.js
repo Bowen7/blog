@@ -5,6 +5,7 @@ import {
 } from '../../demos/tree-drawing/tidy-drawings-of-trees'
 import { TRAlgorithmDemo } from '../../demos/tree-drawing/tidier-drawings-of-trees'
 import { WalkerAlgorithmDemo } from '../../demos/tree-drawing/a-node-positioning-algorithm-for-general-trees'
+import { LcaDemo } from '../../demos/tree-drawing/lca'
 function TreeDrawing() {
   return (
     <>
@@ -23,6 +24,7 @@ function TreeDrawing() {
       <div>
         <WalkerAlgorithmDemo />
       </div>
+      <LcaDemo />
     </>
   )
 }
