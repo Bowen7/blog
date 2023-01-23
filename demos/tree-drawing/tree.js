@@ -187,13 +187,23 @@ export const lcaMaryRoot = {
       title: 'e',
       parent: 'o',
       children: [
-        { title: 'a', parent: 'e' },
+        {
+          title: 'a',
+          parent: 'e',
+          thread: 'b'
+        },
         {
           title: 'd',
           parent: 'e',
           children: [
-            { title: 'b', parent: 'd' },
-            { title: 'c', parent: 'd' }
+            {
+              title: 'b',
+              parent: 'd'
+            },
+            {
+              title: 'c',
+              parent: 'd'
+            }
           ]
         }
       ]
@@ -206,16 +216,35 @@ export const lcaMaryRoot = {
       title: 'n',
       parent: 'o',
       children: [
-        { title: 'g', parent: 'n' },
+        {
+          title: 'g',
+          parent: 'n',
+          thread: 'h'
+        },
         {
           title: 'm',
           parent: 'n',
           children: [
-            { title: 'h', parent: 'm' },
-            { title: 'i', parent: 'm' },
-            { title: 'j', parent: 'm' },
-            { title: 'k', parent: 'm' },
-            { title: 'l', parent: 'm' }
+            {
+              title: 'h',
+              parent: 'm'
+            },
+            {
+              title: 'i',
+              parent: 'm'
+            },
+            {
+              title: 'j',
+              parent: 'm'
+            },
+            {
+              title: 'k',
+              parent: 'm'
+            },
+            {
+              title: 'l',
+              parent: 'm'
+            }
           ]
         }
       ]
