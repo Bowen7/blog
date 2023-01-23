@@ -60,6 +60,7 @@ export const walkerAlgorithm = (root) => {
         rightModSum += ancestorLeftmost.modifier
         leftModSum += ancestorNeighbor.modifier
       }
+      console.log(node.title, ancestorNeighbor.title)
       let moveDistance =
         neighbor.prelim +
         leftModSum +

@@ -178,3 +178,47 @@ export const maryRoot = {
     }
   ]
 }
+
+export const lcaMaryRoot = {
+  title: 'o',
+  parent: null,
+  children: [
+    {
+      title: 'e',
+      parent: 'o',
+      children: [
+        { title: 'a', parent: 'e' },
+        {
+          title: 'd',
+          parent: 'e',
+          children: [
+            { title: 'b', parent: 'd' },
+            { title: 'c', parent: 'd' }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'f',
+      parent: 'o'
+    },
+    {
+      title: 'n',
+      parent: 'o',
+      children: [
+        { title: 'g', parent: 'n' },
+        {
+          title: 'm',
+          parent: 'n',
+          children: [
+            { title: 'h', parent: 'm' },
+            { title: 'i', parent: 'm' },
+            { title: 'j', parent: 'm' },
+            { title: 'k', parent: 'm' },
+            { title: 'l', parent: 'm' }
+          ]
+        }
+      ]
+    }
+  ]
+}
