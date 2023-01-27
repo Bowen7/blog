@@ -150,7 +150,7 @@ export const trRoot = {
 }
 
 export const maryRoot = {
-  title: 'o',
+  title: 'r',
   children: [
     {
       title: 'e',
@@ -175,79 +175,7 @@ export const maryRoot = {
           ]
         }
       ]
-    }
-  ]
-}
-
-export const lcaMaryRoot = {
-  title: 'o',
-  parent: null,
-  children: [
-    {
-      title: 'e',
-      parent: 'o',
-      children: [
-        {
-          title: 'a',
-          parent: 'e',
-          thread: 'b'
-        },
-        {
-          title: 'd',
-          parent: 'e',
-          children: [
-            {
-              title: 'b',
-              parent: 'd'
-            },
-            {
-              title: 'c',
-              parent: 'd'
-            }
-          ]
-        }
-      ]
     },
-    {
-      title: 'f',
-      parent: 'o'
-    },
-    {
-      title: 'n',
-      parent: 'o',
-      children: [
-        {
-          title: 'g',
-          parent: 'n',
-          thread: 'h'
-        },
-        {
-          title: 'm',
-          parent: 'n',
-          children: [
-            {
-              title: 'h',
-              parent: 'm'
-            },
-            {
-              title: 'i',
-              parent: 'm'
-            },
-            {
-              title: 'j',
-              parent: 'm'
-            },
-            {
-              title: 'k',
-              parent: 'm'
-            },
-            {
-              title: 'l',
-              parent: 'm'
-            }
-          ]
-        }
-      ]
-    }
+    { title: 'q', children: [{ title: 'p', children: [{ title: 'o' }] }] }
   ]
 }
