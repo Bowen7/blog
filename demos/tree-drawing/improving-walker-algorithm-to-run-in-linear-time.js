@@ -82,10 +82,13 @@ const apportion = (node, defaultAncestor) => {
   return defaultAncestor
 }
 
+const secondWalk = (node, mod) => {
+  node.x = node.prelim + mod
+  node.children?.forEach((child) => secondWalk(child, mod + node.mod))
+}
+
 const improvedWalkerAlgorithm = (root) => {
   const firstWalk = () => {}
-
-  const secondWalk = () => {}
 }
 
 export const ImprovedWalkerAlgorithmDemo = memo(() => {
