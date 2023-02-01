@@ -1,9 +1,11 @@
 import { maryRoot } from './tree'
 const getLeftmost = (node) => node.children?.[0] ?? node.thread
 
-const getRightmost = (node) => node.children?.[node.children.length - 1] ?? node.thread
+const getRightmost = (node) =>
+  node.children?.[node.children.length - 1] ?? node.thread
 
-const getPreviousSibling = (node) => node.parent?.children?.[node.parent.children.indexOf(node) - 1]
+const getPreviousSibling = (node) =>
+  node.parent?.children?.[node.parent.children.indexOf(node) - 1]
 
 const getFirstChild = (node) => node.children?.[0]
 
@@ -27,19 +29,21 @@ export const greatestDistinctAncestors = (root) => {
         vop.ancestor = v
 
         // vim v defaultAncestor
-        console.log(vim.title, v.title, defaultAncestor.title)
+        // console.log(vim.title, v.title, defaultAncestor.title)
         if (vim.ancestor?.parent === v.parent) {
-          console.log(1, vim.ancestor.title)
+          // console.log(1, vim.ancestor.title)
         } else {
-          console.log(2, defaultAncestor.title)
+          // console.log(2, defaultAncestor.title)
         }
         nl = getLeftmost(vip)
         nr = getRightmost(vim)
       }
       if (nr && !getRightmost(vop)) {
+        console.log(11, v.title, vop.title, nr.title)
         vop.thread = nr
       }
       if (nl && !getLeftmost(vom)) {
+        console.log(22, vom.title, nl.title)
         vom.thread = nl
         defaultAncestor = v
       }

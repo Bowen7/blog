@@ -6,6 +6,7 @@ import {
 import { TRAlgorithmDemo } from '../../demos/tree-drawing/tidier-drawings-of-trees'
 import { WalkerAlgorithmDemo } from '../../demos/tree-drawing/a-node-positioning-algorithm-for-general-trees'
 import '../../demos/tree-drawing/greatest-distinct-ancestors'
+import { ImprovedWalkerAlgorithmDemo } from '../../demos/tree-drawing/improving-walker-algorithm-to-run-in-linear-time'
 function TreeDrawing() {
   return (
     <>
@@ -23,6 +24,9 @@ function TreeDrawing() {
       </div>
       <div>
         <WalkerAlgorithmDemo />
+      </div>
+      <div>
+        <ImprovedWalkerAlgorithmDemo />
       </div>
     </>
   )
