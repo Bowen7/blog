@@ -22,24 +22,19 @@ const getAncestor = (leftTreeRightmost, node, defaultAncestor) =>
 
 const moveSubTree = (ancestor, node, shift) => {
   const subtrees = node.num - ancestor.num
-  if (subtrees === 0) {
-    // node.prelim += shift
-    // node.mod += shift
-  } else {
-    node.change -= shift / subtrees
-    node.shift += shift
-    node.prelim += shift
-    node.mod += shift
-    ancestor.change += shift / subtrees
-  }
+  node.change -= shift / subtrees
+  node.shift += shift
+  node.prelim += shift
+  node.mod += shift
+  ancestor.change += shift / subtrees
 }
 
 const apportion = (node, defaultAncestor) => {
-  const w = getPreviousSibling(node)
-  if (w) {
+  const sibling = getPreviousSibling(node)
+  if (sibling) {
     let rightTreeLeftmost = node
     let rightTreeRightmost = node
-    let leftTreeRightmost = w
+    let leftTreeRightmost = sibling
     let parentFirstChildLeftmost = node.parent?.children[0]
 
     let rightTreeLeftmostModSum = rightTreeLeftmost.mod
@@ -49,6 +44,7 @@ const apportion = (node, defaultAncestor) => {
 
     let nextRightmost = getRightmost(leftTreeRightmost)
     let nextLeftmost = getLeftmost(rightTreeLeftmost)
+
     while (nextRightmost && nextLeftmost) {
       leftTreeRightmost = nextRightmost
       rightTreeLeftmost = nextLeftmost
@@ -82,9 +78,10 @@ const apportion = (node, defaultAncestor) => {
 
     if (nextRightmost && !getRightmost(rightTreeRightmost)) {
       rightTreeRightmost.thread = nextRightmost
-      rightTreeRightmost += leftTreeRightmostModSum - rightTreeRightmostModSum
+      rightTreeRightmost.mod +=
+        leftTreeRightmostModSum - rightTreeRightmostModSum
     }
-    if (nextLeftmost && !nextLeftmost(parentFirstChildLeftmost)) {
+    if (nextLeftmost && !getLeftmost(parentFirstChildLeftmost)) {
       parentFirstChildLeftmost.thread = nextLeftmost
       parentFirstChildLeftmost.mod +=
         rightTreeLeftmostModSum - parentFirstChildLeftmostModSum
@@ -118,6 +115,7 @@ const firstWalk = (node) => {
     let defaultAncestor = children[0]
     children.forEach((child, index) => {
       child.num = index
+      child.parent = node
       if (index > 0) {
         child.previousSibling = children[index - 1]
       }
@@ -152,7 +150,6 @@ const secondWalk = (node, mod, level) => {
 const improvedWalkerAlgorithm = (root) => {
   firstWalk(root)
   secondWalk(root, 0, 0)
-  console.log(111, root)
   return root
 }
 

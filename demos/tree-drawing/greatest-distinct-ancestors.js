@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash/cloneDeep'
 import { maryRoot } from './tree'
 const getLeftmost = (node) => node.children?.[0] ?? node.thread
 
@@ -39,11 +40,11 @@ export const greatestDistinctAncestors = (root) => {
         nr = getRightmost(vim)
       }
       if (nr && !getRightmost(vop)) {
-        console.log(11, v.title, vop.title, nr.title)
+        // console.log(11, v.title, vop.title, nr.title)
         vop.thread = nr
       }
       if (nl && !getLeftmost(vom)) {
-        console.log(22, vom.title, nl.title)
+        // console.log(22, vom.title, nl.title)
         vom.thread = nl
         defaultAncestor = v
       }
@@ -65,4 +66,4 @@ export const greatestDistinctAncestors = (root) => {
   walk(root)
 }
 
-greatestDistinctAncestors(maryRoot)
+greatestDistinctAncestors(cloneDeep(maryRoot))
