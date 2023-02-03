@@ -6,7 +6,8 @@ import { timeFormat } from '../../utils'
 const components = {
   pre: CodePre
 }
-function PostLayout({ children, meta = {} }) {
+function PostLayout({ children, meta = {}, ...restProps }) {
+  console.log(restProps)
   const { title, time, tags = [] } = meta
   return (
     <>
