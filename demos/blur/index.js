@@ -86,7 +86,7 @@ function Blur() {
         )}
       </div>
       {time && <p>耗时: {time}ms</p>}
-      <div className="slider-container" width={canvasWidth}>
+      <div className="mb-4" width={canvasWidth}>
         <p>
           {blurMap[type].sigma ? 'Sigma' : 'Radius'}: {sigma}
         </p>
@@ -109,24 +109,11 @@ function Blur() {
       <p>
         注：简单方框模糊、水平模糊、垂直模糊的参数为 radius，其余模糊为 sigma
       </p>
-      <div className="btn-container">
+      <div className="mt-4 text-center">
         <Button auto loading={loading} onClick={handleClick}>
           生成
         </Button>
       </div>
-      <style jsx>{`
-        .container {
-          width: 100%;
-          padding: 0 0.5rem;
-        }
-        .slider-container {
-          margin-bottom: 1rem;
-        }
-        .btn-container {
-          margin-top: 1rem;
-          text-align: center;
-        }
-      `}</style>
     </>
   )
 }

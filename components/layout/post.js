@@ -6,7 +6,7 @@ import { timeFormat } from '../../utils'
 const components = {
   pre: CodePre
 }
-function PostLayout({ children, meta = {}, ...restProps }) {
+function PostLayout({ children, meta = {} }) {
   const { title, time, tags = [] } = meta
   return (
     <>
@@ -16,7 +16,7 @@ function PostLayout({ children, meta = {}, ...restProps }) {
           <title>{title + ' - Bowen Codes'}</title>
         </Head>
         <h1>{title}</h1>
-        <div className="info">
+        <div className="flex justify-between items-center px-2 mb-2">
           <div>
             <time>{timeFormat(time)}</time>
             {tags.map((tag) => (
@@ -25,23 +25,13 @@ function PostLayout({ children, meta = {}, ...restProps }) {
               </span>
             ))}
           </div>
-          <Link href="/">首页</Link>
+          <Link href="/" className="text-sm text-gray-500">
+            首页
+          </Link>
         </div>
         <hr />
         <MDXProvider components={components}>{children}</MDXProvider>
       </article>
-      <style jsx>{`
-        .info {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0 0.5rem;
-        }
-        .info > :global(a) {
-          font-size: 0.875rem;
-          color: #696969;
-        }
-      `}</style>
     </>
   )
 }

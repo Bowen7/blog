@@ -7,7 +7,7 @@ function Layout(props) {
   const page = router.pathname.split('/')[1]
   return (
     <>
-      <div className="main">
+      <div className="main-page max-w-4xl mb-20 mx-auto">
         <Header page={page} />
         {/* eslint-disable-next-line multiline-ternary */}
         {page === 'post' ? (
@@ -19,12 +19,6 @@ function Layout(props) {
           </>
         )}
       </div>
-      <style jsx>{`
-        .main {
-          max-width: 60ch;
-          margin: 0 auto 5rem auto;
-        }
-      `}</style>
     </>
   )
 }

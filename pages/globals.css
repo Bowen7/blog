@@ -1,13 +1,6 @@
-html,
-body {
-  background-color: #fff;
-  color: #000;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 16px;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
   -webkit-font-smoothing: antialiased;
@@ -279,4 +272,8 @@ code {
 pre code {
   border-radius: none;
   background: inherit;
+}
+
+.main-page {
+	max-width: 60ch;
 }

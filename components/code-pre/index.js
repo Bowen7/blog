@@ -3,7 +3,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 const copySrc = '/icons/copy.svg'
 const copiedSrc = '/icons/done.svg'
-function CodePre({ children, ...restProps }) {
+function CodePre({ children }) {
   const [isCopied, setIsCopied] = useState(false)
   const ref = useRef()
   const text = ref.current?.textContent
@@ -15,48 +15,21 @@ function CodePre({ children, ...restProps }) {
 
   return (
     <>
-      <div className="code-wrapper">
+      <div className="relative rounded-md mb-4 group">
         {isCopied ? (
-          <img className="copy" src={copiedSrc} />
+          <img className="w-4 h-4 absolute top-2 right-2" src={copiedSrc} />
         ) : (
           <CopyToClipboard text={text} onCopy={onCopy}>
-            <img className="copy" src={copySrc} />
+            <img
+              className="w-4 h-4 absolute top-2 right-2 cursor-pointer hidden group-hover:inline"
+              src={copySrc}
+            />
           </CopyToClipboard>
         )}
-        <pre className="code-pre" ref={ref}>
+        <pre ref={ref} className="bg-gray-50 p-4 overflow-auto text-sm m-0">
           {children}
         </pre>
-        {/* )} */}
       </div>
-      <style jsx>{`
-        .code-wrapper {
-          position: relative;
-          border-radius: 6px;
-          margin-bottom: 1em;
-        }
-        .copy {
-          display: none;
-          width: 1em;
-          height: 1em;
-          position: absolute;
-          top: 0.5em;
-          right: 0.5em;
-          // reset
-          max-width: initial;
-          cursor: pointer;
-        }
-        .code-wrapper:hover > .copy {
-          display: inline;
-        }
-        .code-pre,
-        .code > :global(pre) {
-          background-color: #f9f9f9 !important;
-          padding: 1em;
-          overflow: auto;
-          font-size: 14px;
-          margin: 0;
-        }
-      `}</style>
     </>
   )
 }

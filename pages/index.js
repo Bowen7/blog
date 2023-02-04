@@ -1,8 +1,9 @@
 import Head from 'next/head'
 import React from 'react'
+import Link from 'next/link'
 import { basename, resolve } from 'path'
 import fs from 'fs'
-import Post from '../components/post'
+import { timeFormat } from 'utils'
 
 const extractMeta = (source) => {
   const metaRegex =
@@ -32,48 +33,63 @@ export async function getStaticProps() {
   metas.sort(({ time: time1 }, { time: time2 }) => {
     return time2 - time1
   })
-  const postYears = []
+  const postsByYear = []
   let curYear = ''
   metas.forEach((meta) => {
     const time = meta.time
     const year = time.slice(0, 4)
     if (year !== curYear) {
       curYear = year
-      postYears.push({
+      postsByYear.push({
         year,
         posts: []
       })
     }
-    postYears[postYears.length - 1].posts.push(meta)
+    postsByYear[postsByYear.length - 1].posts.push(meta)
   })
   return {
-    props: { postYears }
+    props: { postsByYear }
   }
 }
 
-export default function Home({ postYears = [] }) {
+const Post = ({ time, title, name, tags = [] }) => (
+  <>
+    <div className="ml-2 mb-6">
+      <div className="flex flex-row items-center">
+        <Link
+          key={title}
+          href={'/post/' + name}
+          passHref
+          className="no-underline"
+        >
+          {title}
+        </Link>
+        {tags.map((tag) => (
+          <span className="tag" key={tag}>
+            {tag}
+          </span>
+        ))}
+      </div>
+      <time>{timeFormat(time)}</time>
+    </div>
+  </>
+)
+
+export default function Home({ postsByYear = [] }) {
   return (
     <>
       <Head>
         <title>Bowen Codes</title>
       </Head>
-      {postYears.map(({ year, posts }) => (
+      {postsByYear.map(({ year, posts }) => (
         <React.Fragment key={year}>
-          <p className="year">{year}</p>
-          <hr />
+          <p className="text-gray-700 text-lg ml-2 mb-2">{year}</p>
+          <hr className="mb-4" />
           {posts.map((post) => (
             <Post {...post} key={post.name} />
           ))}
         </React.Fragment>
       ))}
-      <style jsx>{`
-        .year {
-          color: #434343;
-          font-size: 1.25rem;
-          margin-left: 0.5rem;
-          margin-bottom: 0.5rem;
-        }
-      `}</style>
     </>
   )
 }
