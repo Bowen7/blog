@@ -26,7 +26,7 @@ function CodePre({ children }) {
             />
           </CopyToClipboard>
         )}
-        <pre ref={ref} className="bg-gray-50 p-4 overflow-auto text-sm m-0">
+        <pre ref={ref} className="bg-stone-50 p-4 overflow-auto text-sm m-0">
           {children}
         </pre>
       </div>

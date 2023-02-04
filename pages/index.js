@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import React from 'react'
 import Link from 'next/link'
-import Balancer from 'react-wrap-balancer'
 import { basename, resolve } from 'path'
 import fs from 'fs'
 import { timeFormat } from 'utils'
@@ -56,22 +55,27 @@ export async function getStaticProps() {
 const Post = ({ time, title, name, tags = [] }) => (
   <>
     <div className="ml-2 mb-6">
-      <div className="flex flex-row items-center">
+      <div>
         <Link
           key={title}
           href={'/post/' + name}
           passHref
           className="no-underline"
         >
-          <Balancer>{title}</Balancer>
+          {title}
         </Link>
+      </div>
+      <div className="mt-1">
+        <time>{timeFormat(time)}</time>
         {tags.map((tag) => (
-          <span className="tag" key={tag}>
+          <span
+            className="ml-2 text-sm text-stone-500 bg-stone-100 px-2 py-1 rounded"
+            key={tag}
+          >
             {tag}
           </span>
         ))}
       </div>
-      <time>{timeFormat(time)}</time>
     </div>
   </>
 )
@@ -84,7 +88,7 @@ export default function Home({ postsByYear = [] }) {
       </Head>
       {postsByYear.map(({ year, posts }) => (
         <React.Fragment key={year}>
-          <p className="text-gray-700 text-lg ml-2 mb-2">{year}</p>
+          <p className="text-black text-lg ml-2 mb-2">{year}</p>
           <hr className="mb-4" />
           {posts.map((post) => (
             <Post {...post} key={post.name} />

@@ -23,13 +23,16 @@ function PostLayout({ children, meta = {} }) {
           <div>
             <time>{timeFormat(time)}</time>
             {tags.map((tag) => (
-              <span className="tag" key={tag}>
+              <span
+                className="ml-2 text-sm text-stone-500 bg-stone-100 px-2 py-1 rounded"
+                key={tag}
+              >
                 {tag}
               </span>
             ))}
           </div>
-          <Link href="/" className="text-sm text-gray-500">
-            首页
+          <Link href="/" className="text-sm text-stone-700">
+            Home
           </Link>
         </div>
         <hr />

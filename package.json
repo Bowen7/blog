@@ -19,6 +19,7 @@
     "@mdx-js/react": "^2.2.1",
     "@next/mdx": "^13.1.6",
     "clipboard": "^2.0.6",
+    "clsx": "^1.2.1",
     "echarts": "^5.2.2",
     "echarts-for-react": "^3.0.2",
     "eslint-config-next": "^13.1.6",
