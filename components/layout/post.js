@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import { MDXProvider } from '@mdx-js/react'
+import Balancer from 'react-wrap-balancer'
 import CodePre from '../code-pre'
 import { timeFormat } from '../../utils'
 const components = {
@@ -15,7 +16,9 @@ function PostLayout({ children, meta = {} }) {
           <base target="_blank" rel="noopener noreferrer" />
           <title>{title + ' - Bowen Codes'}</title>
         </Head>
-        <h1>{title}</h1>
+        <h1>
+          <Balancer>{title}</Balancer>
+        </h1>
         <div className="flex justify-between items-center px-2 mb-2">
           <div>
             <time>{timeFormat(time)}</time>

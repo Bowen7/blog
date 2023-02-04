@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 import Link from 'next/link'
+import Balancer from 'react-wrap-balancer'
 import { basename, resolve } from 'path'
 import fs from 'fs'
 import { timeFormat } from 'utils'
@@ -62,7 +63,7 @@ const Post = ({ time, title, name, tags = [] }) => (
           passHref
           className="no-underline"
         >
-          {title}
+          <Balancer>{title}</Balancer>
         </Link>
         {tags.map((tag) => (
           <span className="tag" key={tag}>

@@ -36,6 +36,7 @@ specifiers:
   react: 18.2.0
   react-copy-to-clipboard: ^5.1.0
   react-dom: 18.2.0
+  react-wrap-balancer: ^0.4.0
   rehype-katex: ^6.0.2
   rehype-pretty-code: ^0.9.3
   remark-math: ^5.1.1
@@ -69,6 +70,7 @@ dependencies:
   react: 18.2.0
   react-copy-to-clipboard: 5.1.0_react@18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-wrap-balancer: 0.4.0_react@18.2.0
   rehype-katex: 6.0.2
   rehype-pretty-code: 0.9.3_shiki@0.14.0
   remark-math: 5.1.1
@@ -3662,6 +3664,14 @@ packages:
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  /react-wrap-balancer/0.4.0_react@18.2.0:
+    resolution: {integrity: sha512-MUsROihHd7bFHCo9kCOifKDYBEZPgKTyGvfa8RcwRQKtT2cL7Um9Cc8A7GvuT8t3np7LAGsEkzdEyJdKrr5lVQ==}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react/18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
