@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '实现微信小程序的直接赋值、computed 和 watch 功能',
   time: '20190831',
@@ -341,3 +343,5 @@ git 地址：[https://github.com/Bowen7/playground](https://github.com/Bowen7/pl
 #### 源码
 
 [https://github.com/Bowen7/playground/blob/master/computed-demo/components/computed/computed-min.js](https://github.com/Bowen7/playground/blob/master/computed-demo/components/computed/computed-min.js)
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

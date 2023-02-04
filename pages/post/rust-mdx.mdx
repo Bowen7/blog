@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '用 Rust 重写 MDX 编译',
   time: '20220116',
@@ -144,3 +146,5 @@ Block 又分为两种，一种是可以包含其他 Block 的，称之为 `Conta
 
 截止目前， `@mdxor/compiler` 仍需要补全一些功能并进行完备的测试，还无法在生产环境使用，所以暂未发布在 npm 上。
 可以移步至 [@mdxor/compiler 仓库](https://github.com/mdxor/compiler) 查看它的最新动态
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

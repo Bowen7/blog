@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '探究防抖 (debounce) 和节流 (throttle)',
   time: '20190218'
@@ -347,3 +349,5 @@ while (new Date() - start < limit) {
 【注 2】执行过一次 trailingEdge 后，再执行 debounced 函数，可能会遇到 shouldInvoke 返回 false 的情况，需单独处理
 
 【注 3】对于 lodash 的 debounce 来说，throttle 是一种 leading 为 true 且 maxWait 等于 wait 的特殊 debounce
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

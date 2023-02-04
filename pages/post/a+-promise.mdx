@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '手写一个符合 A+ 规范的 Promise',
   time: '20190811',
@@ -328,3 +330,5 @@ function doFn(self, fn) {
 ### 代码
 
 完整代码已放在我的 github 上，地址为[https://github.com/Bowen7/playground/tree/master/promise-polyfill](https://github.com/Bowen7/playground/tree/master/promise-polyfill) ，可以 clone 我的 playground 项目，再到 promise-polyfill 目录下`npm install`，然后执行`npm test`即可运行测试
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

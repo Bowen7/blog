@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '使用 npm link 遇到的一些坑',
   time: '20190918'
@@ -42,3 +44,5 @@ resolve: {
 ```
 
 这样就能较为完美地解决问题。同时也可在项目中使用`duplicate-package-checker-webpack-plugin`，检查重复依赖，及早发现问题
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

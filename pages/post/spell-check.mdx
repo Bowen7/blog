@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '实现拼写检查器 (spell check)',
   time: '20190301',
@@ -226,3 +228,5 @@ SpellCheck.prototype.calcDistance = function(word1, word2) {
 ### 最后
 
 这份代码还有很多可以优化的地方，比如 check 函数使用的是 indexOf 判断单词是否在语料库中出现，我们可以改用单词查找树(Trie)或者 hash 的方式加速查询
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

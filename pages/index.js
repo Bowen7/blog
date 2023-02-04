@@ -1,9 +1,20 @@
 import Head from 'next/head'
 import React from 'react'
-import extractMeta from '../customs/extract-meta'
 import { basename, resolve } from 'path'
 import fs from 'fs'
 import Post from '../components/post'
+
+const extractMeta = (source) => {
+  const metaRegex =
+    /export(\s|\n)+const(\s|\n)+meta(\s|\n)+=(\s|\n)+({[\s\S]*?})(\s|\n)+/
+  const matches = source.match(metaRegex)
+  try {
+    // eslint-disable-next-line no-eval
+    return eval('(' + matches[5] + ')')
+  } catch (error) {
+    return {}
+  }
+}
 
 export async function getStaticProps() {
   const postDirPath = resolve(process.cwd(), './pages/post')
@@ -11,7 +22,7 @@ export async function getStaticProps() {
   const metas = await Promise.all(
     files.map(async (file) => {
       const source = fs.readFileSync(resolve(postDirPath, file)).toString()
-      const meta = await extractMeta(source)
+      const meta = extractMeta(source)
       return {
         name: basename(file, '.mdx'),
         ...meta
@@ -39,7 +50,8 @@ export async function getStaticProps() {
     props: { postYears }
   }
 }
-export default function Home({ postYears }) {
+
+export default function Home({ postYears = [] }) {
   return (
     <>
       <Head>

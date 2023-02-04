@@ -6,7 +6,7 @@ const Post = ({ time, title, name, tags = [] }) => (
     <div className="post">
       <div className="title-container">
         <Link key={title} href={'/post/' + name} passHref>
-          <a className="title">{title}</a>
+          {title}
         </Link>
         {tags.map((tag) => (
           <span className="tag" key={tag}>

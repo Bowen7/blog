@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: 'Cesium 实现建筑夜景贴图',
   time: '20211120'
@@ -89,3 +91,5 @@ void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
 ```
 
 最后可以加上一些道路流光，使城市显得更加现代，就是文章开头的效果了。
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

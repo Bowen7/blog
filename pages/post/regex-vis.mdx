@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '使用 regex-vis.com 可视化正则表达式',
   time: '20220128',
@@ -60,3 +62,5 @@ Generator 是将 AST 重新转换为正则表达式语句。这部分比较简�
 
 - 项目的最初灵感来自 [Regulex](https://jex.im/regulex/) 和 [Regexper](https://regexper.com/)，它们是对正则进行可视化展示。在此基础上，我得到了编辑正则表达式的灵感
 - 使用的 UI 组件库是 [@geist-ui/core](https://github.com/geist-org/geist-ui)，一个基于 Vercel 风格的组件库（非 Vercel 官方）
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

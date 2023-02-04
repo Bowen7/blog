@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '避免取值时出现 Cannot read property \'xx\' of undefined',
   time: '20190221'
@@ -166,3 +168,5 @@ console.log(artcle?.timeInfo?.publishTime); //undefined
 ```
 
 这种方法已接近完美，我们可以期待它的真正落实
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

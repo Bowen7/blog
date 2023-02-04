@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '使用 react hooks 实现自己的 context-redux',
   time: '20190228',
@@ -187,3 +189,5 @@ const increaseCount = async dispatch => {
 ### 最后
 
 本文的代码，我放在了自己的 github 上，这是[传送门](https://github.com/Bowen7/context-redux-demo)
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

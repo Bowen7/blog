@@ -1,3 +1,5 @@
+import Layout from '../../components/Layout/post'
+
 export const meta = {
   title: '如何实现 Vue 转小程序 (1)',
   time: '20190819',
@@ -171,3 +173,5 @@ if (tagStartIndex >= 0) {
 ```
 
 文本内容遇上 startTag 或 endTag 才会结束
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>
