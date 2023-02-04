@@ -1,72 +1,32 @@
-import { useEffect, useRef, useState } from 'react'
-import Clipboard from 'clipboard'
-import * as shiki from 'shiki/dist/index.js'
-const SHIKI_CDN = 'https://cdn.jsdelivr.net/npm/shiki@0.9.12/'
-const THEME = 'min-light'
+import { useRef, useState } from 'react'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+
 const copySrc = '/icons/copy.svg'
-const doneSrc = '/icons/done.svg'
-function CodePre({ children }) {
-  const [svgSrc, setSvgSrc] = useState(copySrc)
+const copiedSrc = '/icons/done.svg'
+function CodePre({ children, ...restProps }) {
+  const [isCopied, setIsCopied] = useState(false)
   const ref = useRef()
-  const clipboard = useRef()
-  const lock = useRef(false)
-  const [codeHtml, setCodeHtml] = useState('')
+  const text = ref.current?.textContent
 
-  const code = children.props.children || ''
-  useEffect(() => {
-    if (ref.current) {
-      clipboard.current = new Clipboard(ref.current)
-      clipboard.current.on('success', () => {
-        if (!lock.current) {
-          lock.current = true
-          setSvgSrc(doneSrc)
+  const onCopy = () => {
+    setIsCopied(true)
+    setTimeout(() => setIsCopied(false), 3000)
+  }
 
-          setTimeout(() => {
-            setSvgSrc(svgSrc)
-            lock.current = false
-          }, 1500)
-        }
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    const childrenProps = children.props
-    const language = /language-(\w+)/.exec(childrenProps.className || '')[1]
-    shiki.setCDN(SHIKI_CDN)
-    shiki
-      .getHighlighter({
-        theme: THEME,
-        langs: [language]
-      })
-      .then(
-        (highlighter) => {
-          const codeHtml = highlighter.codeToHtml(
-            childrenProps.children,
-            language
-          )
-          setCodeHtml(codeHtml)
-        },
-        () => {}
-      )
-  }, [])
   return (
     <>
       <div className="code-wrapper">
-        <img
-          className="copy"
-          ref={ref}
-          src={svgSrc}
-          data-clipboard-text={code}
-        />
-        {codeHtml ? (
-          <div
-            className="code"
-            dangerouslySetInnerHTML={{ __html: codeHtml }}
-          />
+        {isCopied ? (
+          <img className="copy" src={copiedSrc} />
         ) : (
-          <pre className="code-pre">{children}</pre>
+          <CopyToClipboard text={text} onCopy={onCopy}>
+            <img className="copy" src={copySrc} />
+          </CopyToClipboard>
         )}
+        <pre className="code-pre" ref={ref}>
+          {children}
+        </pre>
+        {/* )} */}
       </div>
       <style jsx>{`
         .code-wrapper {

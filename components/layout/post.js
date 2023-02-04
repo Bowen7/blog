@@ -7,14 +7,13 @@ const components = {
   pre: CodePre
 }
 function PostLayout({ children, meta = {}, ...restProps }) {
-  console.log(restProps)
   const { title, time, tags = [] } = meta
   return (
     <>
       <article>
         <Head>
           <base target="_blank" rel="noopener noreferrer" />
-          <title>{title} - Bowen Codes</title>
+          <title>{title + ' - Bowen Codes'}</title>
         </Head>
         <h1>{title}</h1>
         <div className="info">
