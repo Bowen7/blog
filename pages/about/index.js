@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Head from 'next/head'
 const projects = [
   {
     title: 'regex-vis',
@@ -26,6 +27,9 @@ const ProjectCard = ({ title, desc, cover, link }) => {
 function About() {
   return (
     <>
+      <Head>
+        <title>About me - Bowen Codes</title>
+      </Head>
       <div className="text-lg">
         <p>
           {
