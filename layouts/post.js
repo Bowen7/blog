@@ -4,10 +4,9 @@ import Link from 'next/link'
 import Head from 'next/head'
 import { MDXProvider } from '@mdx-js/react'
 import Balancer from 'react-wrap-balancer'
+import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { timeFormat } from 'utils'
 
-const copySrc = '/icons/copy.svg'
-const copiedSrc = '/icons/done.svg'
 const CodePre = ({ children }) => {
   const [isCopied, setIsCopied] = useState(false)
   const ref = useRef()
@@ -22,13 +21,10 @@ const CodePre = ({ children }) => {
     <>
       <div className="relative rounded-md mb-4 group">
         {isCopied ? (
-          <img className="w-4 h-4 absolute top-2 right-2" src={copiedSrc} />
+          <CheckIcon className="w-5 h-5 absolute top-4 right-4" />
         ) : (
           <CopyToClipboard text={text} onCopy={onCopy}>
-            <img
-              className="w-4 h-4 absolute top-2 right-2 cursor-pointer hidden group-hover:inline"
-              src={copySrc}
-            />
+            <ClipboardIcon className="w-5 h-5 absolute top-4 right-4 cursor-pointer hidden group-hover:inline" />
           </CopyToClipboard>
         )}
         <pre ref={ref} className="bg-stone-50 p-4 overflow-auto text-sm m-0">

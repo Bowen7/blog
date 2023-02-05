@@ -7,6 +7,7 @@ specifiers:
   '@babel/plugin-transform-modules-commonjs': ^7.12.1
   '@babel/traverse': ^7.15.0
   '@geist-ui/react': ^2.1.0-canary.2
+  '@heroicons/react': ^2.0.14
   '@mdx-js/loader': ^2.2.1
   '@mdx-js/mdx': ^2.2.1
   '@mdx-js/react': ^2.2.1
@@ -54,6 +55,7 @@ dependencies:
   '@babel/plugin-transform-modules-commonjs': 7.20.11_@babel+core@7.20.12
   '@babel/traverse': 7.20.13
   '@geist-ui/react': 2.2.5_react-dom@18.2.0+react@18.2.0
+  '@heroicons/react': 2.0.14_react@18.2.0
   '@mdx-js/loader': 2.2.1
   '@mdx-js/mdx': 2.2.1
   '@mdx-js/react': 2.2.1_react@18.2.0
@@ -490,6 +492,14 @@ packages:
       '@babel/runtime': 7.20.13
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@heroicons/react/2.0.14_react@18.2.0:
+    resolution: {integrity: sha512-eFL4if6L7woL1fUvk/jjXx4z9NxVESHHrQnEd2qKVelTFTIr/3VLGWdPb0biia9ZVe26P0JSs/xmOlRNur3SrQ==}
+    peerDependencies:
+      react: '>= 16'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.5.0:
