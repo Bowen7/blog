@@ -27,7 +27,10 @@ const CodePre = ({ children }) => {
             <ClipboardIcon className="w-5 h-5 absolute top-4 right-4 cursor-pointer hidden group-hover:inline" />
           </CopyToClipboard>
         )}
-        <pre ref={ref} className="bg-stone-50 p-4 overflow-auto text-sm m-0">
+        <pre
+          ref={ref}
+          className="bg-stone-50 p-4 overflow-auto text-sm m-0 [&>code]:bg-stone-50"
+        >
           {children}
         </pre>
       </div>
@@ -56,7 +59,7 @@ function PostLayout({ children, meta = {} }) {
             <time>{timeFormat(time)}</time>
             {tags.map((tag) => (
               <span
-                className="ml-2 text-sm text-stone-500 bg-stone-100 px-2 py-1 rounded"
+                className="ml-2 text-sm text-stone-500 bg-stone-100 px-2 py-0.5 rounded"
                 key={tag}
               >
                 {tag}

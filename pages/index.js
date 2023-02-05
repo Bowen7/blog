@@ -71,7 +71,7 @@ const Post = ({ time, title, name, tags = [] }) => (
         <time>{timeFormat(time)}</time>
         {tags.map((tag) => (
           <span
-            className="ml-2 text-sm text-stone-500 bg-stone-100 px-2 py-1 rounded"
+            className="ml-2 text-sm text-stone-500 bg-stone-100 px-2 py-0.5 rounded"
             key={tag}
           >
             {tag}

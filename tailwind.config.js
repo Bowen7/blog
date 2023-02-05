@@ -25,10 +25,5 @@ module.exports = {
       // => @media (max-width: 639px) { ... }
     }
   },
-  plugins: []
-  // variants: {
-  //   extend: {
-  //     display: ['group-hover']
-  //   }
-  // }
+  plugins: [require('daisyui')]
 }

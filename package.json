@@ -9,29 +9,16 @@
     "postbuild": "node ./scripts/sitemap.js"
   },
   "dependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/generator": "^7.15.0",
-    "@babel/parser": "^7.15.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "@babel/traverse": "^7.15.0",
-    "@geist-ui/react": "^2.1.0-canary.2",
     "@heroicons/react": "^2.0.14",
     "@mdx-js/loader": "^2.2.1",
     "@mdx-js/mdx": "^2.2.1",
     "@mdx-js/react": "^2.2.1",
     "@next/mdx": "^13.1.6",
-    "clipboard": "^2.0.6",
     "clsx": "^1.2.1",
-    "echarts": "^5.2.2",
-    "echarts-for-react": "^3.0.2",
+    "daisyui": "^2.50.0",
     "eslint-config-next": "^13.1.6",
-    "extract-mdx-metadata": "^2.0.0",
     "lodash": "^4.17.21",
-    "mdast-util-gfm-strikethrough": "^0.2.3",
-    "mdast-util-to-markdown": "^0.6.1",
     "next": "^13.1.6",
-    "next-compose-plugins": "^2.2.1",
-    "next-transpile-modules": "^9.0.0",
     "react": "18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "18.2.0",
@@ -40,13 +27,10 @@
     "rehype-katex": "^6.0.2",
     "rehype-pretty-code": "^0.9.3",
     "remark-math": "^5.1.1",
-    "shiki": "0.14.0",
-    "unist-util-visit": "^2.0.3",
-    "vscode-oniguruma": "^1.7.0"
+    "shiki": "0.14.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
-    "copy-webpack-plugin": "^11.0.0",
     "eslint": "^7.15.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
@@ -56,6 +40,7 @@
     "globby": "^11.0.2",
     "postcss": "^8.4.21",
     "prettier": "^2.2.1",
+    "remark-gfm": "^3.0.1",
     "tailwindcss": "^3.2.4"
   }
 }

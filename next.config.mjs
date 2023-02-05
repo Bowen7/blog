@@ -2,6 +2,7 @@ import rehypePrettyCode from 'rehype-pretty-code'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import nextMdx from '@next/mdx'
+import remarkGfm from 'remark-gfm'
 
 const withMDX = nextMdx({
   extension: /\.mdx?$/,
@@ -29,7 +30,7 @@ const withMDX = nextMdx({
         }
       ]
     ],
-    remarkPlugins: [remarkMath]
+    remarkPlugins: [remarkMath, remarkGfm]
   }
 })
 
@@ -37,8 +38,7 @@ const nextConfig = {
   // Configure pageExtensions to include md and mdx
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   // Optionally, add any other Next.js config below
-  reactStrictMode: true,
-  transpilePackages: ['@geist-ui/react', 'echarts', 'zrender']
+  reactStrictMode: true
 }
 
 export default withMDX(nextConfig)
