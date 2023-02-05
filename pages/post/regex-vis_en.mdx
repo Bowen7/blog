@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
   title: 'Use regex-vis.com to visualize regular expressions',
   time: '20220201',
@@ -75,3 +77,5 @@ I use esbuild to bundle and export the chart component, then use the API `render
 
 - Inspired by [Regulex](https://jex.im/regulex/) and [Regexper](https://regexper.com/).
 - Use [@geist-ui/core](https://github.com/geist-org/geist-ui), a modern and minimalist React UI library.
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

@@ -1,8 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
-import Slider from '@geist-ui/react/esm/slider'
-import Button from '@geist-ui/react/esm/button'
-import Radio from '@geist-ui/react/esm/radio'
-import Loading from '@geist-ui/react/esm/loading'
+import clsx from 'clsx'
 import { genSrcAndDest, mergeChannels } from './utils'
 import { blurMap, blurOptions } from './constants'
 function Blur() {
@@ -26,40 +23,45 @@ function Blur() {
     if (!loading) {
       return
     }
-    const srcCtx = srcRef.current.getContext('2d')
-    const destCtx = destRef.current.getContext('2d')
-    const imageData = srcCtx.getImageData(
-      0,
-      0,
-      canvasWidth,
-      canvasWidth * 0.238
-    )
-    const { width, height } = imageData
-    const { src: srcRgba, dest: destRgba } = genSrcAndDest(imageData.data)
-    const start = performance.now()
-    for (let i = 0; i < 3; i++) {
-      blurMap[type].caller(srcRgba[i], destRgba[i], width, height, sigma)
-    }
-    const time = performance.now() - start
-    const destData = mergeChannels(destRgba)
-    imageData.data.set(destData)
-    destCtx.putImageData(imageData, 0, 0)
-    setTime(time)
-    setLoading(false)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const srcCtx = srcRef.current.getContext('2d')
+        const destCtx = destRef.current.getContext('2d')
+        const imageData = srcCtx.getImageData(
+          0,
+          0,
+          canvasWidth,
+          canvasWidth * 0.238
+        )
+        const { width, height } = imageData
+        const { src: srcRgba, dest: destRgba } = genSrcAndDest(imageData.data)
+        const start = performance.now()
+        for (let i = 0; i < 3; i++) {
+          blurMap[type].caller(srcRgba[i], destRgba[i], width, height, sigma)
+        }
+        const time = performance.now() - start
+        const destData = mergeChannels(destRgba)
+        imageData.data.set(destData)
+        destCtx.putImageData(imageData, 0, 0)
+        setTime(time)
+        setLoading(false)
+      })
+    })
   }, [loading])
+
   function resetCanvas() {
     const clientWidth = canvasWrapRef.current.clientWidth
     setCanvasWidth(clientWidth)
 
     const srcCtx = srcRef.current.getContext('2d')
     const img = new Image()
-    img.src = '/demos/blur/input.jpg'
+    img.src = '/demos/blur/source.png'
     img.onload = () => {
       srcCtx.drawImage(img, 0, 0, clientWidth, clientWidth * 0.238)
     }
   }
-  const handleSigmaChange = (value) => {
-    setSigma(value)
+  const handleSigmaChange = (e) => {
+    setSigma(parseInt(e.target.value))
   }
   const handleTypeChange = (value) => {
     setType(value)
@@ -76,7 +78,6 @@ function Blur() {
           width={canvasWidth}
           height={canvasWidth * 0.238}
         ></canvas>
-        {loading && <Loading size="large" />}
         {destShow && (
           <canvas
             ref={destRef}
@@ -86,47 +87,48 @@ function Blur() {
         )}
       </div>
       {time && <p>耗时: {time}ms</p>}
-      <div className="slider-container" width={canvasWidth}>
+      <div className="mb-4" width={canvasWidth}>
         <p>
           {blurMap[type].sigma ? 'Sigma' : 'Radius'}: {sigma}
         </p>
-        <Slider
-          step={1}
-          min={1}
-          max={20}
-          showMarkers
+        <input
+          type="range"
+          min="1"
+          max="20"
           value={sigma}
+          step="1"
+          className="range range-xs"
           onChange={handleSigmaChange}
         />
       </div>
-      <Radio.Group value={type} onChange={handleTypeChange}>
-        {blurOptions.map(({ value, text }) => (
-          <Radio value={value} key={value}>
-            {text}
-          </Radio>
-        ))}
-      </Radio.Group>
+      {blurOptions.map(({ value, text }) => (
+        <div
+          className="form-control"
+          key={value}
+          onClick={() => handleTypeChange(value)}
+        >
+          <label className="label cursor-pointer">
+            <span className="label-text">{text}</span>
+            <input
+              type="radio"
+              name="radio-10"
+              className="radio"
+              checked={value === type}
+            />
+          </label>
+        </div>
+      ))}
       <p>
         注：简单方框模糊、水平模糊、垂直模糊的参数为 radius，其余模糊为 sigma
       </p>
-      <div className="btn-container">
-        <Button auto loading={loading} onClick={handleClick}>
-          生成
-        </Button>
+      <div className="mt-4 text-center">
+        <button
+          className={clsx('btn', loading && 'loading')}
+          onClick={handleClick}
+        >
+          Generate
+        </button>
       </div>
-      <style jsx>{`
-        .container {
-          width: 100%;
-          padding: 0 0.5rem;
-        }
-        .slider-container {
-          margin-bottom: 1rem;
-        }
-        .btn-container {
-          margin-top: 1rem;
-          text-align: center;
-        }
-      `}</style>
     </>
   )
 }

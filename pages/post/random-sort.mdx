@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
   title: '数组随机排序算法',
   time: '20200729',
@@ -60,3 +62,5 @@ function shuffle(array) {
 核心思想：每次从剩余的项里随机取一个项，记录并剔除该项再进入下次循环
 
 Fisher–Yates算法做到了不额外申请空间&O(n)的时间复杂度，可以说是最优的随机排序算法了
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

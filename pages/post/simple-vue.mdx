@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
   title: '实现一个简单的 Vue',
   time: '20190804'
@@ -254,3 +256,5 @@ BabyVue.prototype.resolveTemplate = function() {
 ### 最后
 
 今天是我的生日，哈哈哈，祝我生日快乐～
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

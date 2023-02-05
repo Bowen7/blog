@@ -1,12 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body {
-  background-color: #fff;
-  color: #000;
   box-sizing: border-box;
-}
-
-html {
-  font-size: 16px;
 }
 
 body {
@@ -90,70 +88,6 @@ a {
   word-wrap: break-word;
 }
 
-button,
-input,
-select,
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
-  margin: 0;
-}
-button:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-}
-
-ol,
-ul {
-  list-style: none;
-  padding: 0;
-  list-style-type: none;
-  margin: 8pt 8pt 8pt 16pt;
-}
-
-ol {
-  list-style-type: decimal;
-}
-
-li {
-  margin-bottom: 0.625rem;
-  font-size: 1em;
-  line-height: 1.625em;
-}
-
-ul > li:before {
-  content: '–';
-  display: inline-block;
-  color: #888;
-  position: absolute;
-  margin-left: -0.9375rem;
-}
-
-input[type='button'],
-input[type='submit'],
-input[type='reset'] {
-  appearance: button;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
-
-input:-webkit-autofill {
-  box-shadow: 0 0 0 100px #fff inset;
-}
-
 h1 {
   font-size: 2.25rem;
   letter-spacing: -0.066875rem;
@@ -201,6 +135,74 @@ details {
   background-color: #fafafa;
   border: none;
 }
+
+.main-page {
+  max-width: 65ch;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+}
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+}
+
+ol,
+ul {
+  list-style: none;
+  padding: 0;
+  list-style-type: none;
+  margin: 8pt 8pt 8pt 16pt;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+li {
+  margin-bottom: 0.625rem;
+  font-size: 1em;
+  line-height: 1.625em;
+}
+
+article > ul > li:before {
+  content: '–';
+  display: inline-block;
+  color: #888;
+  position: absolute;
+  margin-left: -0.9375rem;
+}
+
+input[type='button'],
+input[type='submit'],
+input[type='reset'] {
+  appearance: button;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0 100px #fff inset;
+}
 details:focus,
 details:hover,
 details:active {
@@ -245,35 +247,25 @@ blockquote *:last-child {
 }
 
 ::selection {
-  background-color: #bfbfbf;
-}
-
-.tag {
-  font-size: 0.875rem;
-  color: #696969;
-  background: rgb(234, 234, 234);
-  padding: 0.1rem 0.4rem;
-  border-radius: 0.2rem;
-  margin-left: 0.5rem;
-  white-space:nowrap;
+  background-color: #e7e5e4;
 }
 
 time {
   font-size: 0.875rem;
-  color: #696969;
+  color: #44403c;
 }
 
 table {
-	width: 100%;
+  width: 100%;
 }
 
 code {
-	display: inline-block;
+  display: inline-block;
   font-size: 0.875rem;
-	padding: 0 0.25rem;
+  padding: 0 0.25rem;
   border-radius: 0.2rem;
-	line-height: 1.5;
-  background: rgb(234, 234, 234);
+  line-height: 1.5;
+	background: #F5F5F4;
 }
 
 pre code {

@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
   title: 'JavaScript 中的双向链表',
   time: '20200723',
@@ -144,3 +146,5 @@ class DoublyLinkedList {
 ##### 另
 
 研究这个问题时，我看了部分v8数组源码。可以看到（[https://github.com/v8/v8/blob/master/src/objects/js-objects-inl.h#L1030](https://github.com/v8/v8/blob/master/src/objects/js-objects-inl.h#L1030)），v8下的js array有fast和slow两种储存模式，在数组长度大于5000（新生代）/ 500（老生代）时，会检测是否需要切换到slow模式，原因是在长度过长后，fast模式使用的内存过高。而slow模式下，v8采用字典的方式存储数组，用索引index作key，节省空间，但会变慢
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

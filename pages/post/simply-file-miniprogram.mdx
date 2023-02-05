@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
   title: '实现小程序的单文件开发模式',
   time: '20191017',
@@ -24,7 +26,7 @@ export const meta = {
 <script mp-type="json">
   export default {
     usingComponents: {
-      "index-com": "../../components/index_com/index_com"
+      "index-com": "component/index_com/index_com"
     }
   };
 </script>
@@ -348,3 +350,5 @@ module.exports.getEntries = appPath => {
 ```
 
 原理很简单，先获取到 app.js 里 json 配置里的 pages 属性，这就是小程序所有的页面；再遍历这些页面 json 配置的 usingComponents 属性，获取其引用的所有组件（这里没有做判重和判断循环引用）。最后返回的 entryies 包括了 app、所有的 page、所有的 components，这也就是 webpack 配置中的 entry 属性。
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

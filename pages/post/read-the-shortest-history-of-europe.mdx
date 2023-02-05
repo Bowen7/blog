@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
   title: '极简欧洲史读后',
   time: '20190203',
@@ -75,3 +77,5 @@ export const meta = {
 欧洲历史于我有何增益呢？
 
 作者在引言曾经说过：澳大利亚人对欧洲文明所知太少，而他们，也是欧洲的一份子。我虽既非澳大利亚人，也非欧洲人，但我是世界的一份子，并受到欧洲文明带来的种种惠及，理应对欧洲历史有所了解
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

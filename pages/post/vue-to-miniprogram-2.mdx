@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
   title: '如何实现 Vue 转小程序 (2)',
   time: '20190825',
@@ -184,3 +186,5 @@ console.log(parser.serialize(res));
 ```
 
 可以看到，最后输出的字符与 source 基本一致（有些空白字符没有完美处理，所以会有点出入，但不影响代码结构）
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
   title: '如何实现 Vue 转小程序 (3)',
   time: '20190908',
@@ -306,3 +308,5 @@ Component({
   ready() {}
 });
 ```
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>

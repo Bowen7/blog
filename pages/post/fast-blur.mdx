@@ -1,3 +1,5 @@
+import Layout from 'layouts/post'
+
 export const meta = {
 	title: '实现 O(n) 时间的高斯模糊算法',
 	time: '20201228',
@@ -277,3 +279,5 @@ function fastBlur(src, dest, width, height, sigma) {
 - [https://www.peterkovesi.com/papers/FastGaussianSmoothing.pdf](https://www.peterkovesi.com/papers/FastGaussianSmoothing.pdf)
 - [https://stackoverflow.com/questions/17841098/gaussian-blur-standard-deviation-radius-and-kernel-size](https://stackoverflow.com/questions/17841098/gaussian-blur-standard-deviation-radius-and-kernel-size)
 - [https://blog.demofox.org/2015/08/19/gaussian-blur/](https://blog.demofox.org/2015/08/19/gaussian-blur/)
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>
