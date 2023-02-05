@@ -19,7 +19,9 @@ const extractMeta = (source) => {
 
 export async function getStaticProps() {
   const postDirPath = resolve(process.cwd(), './pages/post')
-  const files = fs.readdirSync(postDirPath)
+  const files = fs
+    .readdirSync(postDirPath)
+    .filter((file) => file.endsWith('.mdx'))
   const metas = await Promise.all(
     files.map(async (file) => {
       const source = fs.readFileSync(resolve(postDirPath, file)).toString()

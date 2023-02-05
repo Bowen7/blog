@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import BlurDemo from '../../demos/blur'
+import BlurDemo from 'demos/blur'
 function Blur() {
   return (
     <>

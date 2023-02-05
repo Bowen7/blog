@@ -21,10 +21,6 @@ const prettier = require('prettier')
             .replace('.mdx', '')
           const route = path === '/index' ? '' : path
 
-          // todo
-          if (route === '/about') {
-            return ''
-          }
           return `
                   <url>
                       <loc>${`https://bowencodes.com${route}`}</loc>

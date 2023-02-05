@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postbuild": "node ./scripts/sitemap.js"
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
@@ -34,6 +35,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "18.2.0",
     "react-wrap-balancer": "^0.4.0",
+    "recharts": "^2.3.2",
     "rehype-katex": "^6.0.2",
     "rehype-pretty-code": "^0.9.3",
     "remark-math": "^5.1.1",

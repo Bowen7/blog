@@ -88,70 +88,6 @@ a {
   word-wrap: break-word;
 }
 
-button,
-input,
-select,
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
-  margin: 0;
-}
-button:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-}
-
-ol,
-ul {
-  list-style: none;
-  padding: 0;
-  list-style-type: none;
-  margin: 8pt 8pt 8pt 16pt;
-}
-
-ol {
-  list-style-type: decimal;
-}
-
-li {
-  margin-bottom: 0.625rem;
-  font-size: 1em;
-  line-height: 1.625em;
-}
-
-ul > li:before {
-  content: '–';
-  display: inline-block;
-  color: #888;
-  position: absolute;
-  margin-left: -0.9375rem;
-}
-
-input[type='button'],
-input[type='submit'],
-input[type='reset'] {
-  appearance: button;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type='number'] {
-  -moz-appearance: textfield;
-}
-
-input:-webkit-autofill {
-  box-shadow: 0 0 0 100px #fff inset;
-}
-
 h1 {
   font-size: 2.25rem;
   letter-spacing: -0.066875rem;
@@ -198,6 +134,74 @@ hr {
 details {
   background-color: #fafafa;
   border: none;
+}
+
+.main-page {
+  max-width: 65ch;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+}
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+}
+
+ol,
+ul {
+  list-style: none;
+  padding: 0;
+  list-style-type: none;
+  margin: 8pt 8pt 8pt 16pt;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+li {
+  margin-bottom: 0.625rem;
+  font-size: 1em;
+  line-height: 1.625em;
+}
+
+article > ul > li:before {
+  content: '–';
+  display: inline-block;
+  color: #888;
+  position: absolute;
+  margin-left: -0.9375rem;
+}
+
+input[type='button'],
+input[type='submit'],
+input[type='reset'] {
+  appearance: button;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0 100px #fff inset;
 }
 details:focus,
 details:hover,
@@ -267,8 +271,4 @@ code {
 pre code {
   border-radius: none;
   background: inherit;
-}
-
-.main-page {
-  max-width: 65ch;
 }

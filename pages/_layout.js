@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import clsx from 'clsx'
-export default function Header({ page }) {
+import { useRouter } from 'next/router'
+
+const Header = ({ page }) => {
   const isHomeOrAbout = page === '' || page === 'about'
   return (
     <>
@@ -50,3 +52,26 @@ export default function Header({ page }) {
     </>
   )
 }
+
+function Layout(props) {
+  const { children } = props
+  const router = useRouter()
+  const page = router.pathname.split('/')[1]
+  return (
+    <>
+      <div className="main-page max-w-4xl mb-20 mx-auto">
+        <Header page={page} />
+        {/* eslint-disable-next-line multiline-ternary */}
+        {page === 'post' ? (
+          children
+        ) : (
+          <>
+            <title>Bowen Codes</title>
+            {children}
+          </>
+        )}
+      </div>
+    </>
+  )
+}
+export default Layout
