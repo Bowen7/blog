@@ -1,0 +1,24 @@
+import Layout from 'layouts/post'
+
+export const meta = {
+  title: '树的布局算法',
+  time: '20230306',
+  tags: ['算法']
+}
+
+之前在公司 hackday 中需要渲染一个树形结构的数据，需要对树的布局进行计算，最后当然是使用现成的库。
+之前开发 [regex-vis](https://github.com/Bowen7/regex-vis) 也渲染了类似树形结构的数据，因为特定的呈现效果，`regex-vis` 的图形渲染比较简单，就直接手写了。
+
+这两次经历促使我想更深入了解树的布局算法，于是阅读了几篇相关的论文，这里记录一下。下文每个小标题即是论文的标题，关于论文具体可见文末的参考文献。
+
+## 参考文献
+
+- Wetherell C, Shannon A. Tidy drawings of trees[J]. IEEE Transactions on software Engineering, 1979 (5): 514-520.
+- Reingold E M, Tilford J S. Tidier drawings of trees[J]. IEEE Transactions on software Engineering, 1981 (2): 223-228.
+- Walker J Q. A node‐positioning algorithm for general trees[J]. Software: Practice and Experience, 1990, 20(7): 685-705.
+- Buchheim C, Jünger M, Leipert S. Improving Walker’s algorithm to run in linear time[C]//Graph Drawing: 10th International Symposium, GD 2002 Irvine, CA, USA, August 26–28, 2002 Revised Papers 10. Springer Berlin Heidelberg, 2002: 344-353.
+- https://rachel53461.wordpress.com/2014/04/20/algorithm-for-drawing-trees/
+- https://github.com/prefuse/Prefuse
+- https://github.com/cvzi/py_treedraw
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>
