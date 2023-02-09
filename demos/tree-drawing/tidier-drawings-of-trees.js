@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
-import { trRoot } from './tree'
+import { tidierRoot } from './tree'
 import {
   renderBinaryTree,
   SIBLING_SEPARATION,
@@ -130,8 +130,7 @@ const TRAlgorithm = (root) => {
 }
 
 export const TRAlgorithmDemo = memo(() => {
-  const laidoutRoot = TRAlgorithm(cloneDeep(trRoot))
+  const laidoutRoot = TRAlgorithm(cloneDeep(tidierRoot))
   return renderBinaryTree(laidoutRoot)
 })
-
-TRAlgorithmDemo.displayName = 'Algorithm1Demo'
+TRAlgorithmDemo.displayName = 'TRAlgorithmDemo'

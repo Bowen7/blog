@@ -1,10 +1,12 @@
 import { memo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import {
-  root as treeRoot,
-  maxLevel as treeMaxLevel,
+  maryRoot,
+  maryMaxLevel,
   binaryRoot,
-  binaryMaxLevel
+  binaryMaxLevel,
+  tidierRoot,
+  tidierMaxLevel
 } from './tree'
 import {
   renderBinaryTree,
@@ -32,19 +34,19 @@ const algorithm1 = (root, maxLevel) => {
 
 const algorithm2 = (root) => {
   let nextPos = 0
-  const inOrder = (node, level) => {
+  const walk = (node, level) => {
     const { left, right } = node
     if (left) {
-      inOrder(left, level + 1)
+      walk(left, level + 1)
     }
     node.x = nextPos
     nextPos += NODE_WIDTH + SIBLING_SEPARATION
     node.y = level * (LEVEL_SEPARATION + NODE_HEIGHT)
     if (right) {
-      inOrder(right, level + 1)
+      walk(right, level + 1)
     }
   }
-  inOrder(root, 0)
+  walk(root, 0)
   return root
 }
 
@@ -100,20 +102,26 @@ const algorithm3 = (root, maxLevel) => {
   return root
 }
 
-export const Algorithm1Demo = memo(() => {
-  const laidoutRoot = algorithm1(cloneDeep(treeRoot), treeMaxLevel)
+export const TidyDrawingAlgorithm1Demo = memo(() => {
+  const laidoutRoot = algorithm1(cloneDeep(maryRoot), maryMaxLevel)
   return renderMaryTree(laidoutRoot)
 })
-Algorithm1Demo.displayName = 'Algorithm1Demo'
+TidyDrawingAlgorithm1Demo.displayName = 'TidyDrawingAlgorithm1Demo'
 
-export const Algorithm2Demo = memo(() => {
+export const TidyDrawingAlgorithm2Demo = memo(() => {
   const laidoutRoot = algorithm2(cloneDeep(binaryRoot))
   return renderBinaryTree(laidoutRoot)
 })
-Algorithm2Demo.displayName = 'Algorithm2Demo'
+TidyDrawingAlgorithm2Demo.displayName = 'TidyDrawingAlgorithm2Demo'
 
-export const Algorithm3Demo = memo(() => {
+export const TidyDrawingAlgorithm3Demo = memo(() => {
   const laidoutRoot = algorithm3(cloneDeep(binaryRoot), binaryMaxLevel)
   return renderBinaryTree(laidoutRoot)
 })
-Algorithm3Demo.displayName = 'Algorithm3Demo'
+TidyDrawingAlgorithm3Demo.displayName = 'TidyDrawingAlgorithm3Demo'
+
+export const TidyDrawingAlgorithm4Demo = memo(() => {
+  const laidoutRoot = algorithm3(cloneDeep(tidierRoot), tidierMaxLevel)
+  return renderBinaryTree(laidoutRoot)
+})
+TidyDrawingAlgorithm4Demo.displayName = 'TidyDrawingAlgorithm4Demo'

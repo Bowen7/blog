@@ -11,52 +11,54 @@ export const SIBLING_SEPARATION = 1
 const getRealLength = (unitLength) => unitLength * UNIT_SIZE
 
 const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
-  <svg
-    width={width * UNIT_SIZE + GRAPH_PADDING * 2}
-    height={height * UNIT_SIZE + GRAPH_PADDING * 2}
-  >
-    <g
-      transform={`translate(${
-        xAdjustment * UNIT_SIZE + GRAPH_PADDING
-      }, ${GRAPH_PADDING})`}
+  <div className="overflow-auto m-2">
+    <svg
+      width={width * UNIT_SIZE + GRAPH_PADDING * 2}
+      height={height * UNIT_SIZE + GRAPH_PADDING * 2}
     >
-      {edges.map(({ x1, y1, x2, y2, key }) => (
-        <path
-          d={`M${getRealLength(x1 + NODE_WIDTH / 2)},${getRealLength(
-            y1 + NODE_HEIGHT / 2
-          )}L${getRealLength(x2 + NODE_WIDTH / 2)},${getRealLength(
-            y2 + NODE_HEIGHT / 2
-          )}`}
-          key={key}
-          stroke="#000"
-          strokeWidth={2}
-          fill="none"
-        />
-      ))}
-      {nodes.map(({ x, y, title }) => (
-        <Fragment key={title}>
-          <circle
-            cx={getRealLength(x + NODE_WIDTH / 2)}
-            cy={getRealLength(y + NODE_HEIGHT / 2)}
-            r={getRealLength(NODE_WIDTH / 2)}
-            stroke="black"
-            strokeWidth="2"
-            fill="#fff"
+      <g
+        transform={`translate(${
+          xAdjustment * UNIT_SIZE + GRAPH_PADDING
+        }, ${GRAPH_PADDING})`}
+      >
+        {edges.map(({ x1, y1, x2, y2, key }) => (
+          <path
+            d={`M${getRealLength(x1 + NODE_WIDTH / 2)},${getRealLength(
+              y1 + NODE_HEIGHT / 2
+            )}L${getRealLength(x2 + NODE_WIDTH / 2)},${getRealLength(
+              y2 + NODE_HEIGHT / 2
+            )}`}
+            key={key}
+            stroke="#000"
+            strokeWidth={2}
+            fill="none"
           />
-          <text
-            x={getRealLength(x + NODE_WIDTH / 2)}
-            y={getRealLength(y + NODE_HEIGHT / 2)}
-            r={getRealLength(NODE_HEIGHT / 2)}
-            textAnchor="middle"
-            fontSize={FONT_SIZE}
-            dy={FONT_SIZE / 3}
-          >
-            {title}
-          </text>
-        </Fragment>
-      ))}
-    </g>
-  </svg>
+        ))}
+        {nodes.map(({ x, y, title }) => (
+          <Fragment key={title}>
+            <circle
+              cx={getRealLength(x + NODE_WIDTH / 2)}
+              cy={getRealLength(y + NODE_HEIGHT / 2)}
+              r={getRealLength(NODE_WIDTH / 2)}
+              stroke="black"
+              strokeWidth="2"
+              fill="#fff"
+            />
+            <text
+              x={getRealLength(x + NODE_WIDTH / 2)}
+              y={getRealLength(y + NODE_HEIGHT / 2)}
+              r={getRealLength(NODE_HEIGHT / 2)}
+              textAnchor="middle"
+              fontSize={FONT_SIZE}
+              dy={FONT_SIZE / 3}
+            >
+              {title}
+            </text>
+          </Fragment>
+        ))}
+      </g>
+    </svg>
+  </div>
 )
 
 export const renderBinaryTree = (root) => {

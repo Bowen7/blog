@@ -1,153 +1,76 @@
-export const root = {
-  title: 'a',
-  children: [
-    {
-      title: 'b',
-      children: [
-        {
-          title: 'd',
-          children: []
-        },
-        {
-          title: 'e',
-          children: [
-            {
-              title: 'h',
-              children: [
-                {
-                  title: 'n',
-                  children: []
-                },
-                {
-                  title: 'o',
-                  children: []
-                }
-              ]
-            },
-            {
-              title: 'i',
-              children: [
-                {
-                  title: 'p',
-                  children: []
-                }
-              ]
-            },
-            {
-              title: 'j',
-              children: []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      title: 'c',
-      children: [
-        {
-          title: 'f',
-          children: []
-        },
-        {
-          title: 'g',
-          children: [
-            {
-              title: 'k',
-              children: [
-                {
-                  title: 'q',
-                  children: []
-                }
-              ]
-            },
-            {
-              title: 'l',
-              children: []
-            },
-            {
-              title: 'm',
-              children: [
-                {
-                  title: 'r',
-                  children: []
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-export const maxLevel = 5
-
 export const binaryRoot = {
-  title: 'a',
+  title: 'o',
   left: {
-    title: 'b',
-    left: {
-      title: 'd'
-    },
-    right: {
-      title: 'e',
-      left: { title: 'g' },
-      right: { title: 'h' }
-    }
-  },
-  right: {
-    title: 'c',
-    right: {
-      title: 'f',
-      right: {
-        title: 'i',
-        left: {
-          title: 'j',
-          left: { title: 'k', left: { title: 'm' }, right: { title: 'n' } },
-          right: { title: 'l' }
-        }
-      }
-    }
-  }
-}
-export const binaryMaxLevel = 7
-
-export const trRoot = {
-  title: 'a',
-  left: {
-    title: 'b',
+    title: 'g',
     left: {
       title: 'd',
       left: {
-        title: 'h',
+        title: 'c',
         right: {
-          title: 'l',
-          right: { title: 'n' }
+          title: 'b',
+          right: { title: 'a' }
         }
       }
     },
     right: {
-      title: 'e',
-      left: { title: 'i' }
+      title: 'f',
+      left: { title: 'e' }
     }
   },
   right: {
-    title: 'c',
+    title: 'n',
     left: {
-      title: 'f',
+      title: 'l',
       left: {
         title: 'j',
         left: {
-          title: 'm',
+          title: 'i',
           left: {
-            title: 'o'
+            title: 'h'
           }
         }
       },
       right: { title: 'k' }
     },
-    right: { title: 'g' }
+    right: { title: 'm' }
   }
 }
+export const binaryMaxLevel = 6
+
+export const tidierRoot = {
+  title: 'm',
+  left: {
+    title: 'f',
+    left: {
+      title: 'd',
+      right: {
+        title: 'c',
+        right: {
+          title: 'b',
+          right: {
+            title: 'a'
+          }
+        }
+      }
+    },
+    right: { title: 'e' }
+  },
+  right: {
+    title: 'l',
+    left: { title: 'g' },
+    right: {
+      title: 'k',
+      left: {
+        title: 'j',
+        left: {
+          title: 'i',
+          left: { title: 'h' }
+        }
+      }
+    }
+  }
+}
+export const tidierMaxLevel = 6
 
 export const maryRoot = {
   title: 'r',
@@ -179,3 +102,5 @@ export const maryRoot = {
     { title: 'q', children: [{ title: 'p', children: [{ title: 'o' }] }] }
   ]
 }
+
+export const maryMaxLevel = 4
