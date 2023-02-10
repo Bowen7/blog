@@ -1,45 +1,12 @@
-import { useRef, useState } from 'react'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Link from 'next/link'
 import Head from 'next/head'
 import { MDXProvider } from '@mdx-js/react'
 import Balancer from 'react-wrap-balancer'
-import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { timeFormat } from 'utils'
-
-const CodePre = ({ children }) => {
-  const [isCopied, setIsCopied] = useState(false)
-  const ref = useRef()
-  const text = ref.current?.textContent
-
-  const onCopy = () => {
-    setIsCopied(true)
-    setTimeout(() => setIsCopied(false), 3000)
-  }
-
-  return (
-    <>
-      <div className="relative rounded-md mb-4 group">
-        {isCopied ? (
-          <CheckIcon className="w-5 h-5 absolute top-4 right-4" />
-        ) : (
-          <CopyToClipboard text={text} onCopy={onCopy}>
-            <ClipboardIcon className="w-5 h-5 absolute top-4 right-4 cursor-pointer hidden group-hover:inline" />
-          </CopyToClipboard>
-        )}
-        <pre
-          ref={ref}
-          className="bg-stone-50 p-4 max-h-72 overflow-auto text-sm m-0 [&>code]:bg-stone-50"
-        >
-          {children}
-        </pre>
-      </div>
-    </>
-  )
-}
+import { Pre } from './pre'
 
 const components = {
-  pre: CodePre
+  pre: Pre
 }
 
 function PostLayout({ children, meta = {} }) {
