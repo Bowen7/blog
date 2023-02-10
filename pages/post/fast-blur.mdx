@@ -1,22 +1,37 @@
 import Layout from 'layouts/post'
+import { Sandbox } from 'layouts/sandbox'
+import tidyDrawingsJS from 'sandboxes/tree-drawing/tidy-drawings-of-trees-algorithm1'
+import rootJS from 'sandboxes/tree-drawing/root.js'
+import utilsJS from 'sandboxes/tree-drawing/utils.js'
+import appJS from 'sandboxes/tree-drawing/app.js'
 
 export const meta = {
-	title: '实现 O(n) 时间的高斯模糊算法',
-	time: '20201228',
-	ready: true,
-	tags: ['算法']
+  title: '实现 O(n) 时间的高斯模糊算法',
+  time: '20201228',
+  ready: true,
+  tags: ['算法']
 }
 
 <link
-	rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.css"
-	integrity="sha384-BdGj8xC2eZkQaxoQ8nSLefg4AV4/AwB3Fj+8SUSo7pnKP6Eoy18liIKTPn9oBYNG"
-	crossOrigin="anonymous"
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.css"
+  integrity="sha384-BdGj8xC2eZkQaxoQ8nSLefg4AV4/AwB3Fj+8SUSo7pnKP6Eoy18liIKTPn9oBYNG"
+  crossOrigin="anonymous"
 />
 
 本文主要是针对高斯模糊算法进行优化，最后在线性时间内实现高斯模糊效果。当然，该算法并非本人原创，实现过程中也借鉴了一些文章和论文，相关链接都在文末贴出
 
 搭配阅读，我写了一个简单的 Demo，[Demo 链接](/demos/blur)，[Demo 代码地址](https://github.com/Bowen7/Blog/tree/master/demos/blur)，可以在 Demo 中测试各种模糊效果及其耗时
+
+<Sandbox
+  template="react"
+  files={{
+    '/App.js': appJS,
+    '/layout.js': { code: tidyDrawingsJS, active: true },
+    '/root.js': rootJS,
+    '/utils.js': utilsJS
+  }}
+/>
 
 ### 高斯模糊
 
@@ -32,28 +47,28 @@ $G(x,y)=\frac{1}{2\pi\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}$
 
 ```js
 function gaussianBlur(src, dest, width, height, sigma) {
-	const radius = Math.round(sigma * 3) // kernel size
-	for (let i = 0; i < width; i++) {
-		for (let j = 0; j < height; j++) {
-			let accumulation = 0
-			let weightSum = 0
-			for (let dx = -radius; dx <= radius; dx++) {
-				for (let dy = -radius; dy <= radius; dy++) {
-					const x = Math.min(width - 1, Math.max(0, i + dx))
-					const y = Math.min(height - 1, Math.max(0, j + dy))
-					// calc weight
-					const weight =
-						Math.exp(
-							-(Math.pow(dx, 2) + Math.pow(dy, 2)) / (2 * Math.pow(sigma, 2))
-						) /
-						(Math.PI * 2 * Math.pow(sigma, 2))
-					accumulation += src[y * width + x] * weight
-					weightSum += weight
-				}
-			}
-			dest[j * width + i] = Math.round(accumulation / weightSum)
-		}
-	}
+  const radius = Math.round(sigma * 3) // kernel size
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      let accumulation = 0
+      let weightSum = 0
+      for (let dx = -radius; dx <= radius; dx++) {
+        for (let dy = -radius; dy <= radius; dy++) {
+          const x = Math.min(width - 1, Math.max(0, i + dx))
+          const y = Math.min(height - 1, Math.max(0, j + dy))
+          // calc weight
+          const weight =
+            Math.exp(
+              -(Math.pow(dx, 2) + Math.pow(dy, 2)) / (2 * Math.pow(sigma, 2))
+            ) /
+            (Math.PI * 2 * Math.pow(sigma, 2))
+          accumulation += src[y * width + x] * weight
+          weightSum += weight
+        }
+      }
+      dest[j * width + i] = Math.round(accumulation / weightSum)
+    }
+  }
 }
 ```
 
@@ -71,21 +86,21 @@ function gaussianBlur(src, dest, width, height, sigma) {
 
 ```js
 function simpleBoxBlur(src, dest, width, height, radius) {
-	for (let i = 0; i < width; i++) {
-		for (let j = 0; j < height; j++) {
-			let accumulation = 0
-			for (let dx = -radius; dx <= radius; dx++) {
-				for (let dy = -radius; dy <= radius; dy++) {
-					const x = Math.min(width - 1, Math.max(0, i + dx))
-					const y = Math.min(height - 1, Math.max(0, j + dy))
-					accumulation += src[y * width + x]
-				}
-			}
-			dest[j * width + i] = Math.round(
-				accumulation / Math.pow(2 * radius + 1, 2)
-			)
-		}
-	}
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      let accumulation = 0
+      for (let dx = -radius; dx <= radius; dx++) {
+        for (let dy = -radius; dy <= radius; dy++) {
+          const x = Math.min(width - 1, Math.max(0, i + dx))
+          const y = Math.min(height - 1, Math.max(0, j + dy))
+          accumulation += src[y * width + x]
+        }
+      }
+      dest[j * width + i] = Math.round(
+        accumulation / Math.pow(2 * radius + 1, 2)
+      )
+    }
+  }
 }
 ```
 
@@ -110,30 +125,30 @@ ${m = \frac{12\sigma^2-nw_l^2-4nw_l-3n}{-4w_l-4}}$
 
 ```js
 function genKernelsForGaussian(sigma, n) {
-	const wIdeal = Math.sqrt((12 * Math.pow(sigma, 2)) / n + 1)
-	let wl = Math.floor(wIdeal)
-	if (wl % 2 === 0) {
-		wl--
-	}
-	const wu = wl + 2
-	let m =
-		(12 * Math.pow(sigma, 2) - n * Math.pow(wl, 2) - 4 * n * wl - 3 * n) /
-		(-4 * wl - 4)
-	m = Math.round(m)
-	const sizes = []
-	for (let i = 0; i < n; i++) {
-		sizes.push(i < m ? wl : wu)
-	}
-	return sizes
+  const wIdeal = Math.sqrt((12 * Math.pow(sigma, 2)) / n + 1)
+  let wl = Math.floor(wIdeal)
+  if (wl % 2 === 0) {
+    wl--
+  }
+  const wu = wl + 2
+  let m =
+    (12 * Math.pow(sigma, 2) - n * Math.pow(wl, 2) - 4 * n * wl - 3 * n) /
+    (-4 * wl - 4)
+  m = Math.round(m)
+  const sizes = []
+  for (let i = 0; i < n; i++) {
+    sizes.push(i < m ? wl : wu)
+  }
+  return sizes
 }
 
 function boxBlur(src, dest, width, height, sigma) {
-	const kernels = genKernelsForGaussian(sigma, 3)
-	// radius * 2 + 1 = kernel size
-	simpleBoxBlur(src, dest, width, height, (kernels[0] - 1) / 2)
-	// 注意这里要颠倒 src 和 dest 的顺序
-	simpleBoxBlur(dest, src, width, height, (kernels[1] - 1) / 2)
-	simpleBoxBlur(src, dest, width, height, (kernels[2] - 1) / 2)
+  const kernels = genKernelsForGaussian(sigma, 3)
+  // radius * 2 + 1 = kernel size
+  simpleBoxBlur(src, dest, width, height, (kernels[0] - 1) / 2)
+  // 注意这里要颠倒 src 和 dest 的顺序
+  simpleBoxBlur(dest, src, width, height, (kernels[1] - 1) / 2)
+  simpleBoxBlur(src, dest, width, height, (kernels[2] - 1) / 2)
 }
 ```
 
@@ -148,30 +163,30 @@ function boxBlur(src, dest, width, height, sigma) {
 ```js
 // horizontal motion blur
 function hMotionBlur(src, dest, width, height, radius) {
-	for (let i = 0; i < width; i++) {
-		for (let j = 0; j < height; j++) {
-			let accumulation = 0
-			for (let dx = -radius; dx <= radius; dx++) {
-				const x = Math.min(width - 1, Math.max(0, i + dx))
-				accumulation += src[j * width + x]
-			}
-			dest[j * width + i] = Math.round(accumulation / (2 * radius + 1))
-		}
-	}
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      let accumulation = 0
+      for (let dx = -radius; dx <= radius; dx++) {
+        const x = Math.min(width - 1, Math.max(0, i + dx))
+        accumulation += src[j * width + x]
+      }
+      dest[j * width + i] = Math.round(accumulation / (2 * radius + 1))
+    }
+  }
 }
 
 // vertical motion blur
 function vMotionBlur(src, dest, width, height, radius) {
-	for (let i = 0; i < width; i++) {
-		for (let j = 0; j < height; j++) {
-			let accumulation = 0
-			for (let dy = -radius; dy <= radius; dy++) {
-				const y = Math.min(height - 1, Math.max(0, j + dy))
-				accumulation += src[y * width + i]
-			}
-			dest[j * width + i] = Math.round(accumulation / (2 * radius + 1))
-		}
-	}
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      let accumulation = 0
+      for (let dy = -radius; dy <= radius; dy++) {
+        const y = Math.min(height - 1, Math.max(0, j + dy))
+        accumulation += src[y * width + i]
+      }
+      dest[j * width + i] = Math.round(accumulation / (2 * radius + 1))
+    }
+  }
 }
 ```
 
@@ -179,18 +194,18 @@ function vMotionBlur(src, dest, width, height, radius) {
 
 ```js
 function _mutantBoxBlur(src, dest, width, height, radius) {
-	hMotionBlur(dest, src, width, height, radius)
-	vMotionBlur(src, dest, width, height, radius)
+  hMotionBlur(dest, src, width, height, radius)
+  vMotionBlur(src, dest, width, height, radius)
 }
 
 function mutantBoxBlur(src, dest, width, height, sigma) {
-	const boxes = genKernelsForGaussian(sigma, 3)
-	for (let i = 0; i < src.length; i++) {
-		dest[i] = src[i]
-	}
-	_mutantBoxBlur(src, dest, width, height, (boxes[0] - 1) / 2)
-	_mutantBoxBlur(src, dest, width, height, (boxes[1] - 1) / 2)
-	_mutantBoxBlur(src, dest, width, height, (boxes[2] - 1) / 2)
+  const boxes = genKernelsForGaussian(sigma, 3)
+  for (let i = 0; i < src.length; i++) {
+    dest[i] = src[i]
+  }
+  _mutantBoxBlur(src, dest, width, height, (boxes[0] - 1) / 2)
+  _mutantBoxBlur(src, dest, width, height, (boxes[1] - 1) / 2)
+  _mutantBoxBlur(src, dest, width, height, (boxes[2] - 1) / 2)
 }
 ```
 
@@ -215,53 +230,53 @@ $dest[i][j+1]=dest[i][j]+\frac{src[i][j+1+r]-src[i][j-r]}{2r+1}$
 ```js
 // horizontal fast motion blur
 function hFastMotionBlur(src, dest, width, height, radius) {
-	for (let i = 0; i < height; i++) {
-		let accumulation = radius * src[i * width]
-		for (let j = 0; j <= radius; j++) {
-			accumulation += src[i * width + j]
-		}
-		dest[i * width] = Math.round(accumulation / (2 * radius + 1))
-		for (let j = 1; j < width; j++) {
-			const left = Math.max(0, j - radius - 1)
-			const right = Math.min(width - 1, j + radius)
-			accumulation =
-				accumulation + (src[i * width + right] - src[i * width + left])
-			dest[i * width + j] = Math.round(accumulation / (2 * radius + 1))
-		}
-	}
+  for (let i = 0; i < height; i++) {
+    let accumulation = radius * src[i * width]
+    for (let j = 0; j <= radius; j++) {
+      accumulation += src[i * width + j]
+    }
+    dest[i * width] = Math.round(accumulation / (2 * radius + 1))
+    for (let j = 1; j < width; j++) {
+      const left = Math.max(0, j - radius - 1)
+      const right = Math.min(width - 1, j + radius)
+      accumulation =
+        accumulation + (src[i * width + right] - src[i * width + left])
+      dest[i * width + j] = Math.round(accumulation / (2 * radius + 1))
+    }
+  }
 }
 
 // vertical fast motion blur
 function vFastMotionBlur(src, dest, width, height, radius) {
-	for (let i = 0; i < width; i++) {
-		let accumulation = radius * src[i]
-		for (let j = 0; j <= radius; j++) {
-			accumulation += src[j * width + i]
-		}
-		dest[i] = Math.round(accumulation / (2 * radius + 1))
-		for (let j = 1; j < height; j++) {
-			const top = Math.max(0, j - radius - 1)
-			const bottom = Math.min(height - 1, j + radius)
-			accumulation =
-				accumulation + src[bottom * width + i] - src[top * width + i]
-			dest[j * width + i] = Math.round(accumulation / (2 * radius + 1))
-		}
-	}
+  for (let i = 0; i < width; i++) {
+    let accumulation = radius * src[i]
+    for (let j = 0; j <= radius; j++) {
+      accumulation += src[j * width + i]
+    }
+    dest[i] = Math.round(accumulation / (2 * radius + 1))
+    for (let j = 1; j < height; j++) {
+      const top = Math.max(0, j - radius - 1)
+      const bottom = Math.min(height - 1, j + radius)
+      accumulation =
+        accumulation + src[bottom * width + i] - src[top * width + i]
+      dest[j * width + i] = Math.round(accumulation / (2 * radius + 1))
+    }
+  }
 }
 
 function _fastBlur(src, dest, width, height, radius) {
-	hFastMotionBlur(dest, src, width, height, radius)
-	vFastMotionBlur(src, dest, width, height, radius)
+  hFastMotionBlur(dest, src, width, height, radius)
+  vFastMotionBlur(src, dest, width, height, radius)
 }
 
 function fastBlur(src, dest, width, height, sigma) {
-	const boxes = genKernelsForGaussian(sigma, 3)
-	for (let i = 0; i < src.length; i++) {
-		dest[i] = src[i]
-	}
-	_fastBlur(src, dest, width, height, (boxes[0] - 1) / 2)
-	_fastBlur(src, dest, width, height, (boxes[1] - 1) / 2)
-	_fastBlur(src, dest, width, height, (boxes[2] - 1) / 2)
+  const boxes = genKernelsForGaussian(sigma, 3)
+  for (let i = 0; i < src.length; i++) {
+    dest[i] = src[i]
+  }
+  _fastBlur(src, dest, width, height, (boxes[0] - 1) / 2)
+  _fastBlur(src, dest, width, height, (boxes[1] - 1) / 2)
+  _fastBlur(src, dest, width, height, (boxes[2] - 1) / 2)
 }
 ```
 
