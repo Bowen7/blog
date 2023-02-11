@@ -271,4 +271,6 @@ code {
 pre code {
   border-radius: none;
   background: inherit;
+  line-height: 22px;
+	font-size: 14px;
 }
