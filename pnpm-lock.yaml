@@ -2,7 +2,6 @@ lockfileVersion: 5.3
 
 specifiers:
   '@codesandbox/sandpack-react': ^1.20.9
-  '@codesandbox/sandpack-themes': ^1.19.0
   '@heroicons/react': ^2.0.14
   '@mdx-js/loader': ^2.2.1
   '@mdx-js/mdx': ^2.2.1
@@ -38,7 +37,6 @@ specifiers:
 
 dependencies:
   '@codesandbox/sandpack-react': 1.20.9_react-dom@18.2.0+react@18.2.0
-  '@codesandbox/sandpack-themes': 1.19.0
   '@heroicons/react': 2.0.14_react@18.2.0
   '@mdx-js/loader': 2.2.1
   '@mdx-js/mdx': 2.2.1
@@ -229,10 +227,6 @@ packages:
       react-devtools-inline: 4.4.0
       react-dom: 18.2.0_react@18.2.0
       react-is: 17.0.2
-    dev: false
-
-  /@codesandbox/sandpack-themes/1.19.0:
-    resolution: {integrity: sha512-IbFnx3CmldOpwh+lJoRps4vRA41mSn4ZqU4sNxoIt6HrAVuOZodTBe52hDn58N/l0RRaEh/hMw0UFB4Bmp7wqw==}
     dev: false
 
   /@eslint/eslintrc/0.4.3:
