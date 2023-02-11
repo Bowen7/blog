@@ -23,16 +23,6 @@ export const meta = {
 
 搭配阅读，我写了一个简单的 Demo，[Demo 链接](/demos/blur)，[Demo 代码地址](https://github.com/Bowen7/Blog/tree/master/demos/blur)，可以在 Demo 中测试各种模糊效果及其耗时
 
-<Sandbox
-  template="react"
-  files={{
-    '/App.js': appJS,
-    '/layout.js': { code: tidyDrawingsJS, active: true },
-    '/root.js': rootJS,
-    '/utils.js': utilsJS
-  }}
-/>
-
 ### 高斯模糊
 
 高斯模糊可以实现非常平滑的模糊效果，对于每一个像素，它会取它本身及其周围一定范围内的像素，去计算模糊后的效果，当然，每个像素在计算过程中所占的权重并不相同，距离其本身越近，权重越高——这当然是合理的。权重的计算公式如下：
