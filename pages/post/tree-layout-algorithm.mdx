@@ -29,7 +29,7 @@ export const meta = {
 
 首先，绘制一棵树，我们当然希望它尽可能的美观，那怎样才算美观呢？
 
-这里列出文中提到的 7 条美观要求：
+这里列出文中提到的 7 条美观要求，我们在下面的布局算法也会对照这 7 条：
 
 1. 兄弟节点的顶部边缘在同一水平线上
 2. 按顺序从左到右渲染兄弟节点
@@ -156,6 +156,9 @@ export const meta = {
 
 ## A node‐positioning algorithm for general trees
 
+上面的算法对于二叉树来说，已经可以满足开头提到的 7 条美学要求，
+这篇论文则是将其拓展为一般树，即树的每个节点可以有多个子节点
+
 <Sandbox
   template="react"
   previewVisible={false}
@@ -166,6 +169,11 @@ export const meta = {
     '/layout.js': { code: walkerJS, active: true }
   }}
 />
+
+有了前几条算法，这个算法的思路不难理解，这里讲一下算法几个特殊的点：
+- 算法中 prelim 是指第一次遍历后 x 坐标的值；modifier 与之前的算法相同，是子树相对于父节点的偏移量
+- 在拓展为一般树后，会有一个问题：较大子树之间的小子树们会比较靠左。所以在后面需要重新调整一下
+- 这里的对比左右子树轮廓的方法，没有使用线索树，而是采用了时间复杂度高的方法，这点会在下篇论文中优化
 
 ## Improving Walker’s algorithm to run in linear time
 
@@ -178,7 +186,6 @@ export const meta = {
     '/layout.js': { code: improvedWalkerJS, active: true }
   }}
 />
-
 
 ## 参考文献
 
