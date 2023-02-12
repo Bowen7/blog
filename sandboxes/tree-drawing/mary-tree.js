@@ -1,16 +1,45 @@
 import { Fragment } from 'react'
+
 const UNIT_SIZE = 25
 const GRAPH_PADDING = 25
 const FONT_SIZE = 18
 
-export const NODE_WIDTH = 1
-export const NODE_HEIGHT = 1
-export const LEVEL_SEPARATION = 1
-export const SIBLING_SEPARATION = 1
+const NODE_WIDTH = 1
+const NODE_HEIGHT = 1
+
+export const root = {
+  title: 'r',
+  children: [
+    {
+      title: 'e',
+      children: [
+        { title: 'a' },
+        { title: 'd', children: [{ title: 'b' }, { title: 'c' }] }
+      ]
+    },
+    { title: 'f' },
+    {
+      title: 'n',
+      children: [
+        { title: 'g' },
+        {
+          title: 'm',
+          children: [
+            { title: 'h' },
+            { title: 'i' },
+            { title: 'j' },
+            { title: 'k' },
+            { title: 'l' }
+          ]
+        }
+      ]
+    },
+    { title: 'q', children: [{ title: 'p', children: [{ title: 'o' }] }] }
+  ]
+}
+export const level = 5
 
 const getRealLength = (unitLength) => unitLength * UNIT_SIZE
-
-export const cloneDeep = (data) => JSON.parse(JSON.stringify(data))
 
 const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
   <svg
@@ -61,54 +90,7 @@ const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
   </svg>
 )
 
-export const renderBinaryTree = (root) => {
-  const nodes = []
-  const edges = []
-  const stack = [root]
-  let maxX = 0
-  let maxY = 0
-  let minX = Infinity
-  while (stack.length > 0) {
-    const cur = stack.pop()
-    const { title, left, right, x, y } = cur
-    minX = Math.min(minX, x)
-    maxX = Math.max(maxX, x)
-    maxY = Math.max(maxY, y)
-    nodes.push({ title, x, y })
-
-    if (left) {
-      const { x: x2, y: y2, title: childTitle } = left
-      stack.push(left)
-      edges.push({
-        x1: x,
-        y1: y,
-        x2,
-        y2,
-        key: `${title}-${childTitle}`
-      })
-    }
-    if (right) {
-      const { x: x2, y: y2, title: childTitle } = right
-      stack.push(right)
-      edges.push({
-        x1: x,
-        y1: y,
-        x2,
-        y2,
-        key: `${title}-${childTitle}`
-      })
-    }
-  }
-  return renderNodesAndEdges(
-    nodes,
-    edges,
-    maxX - minX + NODE_WIDTH,
-    maxY + NODE_HEIGHT,
-    -minX
-  )
-}
-
-export const renderMaryTree = (root) => {
+export const renderTree = (root) => {
   const nodes = []
   const edges = []
   const stack = [root]

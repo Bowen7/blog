@@ -1,25 +1,20 @@
-import { memo } from 'react'
-import cloneDeep from 'lodash/cloneDeep'
-import { tidierRoot } from './tree'
-import {
-  renderBinaryTree,
-  SIBLING_SEPARATION,
-  LEVEL_SEPARATION,
-  NODE_HEIGHT
-} from './utils'
+const NODE_WIDTH = 1
+const NODE_HEIGHT = 1
+const LEVEL_SEPARATION = 1
+const SIBLING_SEPARATION = 1
 
-const TRAlgorithm = (root) => {
-  const setup = (node, level, leftmost, rightmost) => {
+export default function layout(root) {
+  const firstWalk = (node, level, leftmost, rightmost) => {
     let { left, right } = node
     const ll = { addr: null, offset: 0, level: 0 }
     const lr = { addr: null, offset: 0, level: 0 }
     const rl = { addr: null, offset: 0, level: 0 }
     const rr = { addr: null, offset: 0, level: 0 }
     if (left) {
-      setup(left, level + 1, ll, lr)
+      firstWalk(left, level + 1, ll, lr)
     }
     if (right) {
-      setup(right, level + 1, rl, rr)
+      firstWalk(right, level + 1, rl, rr)
     }
     node.y = level * (NODE_HEIGHT + LEVEL_SEPARATION)
     // leaf node
@@ -61,7 +56,7 @@ const TRAlgorithm = (root) => {
         }
       }
 
-      node.offset = (rootSep + 1) / 2
+      node.offset = (rootSep + NODE_WIDTH) / 2
       leftOffsetSum -= node.offset
       rightOffsetSum += node.offset
 
@@ -104,33 +99,25 @@ const TRAlgorithm = (root) => {
     }
   }
 
-  const petrify = (node, x) => {
+  const secondWalk = (node, x) => {
     node.x = x
     if (node.thread) {
-      node.thread = false
-      node.left = null
-      node.right = null
+      return
     }
     const { left, right } = node
     if (left) {
-      petrify(left, x - node.offset)
+      secondWalk(left, x - node.offset)
     }
     if (right) {
-      petrify(right, x + node.offset)
+      secondWalk(right, x + node.offset)
     }
   }
-  setup(
+  firstWalk(
     root,
     0,
     { addr: null, offset: 0, level: 0 },
     { addr: null, offset: 0, level: 0 }
   )
-  petrify(root, 0)
+  secondWalk(root, 0)
   return root
 }
-
-export const TRAlgorithmDemo = memo(() => {
-  const laidoutRoot = TRAlgorithm(cloneDeep(tidierRoot))
-  return renderBinaryTree(laidoutRoot)
-})
-TRAlgorithmDemo.displayName = 'TRAlgorithmDemo'

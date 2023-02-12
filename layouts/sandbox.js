@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
   SandpackLayout,
   SandpackCodeEditor,
   SandpackPreview,
-  SandpackProvider
+  SandpackProvider,
+  useSandpack
 } from '@codesandbox/sandpack-react'
 import clsx from 'clsx'
 import {} from '@heroicons/react/24/outline'
@@ -41,9 +42,65 @@ const theme = {
   }
 }
 
+const editorSizeClassMap = {
+  sm: '!h-52',
+  md: '!h-72',
+  lg: '!h-96',
+  xl: '!h-144'
+}
+
+const SandboxCore = ({
+  previewVisible: initialPreviewVisible = true,
+  editorVisible
+}) => {
+  const [previewVisible, setPreviewVisible] = useState(initialPreviewVisible)
+  const loaded = useRef(false)
+  const { sandpack } = useSandpack()
+  useEffect(() => {
+    if (previewVisible && !initialPreviewVisible && !loaded.current) {
+      loaded.current = true
+      setTimeout(() => {
+        sandpack.runSandpack()
+      }, 50)
+    }
+  }, [previewVisible])
+  return (
+    <>
+      <SandpackLayout>
+        {editorVisible && (
+          <SandpackCodeEditor
+            showTabs={false}
+            showLineNumbers
+            showRunButton={false}
+          />
+        )}
+        {(initialPreviewVisible || loaded.current || previewVisible) && (
+          <div className={clsx(!previewVisible && 'hidden')}>
+            <SandpackPreview className="!h-fit divide-y" />
+          </div>
+        )}
+      </SandpackLayout>
+      <div className="flex items-center px-4 py-2 ">
+        <span
+          className="cursor-pointer"
+          onClick={() => setPreviewVisible((v) => !v)}
+        >
+          {previewVisible ? 'Hide Preview' : 'Show Preview'}
+        </span>
+      </div>
+    </>
+  )
+}
+
 export const Sandbox = (props) => {
-  const { template, files, defaultPreviewVisible = true } = props
-  const [previewVisible, setPreviewVisible] = useState(defaultPreviewVisible)
+  const {
+    template,
+    files,
+    previewVisible = true,
+    editorVisible = true,
+    editorSize = 'md',
+    title = 'Sandbox'
+  } = props
   return (
     <div className="my-6 rounded-lg shadow-lg">
       <SandpackProvider
@@ -56,27 +113,19 @@ export const Sandbox = (props) => {
             'sp-layout':
               '!block !rounded-none !border-0 !border-gray-200 divide-y',
             'sp-preview-iframe': '!basis-auto',
-            'sp-wrapper': '!divide-y !w-full !inline-block'
+            'sp-wrapper': '!divide-y !w-full !inline-block',
+            'sp-editor': editorSizeClassMap[editorSize]
           }
         }}
       >
         <div className="flex items-center justify-between px-4 py-2">
-          <span>SANDBOX</span>
+          <span>{title}</span>
         </div>
-        <SandpackLayout>
-          <SandpackCodeEditor showTabs={false} showLineNumbers />
-          <div className={clsx(!previewVisible && 'hidden')}>
-            <SandpackPreview className="!h-fit divide-y" />
-          </div>
-        </SandpackLayout>
-        <div className="flex items-center px-4 py-2 ">
-          <span
-            className="cursor-pointer"
-            onClick={() => setPreviewVisible((v) => !v)}
-          >
-            {previewVisible ? 'Hide Preview' : 'Show Preview'}
-          </span>
-        </div>
+        <SandboxCore
+          previewVisible={previewVisible}
+          editorVisible={editorVisible}
+          editorSize={editorSize}
+        />
       </SandpackProvider>
       {/* Prevent focusing on CodeMirror when clicking outside of it on the right. */}
       <span className="hidden">trick</span>

@@ -14,6 +14,9 @@ module.exports = {
     extend: {
       flexBasis: {
         auto: 'auto'
+      },
+      height: {
+        144: '36rem'
       }
     },
     boxShadow: {

@@ -1,7 +1,8 @@
-import { memo } from 'react'
-import cloneDeep from 'lodash/cloneDeep'
-import { maryRoot } from './tree.js'
-import { LEVEL_SEPARATION, NODE_HEIGHT, renderMaryTree } from './utils'
+const NODE_WIDTH = 1
+const NODE_HEIGHT = 1
+const LEVEL_SEPARATION = 1
+const SIBLING_SEPARATION = 1
+
 const isLeaf = (node) => !node.children || node.children.length === 0
 
 const hasLeftSibling = (node) => node.parent?.children.indexOf(node) > 0
@@ -33,11 +34,7 @@ const getLeftmost = (node, level, depth) => {
   }
 }
 
-// unit length
-const WIDTH = 1
-const MIN_SEPARATION = 1
-
-export const walkerAlgorithm = (root) => {
+export default function layout(root) {
   const neighbors = []
   let maxDepth = 0
 
@@ -63,8 +60,8 @@ export const walkerAlgorithm = (root) => {
       let moveDistance =
         neighbor.prelim +
         leftModSum +
-        MIN_SEPARATION +
-        WIDTH -
+        SIBLING_SEPARATION +
+        NODE_WIDTH -
         (leftmost.prelim + rightModSum)
       if (moveDistance > 0) {
         let tempPtr = node
@@ -107,7 +104,8 @@ export const walkerAlgorithm = (root) => {
 
     if (isLeaf(node)) {
       if (hasLeftSibling(node)) {
-        node.prelim = getLeftSibling(node).prelim + MIN_SEPARATION + WIDTH
+        node.prelim =
+          getLeftSibling(node).prelim + SIBLING_SEPARATION + NODE_WIDTH
       } else {
         node.prelim = 0
       }
@@ -122,7 +120,7 @@ export const walkerAlgorithm = (root) => {
       const midPoint = (leftmost.prelim + rightmost.prelim) / 2
       if (hasLeftSibling(node)) {
         const leftSibling = getLeftSibling(node)
-        node.prelim = leftSibling.prelim + MIN_SEPARATION + WIDTH
+        node.prelim = leftSibling.prelim + SIBLING_SEPARATION + NODE_WIDTH
         node.modifier = node.prelim - midPoint
         apportion(node, level)
       } else {
@@ -143,10 +141,3 @@ export const walkerAlgorithm = (root) => {
   secondWalk(root, 0, 0)
   return root
 }
-
-export const WalkerAlgorithmDemo = memo(() => {
-  const laidoutRoot = walkerAlgorithm(cloneDeep(maryRoot))
-  return renderMaryTree(laidoutRoot)
-})
-
-WalkerAlgorithmDemo.displayName = 'WalkerAlgorithmDemo'
