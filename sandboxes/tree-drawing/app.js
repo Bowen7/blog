@@ -1,8 +1,9 @@
-import { maryRoot, maryMaxLevel } from './root'
-import { renderMaryTree, cloneDeep } from './utils'
+import { root, level, renderTree } from './tree'
 import layout from './layout'
 
+const cloneDeep = (data) => JSON.parse(JSON.stringify(data))
+
 export default function App() {
-  const laidoutRoot = layout(cloneDeep(maryRoot), maryMaxLevel)
-  return renderMaryTree(laidoutRoot)
+  const laidoutRoot = layout(cloneDeep(root), level)
+  return renderTree(laidoutRoot)
 }

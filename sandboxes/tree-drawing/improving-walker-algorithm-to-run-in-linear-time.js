@@ -1,13 +1,7 @@
-import { memo } from 'react'
-import cloneDeep from 'lodash/cloneDeep'
-import { maryRoot } from './tree'
-import {
-  renderMaryTree,
-  SIBLING_SEPARATION,
-  LEVEL_SEPARATION,
-  NODE_HEIGHT,
-  NODE_WIDTH
-} from './utils'
+const NODE_WIDTH = 1
+const NODE_HEIGHT = 1
+const LEVEL_SEPARATION = 1
+const SIBLING_SEPARATION = 1
 
 const getLeftmost = (node) => node.children?.[0] ?? node.thread
 const getRightmost = (node) =>
@@ -147,15 +141,8 @@ const secondWalk = (node, mod, level) => {
   )
 }
 
-const improvedWalkerAlgorithm = (root) => {
+export default function layout(root) {
   firstWalk(root)
   secondWalk(root, 0, 0)
   return root
 }
-
-export const ImprovedWalkerAlgorithmDemo = memo(() => {
-  const laidoutRoot = improvedWalkerAlgorithm(cloneDeep(maryRoot))
-  return renderMaryTree(laidoutRoot)
-})
-
-ImprovedWalkerAlgorithmDemo.displayName = 'ImprovedWalkerAlgorithmDemo'

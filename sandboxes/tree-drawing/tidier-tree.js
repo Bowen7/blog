@@ -1,12 +1,60 @@
 import { Fragment } from 'react'
+
 const UNIT_SIZE = 25
 const GRAPH_PADDING = 25
 const FONT_SIZE = 18
 
-export const NODE_WIDTH = 1
-export const NODE_HEIGHT = 1
-export const LEVEL_SEPARATION = 1
-export const SIBLING_SEPARATION = 1
+const NODE_WIDTH = 1
+const NODE_HEIGHT = 1
+
+export const root = {
+  title: 's',
+  left: {
+    title: 'i',
+    left: {
+      title: 'g',
+      left: {
+        title: 'a'
+      },
+      right: {
+        title: 'f',
+        left: {
+          title: 'b'
+        },
+        right: {
+          title: 'e',
+          left: {
+            title: 'c'
+          },
+          right: { title: 'd' }
+        }
+      }
+    },
+    right: { title: 'h' }
+  },
+  right: {
+    title: 'r',
+    left: {
+      title: 'j'
+    },
+    right: {
+      title: 'q',
+      left: {
+        title: 'o',
+        left: {
+          title: 'm',
+          left: {
+            title: 'k'
+          },
+          right: { title: 'l' }
+        },
+        right: { title: 'n' }
+      },
+      right: { title: 'p' }
+    }
+  }
+}
+export const level = 6
 
 const getRealLength = (unitLength) => unitLength * UNIT_SIZE
 
@@ -20,7 +68,7 @@ const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
         xAdjustment * UNIT_SIZE + GRAPH_PADDING
       }, ${GRAPH_PADDING})`}
     >
-      {edges.map(({ x1, y1, x2, y2, key }) => (
+      {edges.map(({ x1, y1, x2, y2, key, dash }) => (
         <path
           d={`M${getRealLength(x1 + NODE_WIDTH / 2)},${getRealLength(
             y1 + NODE_HEIGHT / 2
@@ -30,6 +78,7 @@ const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
           key={key}
           stroke="#000"
           strokeWidth={2}
+          strokeDasharray={dash ? 4 : 'none'}
           fill="none"
         />
       ))}
@@ -59,7 +108,7 @@ const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
   </svg>
 )
 
-export const renderBinaryTree = (root) => {
+export const renderTree = (root) => {
   const nodes = []
   const edges = []
   const stack = [root]
@@ -68,7 +117,7 @@ export const renderBinaryTree = (root) => {
   let minX = Infinity
   while (stack.length > 0) {
     const cur = stack.pop()
-    const { title, left, right, x, y } = cur
+    const { title, left, right, x, y, thread } = cur
     minX = Math.min(minX, x)
     maxX = Math.max(maxX, x)
     maxY = Math.max(maxY, y)
@@ -82,7 +131,8 @@ export const renderBinaryTree = (root) => {
         y1: y,
         x2,
         y2,
-        key: `${title}-${childTitle}`
+        key: `${title}-${childTitle}`,
+        dash: thread
       })
     }
     if (right) {
@@ -93,46 +143,10 @@ export const renderBinaryTree = (root) => {
         y1: y,
         x2,
         y2,
-        key: `${title}-${childTitle}`
+        key: `${title}-${childTitle}`,
+        dash: thread
       })
     }
-  }
-  return renderNodesAndEdges(
-    nodes,
-    edges,
-    maxX - minX + NODE_WIDTH,
-    maxY + NODE_HEIGHT,
-    -minX
-  )
-}
-
-export const renderMaryTree = (root) => {
-  const nodes = []
-  const edges = []
-  const stack = [root]
-  let maxX = 0
-  let maxY = 0
-  let minX = Infinity
-  while (stack.length > 0) {
-    const cur = stack.pop()
-    const { title, children = [], x, y } = cur
-
-    minX = Math.min(minX, x)
-    maxX = Math.max(maxX, x)
-    maxY = Math.max(maxY, y)
-    nodes.push({ title, x, y })
-
-    children.forEach((child) => {
-      const { x: x2, y: y2, title: childTitle } = child
-      stack.push(child)
-      edges.push({
-        x1: x,
-        y1: y,
-        x2,
-        y2,
-        key: `${title}-${childTitle}`
-      })
-    })
   }
   return renderNodesAndEdges(
     nodes,
