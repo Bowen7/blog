@@ -231,6 +231,7 @@ const executeShifts = (node) => {
   }
 }
 ```
+
 因为在 `moveSubTree` 中 `rightNode` 的 prelim 和 mod 都增加了 shift，所以也不会影响后续节点的 leftSibling 节点位置
 
 下面是 `executeShifts` 的一个示例：
@@ -244,7 +245,7 @@ const executeShifts = (node) => {
 |    shift    |     0     |     0     |  1/5+1/3  | 2/5+2/3  | 3/5  | 4/5  |
 |   change    |     0     | -1/5-1/3  | -1/5-1/3  | -1/5-1/3 | -1/5 | -1/5 |
 
-可以看出各个节点的 prelim 和 mod 都正确地修改了。`rightNode` 的 prelim 和 mod 已经修改过了，所以在上表没有体现
+可以看出各个节点的 prelim 和 mod 都正确地修改了。`rightNode` 的 prelim 和 mod 在 `moveSubTree` 函数中已经修改过了，所以在上表没有体现
 
 下面是最终的布局算法和渲染效果：
 
