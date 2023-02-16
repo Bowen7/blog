@@ -4,8 +4,7 @@ import rehypeKatex from 'rehype-katex'
 import nextMdx from '@next/mdx'
 import remarkGfm from 'remark-gfm'
 import path from 'path'
-
-const __dirname = path.resolve()
+import process from 'process'
 
 const mdxOptions = {
   providerImportSource: '@mdx-js/react',
@@ -59,7 +58,7 @@ const nextConfig = {
     })
 
     config.resolveLoader.alias['sandbox-loader'] = path.resolve(
-      __dirname,
+      process.cwd(),
       'build/sandbox.js'
     )
     return config
