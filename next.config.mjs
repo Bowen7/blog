@@ -3,8 +3,11 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import nextMdx from '@next/mdx'
 import remarkGfm from 'remark-gfm'
-import path from 'path'
-import process from 'process'
+import path, { dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const mdxOptions = {
   providerImportSource: '@mdx-js/react',
@@ -56,9 +59,9 @@ const nextConfig = {
         { loader: 'sandbox-loader' }
       ]
     })
-    console.log(process.cwd())
+    console.log(__dirname)
     config.resolveLoader.alias['sandbox-loader'] = path.resolve(
-      process.cwd(),
+      __dirname,
       'build/sandbox.js'
     )
     return config
