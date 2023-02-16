@@ -56,7 +56,7 @@ const nextConfig = {
         { loader: 'sandbox-loader' }
       ]
     })
-
+    console.log(process.cwd())
     config.resolveLoader.alias['sandbox-loader'] = path.resolve(
       process.cwd(),
       'build/sandbox.js'
