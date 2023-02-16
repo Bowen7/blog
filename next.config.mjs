@@ -56,14 +56,11 @@ const nextConfig = {
           loader: '@mdx-js/loader',
           options: mdxOptions
         },
-        { loader: 'sandbox-loader' }
+        {
+          loader: path.resolve(__dirname, 'build/sandbox.js')
+        }
       ]
     })
-    console.log(__dirname)
-    config.resolveLoader.alias['sandbox-loader'] = path.resolve(
-      __dirname,
-      'build/sandbox.js'
-    )
     return config
   }
 }
