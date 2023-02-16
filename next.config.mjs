@@ -57,7 +57,7 @@ const nextConfig = {
           options: mdxOptions
         },
         {
-          loader: path.resolve(__dirname, 'build/sandbox.js')
+          loader: path.resolve(__dirname, './build/sandbox.js')
         }
       ]
     })
