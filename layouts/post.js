@@ -3,10 +3,10 @@ import Head from 'next/head'
 import { MDXProvider } from '@mdx-js/react'
 import Balancer from 'react-wrap-balancer'
 import { timeFormat } from 'utils'
-import { Pre } from './pre'
+import { CodeBlock } from './code-block'
 
 const components = {
-  pre: Pre
+  pre: CodeBlock
 }
 
 function PostLayout({ children, meta = {} }) {

@@ -42,7 +42,6 @@ const Header = ({ page }) => {
             href="https://github.com/Bowen7"
             target="_blank"
             rel="noopener noreferrer"
-            className=""
             style={{ fontSize: 0 }}
           >
             <img src="/icons/github.png" alt="github" className="w-5 h-5"></img>

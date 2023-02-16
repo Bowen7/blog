@@ -141,7 +141,7 @@ const secondWalk = (node, mod, level) => {
   )
 }
 
-export default function layout(root) {
+export const layout = (root) => {
   firstWalk(root)
   secondWalk(root, 0, 0)
   return root

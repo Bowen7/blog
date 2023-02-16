@@ -34,7 +34,7 @@ const getLeftmost = (node, level, depth) => {
   }
 }
 
-export default function layout(root) {
+export const layout = (root) => {
   const neighbors = []
   let maxDepth = 0
 

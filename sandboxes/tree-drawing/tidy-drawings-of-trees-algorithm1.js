@@ -3,7 +3,7 @@ const NODE_HEIGHT = 1
 const LEVEL_SEPARATION = 1
 const SIBLING_SEPARATION = 1
 
-export default function layout(root, maxLevel) {
+export const layout = (root, maxLevel) => {
   const nextPos = new Array(maxLevel).fill(0)
   const walk = (node, level) => {
     const { children = [] } = node

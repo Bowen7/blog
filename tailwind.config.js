@@ -15,7 +15,7 @@ module.exports = {
       flexBasis: {
         auto: 'auto'
       },
-      height: {
+      maxHeight: {
         144: '36rem'
       }
     },

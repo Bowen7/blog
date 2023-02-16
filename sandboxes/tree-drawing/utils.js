@@ -7,38 +7,6 @@ const FONT_SIZE = 18
 const NODE_WIDTH = 1
 const NODE_HEIGHT = 1
 
-export const root = {
-  title: 'r',
-  children: [
-    {
-      title: 'e',
-      children: [
-        { title: 'a' },
-        { title: 'd', children: [{ title: 'b' }, { title: 'c' }] }
-      ]
-    },
-    { title: 'f' },
-    {
-      title: 'n',
-      children: [
-        { title: 'g' },
-        {
-          title: 'm',
-          children: [
-            { title: 'h' },
-            { title: 'i' },
-            { title: 'j' },
-            { title: 'k' },
-            { title: 'l' }
-          ]
-        }
-      ]
-    },
-    { title: 'q', children: [{ title: 'p', children: [{ title: 'o' }] }] }
-  ]
-}
-export const level = 5
-
 const getRealLength = (unitLength) => unitLength * UNIT_SIZE
 
 const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
@@ -51,7 +19,7 @@ const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
         xAdjustment * UNIT_SIZE + GRAPH_PADDING
       }, ${GRAPH_PADDING})`}
     >
-      {edges.map(({ x1, y1, x2, y2, key }) => (
+      {edges.map(({ x1, y1, x2, y2, key, dash }) => (
         <path
           d={`M${getRealLength(x1 + NODE_WIDTH / 2)},${getRealLength(
             y1 + NODE_HEIGHT / 2
@@ -61,6 +29,7 @@ const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
           key={key}
           stroke="#000"
           strokeWidth={2}
+          strokeDasharray={dash ? 4 : 'none'}
           fill="none"
         />
       ))}
@@ -90,7 +59,56 @@ const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
   </svg>
 )
 
-export const renderTree = (root) => {
+export const renderBinaryTree = (root) => {
+  const nodes = []
+  const edges = []
+  const stack = [root]
+  let maxX = 0
+  let maxY = 0
+  let minX = Infinity
+  while (stack.length > 0) {
+    const cur = stack.pop()
+    const { title, left, right, x, y, thread } = cur
+    minX = Math.min(minX, x)
+    maxX = Math.max(maxX, x)
+    maxY = Math.max(maxY, y)
+    nodes.push({ title, x, y })
+
+    if (left) {
+      const { x: x2, y: y2, title: childTitle } = left
+      !thread && stack.push(left)
+      edges.push({
+        x1: x,
+        y1: y,
+        x2,
+        y2,
+        key: `${title}-${childTitle}`,
+        dash: thread
+      })
+    }
+    if (right) {
+      const { x: x2, y: y2, title: childTitle } = right
+      !thread && stack.push(right)
+      edges.push({
+        x1: x,
+        y1: y,
+        x2,
+        y2,
+        key: `${title}-${childTitle}`,
+        dash: thread
+      })
+    }
+  }
+  return renderNodesAndEdges(
+    nodes,
+    edges,
+    maxX - minX + NODE_WIDTH,
+    maxY + NODE_HEIGHT,
+    -minX
+  )
+}
+
+export const renderMaryTree = (root) => {
   const nodes = []
   const edges = []
   const stack = [root]

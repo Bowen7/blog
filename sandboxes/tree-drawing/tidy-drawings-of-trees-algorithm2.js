@@ -3,7 +3,7 @@ const NODE_HEIGHT = 1
 const LEVEL_SEPARATION = 1
 const SIBLING_SEPARATION = 1
 
-export default function layout(root) {
+export const layout = (root) => {
   let nextPos = 0
   const walk = (node, level) => {
     const { left, right } = node

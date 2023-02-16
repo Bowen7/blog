@@ -9,8 +9,6 @@
     "postbuild": "node ./scripts/sitemap.js"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^1.20.9",
-    "@heroicons/react": "^2.0.14",
     "@mdx-js/loader": "^2.2.1",
     "@mdx-js/mdx": "^2.2.1",
     "@mdx-js/react": "^2.2.1",
@@ -19,6 +17,7 @@
     "daisyui": "^2.50.0",
     "eslint-config-next": "^13.1.6",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.114.0",
     "next": "^13.1.6",
     "react": "18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
