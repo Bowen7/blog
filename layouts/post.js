@@ -4,6 +4,7 @@ import { MDXProvider } from '@mdx-js/react'
 import Balancer from 'react-wrap-balancer'
 import { timeFormat } from 'utils'
 import { CodeBlock } from './code-block'
+import { Comment } from 'layouts/comment'
 
 const components = {
   pre: CodeBlock
@@ -39,6 +40,7 @@ function PostLayout({ children, meta = {} }) {
         </div>
         <hr />
         <MDXProvider components={components}>{children}</MDXProvider>
+        <Comment title={title} />
       </article>
     </>
   )
