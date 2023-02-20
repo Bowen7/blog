@@ -62,7 +62,7 @@ const Post = ({ time, title, name, tags = [] }) => (
           key={title}
           href={'/post/' + name}
           passHref
-          className="no-underline"
+          className="no-underline text-black"
         >
           {title}
         </Link>
