@@ -34,7 +34,7 @@ function PostLayout({ children, meta = {} }) {
               </span>
             ))}
           </div>
-          <Link href="/" className="text-sm text-stone-700">
+          <Link href="/" className="text-sm text-black">
             Home
           </Link>
         </div>

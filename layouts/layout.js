@@ -24,7 +24,7 @@ const Header = ({ page }) => {
             href="/"
             className={clsx(
               page === '' && 'no-underline',
-              'mr-4 text-sm text-stone-700'
+              'mr-4 text-sm text-black'
             )}
           >
             Posts
@@ -33,7 +33,7 @@ const Header = ({ page }) => {
             href="/about"
             className={clsx(
               page === 'about' && 'no-underline',
-              'mr-4 text-sm text-stone-700'
+              'mr-4 text-sm text-black'
             )}
           >
             About
