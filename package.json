@@ -9,6 +9,7 @@
     "postbuild": "node ./scripts/sitemap.js"
   },
   "dependencies": {
+    "@codesandbox/sandpack-react": "^2.6.1",
     "@mdx-js/loader": "^2.2.1",
     "@mdx-js/mdx": "^2.2.1",
     "@mdx-js/react": "^2.2.1",

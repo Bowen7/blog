@@ -3,11 +3,6 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import nextMdx from '@next/mdx'
 import remarkGfm from 'remark-gfm'
-import path, { dirname } from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 
 const mdxOptions = {
   providerImportSource: '@mdx-js/react',
@@ -45,24 +40,7 @@ const nextConfig = {
   // Configure pageExtensions to include md and mdx
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   // Optionally, add any other Next.js config below
-  reactStrictMode: true,
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /sandboxes\/.*\.js$/,
-      exclude: /index\.js$/,
-      issuer: /post\/.*\.mdx$/,
-      use: [
-        {
-          loader: '@mdx-js/loader',
-          options: mdxOptions
-        },
-        {
-          loader: path.resolve(__dirname, './scripts/sandbox.js')
-        }
-      ]
-    })
-    return config
-  }
+  reactStrictMode: true
 }
 
 export default withMDX(nextConfig)

@@ -1,3 +1,4 @@
+export const code = /* jsx */ `
 export const binaryRoot = {
   title: 'n',
   left: {
@@ -109,3 +110,4 @@ export const tidierRoot = {
   }
 }
 export const tidierLevel = 6
+`.trim()

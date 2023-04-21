@@ -1,3 +1,4 @@
+export const code = /* jsx */ `
 import { Fragment } from 'react'
 
 const UNIT_SIZE = 25
@@ -15,17 +16,17 @@ const renderNodesAndEdges = (nodes, edges, width, height, xAdjustment = 0) => (
     height={height * UNIT_SIZE + GRAPH_PADDING * 2}
   >
     <g
-      transform={`translate(${
+      transform={\`translate(\${
         xAdjustment * UNIT_SIZE + GRAPH_PADDING
-      }, ${GRAPH_PADDING})`}
+      }, \${GRAPH_PADDING})\`}
     >
       {edges.map(({ x1, y1, x2, y2, key, dash }) => (
         <path
-          d={`M${getRealLength(x1 + NODE_WIDTH / 2)},${getRealLength(
+          d={\`M$\{getRealLength(x1 + NODE_WIDTH / 2)},\${getRealLength(
             y1 + NODE_HEIGHT / 2
-          )}L${getRealLength(x2 + NODE_WIDTH / 2)},${getRealLength(
+          )}L\${getRealLength(x2 + NODE_WIDTH / 2)},\${getRealLength(
             y2 + NODE_HEIGHT / 2
-          )}`}
+          )}\`}
           key={key}
           stroke="#000"
           strokeWidth={2}
@@ -82,7 +83,7 @@ export const renderBinaryTree = (root) => {
         y1: y,
         x2,
         y2,
-        key: `${title}-${childTitle}`,
+        key: \`\${title}-\${childTitle}\`,
         dash: thread
       })
     }
@@ -94,7 +95,7 @@ export const renderBinaryTree = (root) => {
         y1: y,
         x2,
         y2,
-        key: `${title}-${childTitle}`,
+        key: \`\${title}-\${childTitle}\`,
         dash: thread
       })
     }
@@ -132,7 +133,7 @@ export const renderMaryTree = (root) => {
         y1: y,
         x2,
         y2,
-        key: `${title}-${childTitle}`
+        key: \`\${title}-\${childTitle}\`
       })
     })
   }
@@ -144,3 +145,4 @@ export const renderMaryTree = (root) => {
     -minX
   )
 }
+`.trim()

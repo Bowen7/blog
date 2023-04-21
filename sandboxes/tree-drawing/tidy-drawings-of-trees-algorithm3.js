@@ -1,9 +1,10 @@
+export const layoutCode = /* jsx */ `
 const NODE_WIDTH = 1
 const NODE_HEIGHT = 1
 const LEVEL_SEPARATION = 1
 const SIBLING_SEPARATION = 1
 
-export const layout = (root, maxLevel) => {
+const layout = (root, maxLevel) => {
   const modifier = new Array(maxLevel).fill(0)
   const nextPos = new Array(maxLevel).fill(0)
   let modifierSum = 0
@@ -54,3 +55,26 @@ export const layout = (root, maxLevel) => {
   secondWalk(root, 0)
   return root
 }
+`.trim()
+
+export const code1 = /* jsx */ `
+import { renderBinaryTree } from './utils'
+import { binaryRoot, binaryLevel } from './root'
+${layoutCode}
+
+const laidoutRoot = layout(binaryRoot, binaryLevel)
+export default function APP() {
+  return renderBinaryTree(laidoutRoot)
+}
+`.trim()
+
+export const code2 = /* jsx */ `
+import { renderBinaryTree } from './utils'
+import { tidierRoot, tidierLevel } from './root'
+${layoutCode}
+
+const laidoutRoot = layout(tidierRoot, tidierLevel)
+export default function APP() {
+  return renderBinaryTree(laidoutRoot)
+}
+`.trim()

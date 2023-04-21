@@ -1,20 +1,13 @@
 import Layout from 'layouts/post'
 import { Sandbox } from 'layouts/sandbox'
-import {
-  TidySandbox1,
-  TidySandbox2,
-  TidySandbox3,
-  TidySandbox4,
-  TidierSandbox,
-  WalkerSandbox,
-  ImprovedWalkerSandbox
-} from 'sandboxes/tree-drawing'
-import TidyAlgorithm1 from 'sandboxes/tree-drawing/tidy-drawings-of-trees-algorithm1'
-import TidyAlgorithm2 from 'sandboxes/tree-drawing/tidy-drawings-of-trees-algorithm2'
-import TidyAlgorithm3 from 'sandboxes/tree-drawing/tidy-drawings-of-trees-algorithm3'
-import TidierAlgorithm from 'sandboxes/tree-drawing/tidier-drawings-of-trees'
-import WalkerAlgorithm from 'sandboxes/tree-drawing/a-node-positioning-algorithm-for-general-trees'
-import ImprovedWalkerAlgorithm from 'sandboxes/tree-drawing/improving-walker-algorithm-to-run-in-linear-time'
+import { code as utilsCode } from 'sandboxes/tree-drawing/utils'
+import { code as rootCode } from 'sandboxes/tree-drawing/root'
+import { code as tidy1Code } from 'sandboxes/tree-drawing/tidy-drawings-of-trees-algorithm1'
+import { code as tidy2Code } from 'sandboxes/tree-drawing/tidy-drawings-of-trees-algorithm2'
+import { code1 as tidy3Code, code2 as tidy4Code } from 'sandboxes/tree-drawing/tidy-drawings-of-trees-algorithm3'
+import { code as tidierCode } from 'sandboxes/tree-drawing/tidier-drawings-of-trees'
+import { code as walkerCode } from 'sandboxes/tree-drawing/a-node-positioning-algorithm-for-general-trees'
+import { code as improvedWalkerCode } from 'sandboxes/tree-drawing/improving-walker-algorithm-to-run-in-linear-time'
 
 export const meta = {
   title: '树的布局算法',
@@ -28,8 +21,7 @@ export const meta = {
 这两次经历促使我想更深入了解树的布局算法，于是阅读了几篇相关的论文，这里记录一下。
 下文每个小标题即是论文的标题，关于论文具体可见文末的参考文献
 
-文中的每个算法代码片段，点击左下角的 "Show Preview" 即可渲染执行算法后的图形。
-同时为了便于理解，文中树的每个节点都是边长为单位 1 的正方形
+为了便于理解，文中树的每个节点都是边长为单位 1 的正方形
 
 ## Aesthetic layout of generalized tree
 
@@ -57,9 +49,13 @@ export const meta = {
 
 第一种算法的思想是：对于每个节点，x 坐标 = 同级左节点的 x 坐标 + 节点宽度 + 最小水平间距
 
-<Sandbox preview={<TidySandbox1 />}>
-  <TidyAlgorithm1 />
-</Sandbox>
+<Sandbox
+	files={{
+		'App.js': tidy1Code,
+		'utils.js': utilsCode,
+		'root.js': rootCode
+	}}
+/>
 
 这种算法很简单，当然效果也不会很好，不符合第 3、4 条美观要求，看上去很乱，很难看出树的结构
 
@@ -67,9 +63,14 @@ export const meta = {
 
 第二种算法的思想：对于每个节点，x 坐标 = 上个节点的 x 坐标 + 节点宽度 + 最小水平间距
 
-<Sandbox preview={<TidySandbox2 />}>
-  <TidyAlgorithm2 />
-</Sandbox>
+<Sandbox
+	files={{
+		'App.js': tidy2Code,
+		'utils.js': utilsCode,
+		'root.js': rootCode
+	}}
+	previewHeight={450}
+/>
 
 从结果可以看出，这种算法虽然比上一种更容易看出树的结构，仍不符合第 3、4 条美观要求。
 并且这种算法生成的图宽度很大，不便于展示
@@ -78,9 +79,14 @@ export const meta = {
 
 前两种算法都只用了一次后序遍历，而第三种算法在后序遍历的基础上，再进行了一次前序遍历
 
-<Sandbox preview={<TidySandbox3 />}>
-  <TidyAlgorithm3 />
-</Sandbox>
+<Sandbox
+	files={{
+		'App.js': tidy3Code,
+		'utils.js': utilsCode,
+		'root.js': rootCode
+	}}
+	previewHeight={450}
+/>
 
 算法中引入了一个新变量 modifier，这在后面的算法也有用到，modifier 的含义是子树相对于父节点的偏移量。
 
@@ -98,7 +104,14 @@ export const meta = {
 这种算法的效果比前两种算法好很多，但是还是不符合第 4 条美观要求，
 这里展示了一种情况，可以看出，根节点的左子树和右子树结构上互为镜像，但渲染出的图形却不是镜像的
 
-<Sandbox preview={<TidySandbox4 />} />
+<Sandbox
+	files={{
+		'App.js': tidy4Code,
+		'utils.js': utilsCode,
+		'root.js': rootCode
+	}}
+	previewHeight={400}
+/>
 
 论文中还对第三种算法进行了修改，使生成的图宽度更小，但无论改进与否，都会违反上述的第 4 条要求，所以这里不再赘述
 
@@ -106,9 +119,14 @@ export const meta = {
 
 很快就有人发现上篇论文算法的不足，提出了一种新的算法，算法同样由后序遍历和前序遍历两部分组成
 
-<Sandbox preview={<TidierSandbox />}>
-  <TidierAlgorithm />
-</Sandbox>
+<Sandbox
+	files={{
+		'App.js': tidierCode,
+		'utils.js': utilsCode,
+		'root.js': rootCode
+	}}
+	previewHeight={400}
+/>
 
 因为需要满足父节点在左右子节点的正中间，算法为每个节点定义了变量 offset，左子节点 x = 父节点 x - offset，右子节点 x = 父节点 x + offset
 
@@ -130,9 +148,15 @@ export const meta = {
 上面的算法对于二叉树来说，已经可以满足开头提到的 7 条美学要求，
 这篇论文则是将其拓展为一般树，即树的每个节点可以有多个子节点
 
-<Sandbox preview={<WalkerSandbox />}>
-  <WalkerAlgorithm />
-</Sandbox>
+<Sandbox
+	files={{
+		'App.js': walkerCode,
+		'utils.js': utilsCode,
+		'root.js': rootCode
+	}}
+	editorHeight={650}
+	previewHeight={300}
+/>
 
 有了前几条算法，这个算法的思路不难理解，这里讲一下算法几个特殊的点：
 
@@ -210,9 +234,16 @@ const executeShifts = (node) => {
 
 下面是最终的布局算法和渲染效果：
 
-<Sandbox preview={<ImprovedWalkerSandbox />}>
-  <ImprovedWalkerAlgorithm />
-</Sandbox>
+
+<Sandbox
+	files={{
+		'App.js': improvedWalkerCode,
+		'utils.js': utilsCode,
+		'root.js': rootCode
+	}}
+	editorHeight={650}
+	previewHeight={300}
+/>
 
 ## 参考文献 & 资料
 
