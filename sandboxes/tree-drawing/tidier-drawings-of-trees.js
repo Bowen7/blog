@@ -1,9 +1,13 @@
+export const code = /* jsx */ `
+import { useState } from "react"
+import { renderBinaryTree } from './utils'
+import { tidierRoot, tidierLevel } from './root'
 const NODE_WIDTH = 1
 const NODE_HEIGHT = 1
 const LEVEL_SEPARATION = 1
 const SIBLING_SEPARATION = 1
 
-export const layout = (root) => {
+const layout = (root) => {
   const firstWalk = (node, level, leftmost, rightmost) => {
     let { left, right } = node
     const ll = { addr: null, offset: 0, level: 0 }
@@ -121,3 +125,9 @@ export const layout = (root) => {
   secondWalk(root, 0)
   return root
 }
+
+const laidoutRoot = layout(tidierRoot, tidierLevel)
+export default function APP() {
+  return renderBinaryTree(laidoutRoot)
+}
+`.trim()

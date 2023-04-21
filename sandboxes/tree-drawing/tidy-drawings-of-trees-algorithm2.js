@@ -1,9 +1,12 @@
+export const code = /* jsx */ `
+import { renderBinaryTree } from './utils'
+import { binaryRoot, binaryLevel } from './root'
 const NODE_WIDTH = 1
 const NODE_HEIGHT = 1
 const LEVEL_SEPARATION = 1
 const SIBLING_SEPARATION = 1
 
-export const layout = (root) => {
+const layout = (root) => {
   let nextPos = 0
   const walk = (node, level) => {
     const { left, right } = node
@@ -20,3 +23,9 @@ export const layout = (root) => {
   walk(root, 0)
   return root
 }
+
+const laidoutRoot = layout(binaryRoot, binaryLevel)
+export default function APP() {
+  return renderBinaryTree(laidoutRoot)
+}
+`.trim()

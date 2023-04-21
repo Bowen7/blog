@@ -1,3 +1,6 @@
+export const code = /* jsx */ `
+import { maryRoot, maryLevel } from './root'
+import { renderMaryTree } from './utils'
 const NODE_WIDTH = 1
 const NODE_HEIGHT = 1
 const LEVEL_SEPARATION = 1
@@ -141,8 +144,14 @@ const secondWalk = (node, mod, level) => {
   )
 }
 
-export const layout = (root) => {
+const layout = (root) => {
   firstWalk(root)
   secondWalk(root, 0, 0)
   return root
 }
+
+const laidoutRoot = layout(maryRoot, maryLevel)
+export default function App() {
+  return renderMaryTree(laidoutRoot)
+}
+`.trim()
