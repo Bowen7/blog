@@ -31,7 +31,7 @@ export const CodeBlock = ({ children, 'data-language': language = '' }) => {
 
   return (
     <>
-      <div className="relative my-6 rounded-lg shadow-lg divide-y">
+      <div className="relative my-6 rounded-lg shadow-md divide-y">
         <div className="flex items-center justify-between px-4 py-2">
           <span>{language.toUpperCase()}</span>
           {isCopied ? (

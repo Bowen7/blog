@@ -7,17 +7,16 @@ import {
 
 const options = {
   classes: {
-    'sp-layout': '!block divide-y my-6 rounded shadow-lg !rounded-lg',
+    'sp-layout': '!block divide-y my-6 rounded shadow-md !rounded-lg',
     'sp-stack': '!w-full',
-    'sp-preview-container': 'pt-6'
+    'sp-preview-container': 'pt-4 px-2'
   },
-  resizablePanels: false,
-  initMode: 'user-visible'
+  resizablePanels: false
 }
 
 export const Sandbox = ({
   files,
-  dependencies = {},
+  deps = {},
   editorHeight = 300,
   previewHeight
 }) => {
@@ -28,7 +27,7 @@ export const Sandbox = ({
       options={options}
       files={files}
       customSetup={{
-        dependencies
+        dependencies: deps
       }}
     >
       <SandpackLayout>
