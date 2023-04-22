@@ -4,9 +4,12 @@
 
 联系方式：zwxdyx@foxmail.com
 
-请各位不要提 issue 哈～
+请各位不要提 issue ～
 
-- [Use regex-vis.com to visualize regular expressions](https://www.bowencodes.com/post/regex-vis_en)
+- [React Rough Fiber: A React renderer for rendering hand-drawn SVGs](https://www.bowencodes.com/post/react-rough-fiber)
+- [我的捐赠记录 (2023)](https://www.bowencodes.com/post/2023-sponsoring)
+- [树的布局算法](https://www.bowencodes.com/post/tree-layout-algorithm)
+- [Using regex-vis.com to visualize regular expressions](https://www.bowencodes.com/post/regex-vis_en)
 - [使用 regex-vis.com 可视化正则表达式](https://www.bowencodes.com/post/regex-vis)
 - [用 Rust 重写 MDX 编译](https://bowencodes.com/post/rust-mdx)
 - [实现 O(n) 时间的高斯模糊算法](https://github.com/Bowen7/Blog/issues/23)
