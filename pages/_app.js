@@ -17,23 +17,12 @@ function App({ Component, pageProps }) {
         <meta name="author" content="Bowen,张文翔" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icons/logo.ico" />
-        <link rel="apple-touch-icon" href="/icons/apple-icon.png"></link>
-        {process.env.NODE_ENV === 'production' && (
-          <>
-            <script
-              async
-              src="https://www.googletagmanager.com/gtag/js?id=G-6KLLQLJ9LT"
-            ></script>
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-6KLLQLJ9LT');`
-              }}
-            />
-          </>
-        )}
+        <link rel="apple-touch-icon" href="/icons/apple-icon.png" />
+        <meta name="og:title" content="Bowen Codes" />
+        <meta
+          name="og:image"
+          content="https://www.bowencodes.com/icons/og.jpeg"
+        />
       </Head>
       <Layout>
         <Component {...pageProps} />

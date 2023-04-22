@@ -1,28 +1,20 @@
-import Head from 'next/head'
-import Script from 'next/script'
-export const Comment = ({ title }) => {
+import Giscus from '@giscus/react'
+export const Comment = () => {
   return (
-    <>
-      <Head>
-        <meta property="og:title" content={title} />
-      </Head>
-      <Script
-        src="https://giscus.app/client.js"
-        data-repo="Bowen7/blog"
-        data-repo-id="MDEwOlJlcG9zaXRvcnkxNjMzODUxNTY="
-        data-category="Announcements"
-        data-category-id="DIC_kwDOCb0PRM4CUQPF"
-        data-mapping="og:title"
-        data-strict="1"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="light"
-        data-lang="en"
-        crossOrigin="anonymous"
-        async
+    <div className="mt-8">
+      <Giscus
+        repo="Bowen7/blog"
+        repoId="MDEwOlJlcG9zaXRvcnkxNjMzODUxNTY="
+        category="Announcements"
+        categoryId="DIC_kwDOCb0PRM4CUQPF"
+        mapping="title"
+        reactionsEnabled="1"
+        emitMetadata="0"
+        inputPosition="top"
+        theme="light"
+        lang="en"
+        loading="lazy"
       />
-      <div className="giscus mt-12"></div>
-    </>
+    </div>
   )
 }

@@ -17,7 +17,8 @@ function PostLayout({ children, meta = {} }) {
       <article>
         <Head>
           <base target="_blank" rel="noopener noreferrer" />
-          <title>{title + ' - Bowen Codes'}</title>
+          <title>{title}</title>
+          <meta name="og:description" content={title} />
         </Head>
         <h1>
           <Balancer>{title}</Balancer>
@@ -40,7 +41,7 @@ function PostLayout({ children, meta = {} }) {
         </div>
         <hr />
         <MDXProvider components={components}>{children}</MDXProvider>
-        <Comment title={title} />
+        <Comment />
       </article>
     </>
   )
