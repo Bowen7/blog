@@ -6,72 +6,88 @@ export const meta = {
   tags: ['Parser']
 }
 
-[regex-vis.com](https://regex-vis.com) is a website to learn, write and test regular expressions.
-[regex-vis.com](https://regex-vis.com) not only converts regular expressions to charts but also allows us to edit these charts.
+[regex-vis.com](https://regex-vis.com) is a website for learning, writing and testing regular expressions.
+Not only does [regex-vis.com](https://regex-vis.com) convert regular expressions to charts but it also allows us to edit these charts.
 
 ## Features
 
-You can input a regular expression, [regex-vis.com](https://regex-vis.com) will convert it to a graphical chart.
-Click/Drag to select a node/nodes in the chart, you can insert a empty node, group nodes, add a quantifier etc.
+You can input a regular expression, and [regex-vis.com](https://regex-vis.com) will convert it into a graphical chart.
+Yan can select a node/nodes in the chart by clicking and dragging them. This will allow you to insert an empty node, group nodes, add a quantifier, and more.
 
-others features:
+Other features include:
 
-- Dark mode/Light mode
-- Test the regular expression
-- Samples
+- Dark mode/light mode
+- The ability to test the regular expression
+- Samples of regular expressions.
 
-You can go to [regex-vis.com](https://regex-vis.com) directly to experience its features.
-There is a simple demo in the repository(https://github.com/Bowen7/regex-vis).
+You can directly visit [regex-vis.com](https://regex-vis.com) to experience its features.
+There is a simple demo available in the repository at [regex-vis](https://github.com/Bowen7/regex-vis).
 
-If you like give me ⭐.
-If you find a bug, please [report the issue](https://github.com/Bowen7/regex-vis/issues).
-You can also open a new discussion to ask questions about this repository or get help.
+If you like it, please give me ⭐.
+Please [report the issue](https://github.com/Bowen7/regex-vis/issues) if you find any bugs.
+You can also open a new discussion to ask questions about this repository or seek help.
 
 ## Workflow
 
-### a regular expression to a graphical chart
+### A regular expression to a graphical chart
 
 #### Parser
 
-The parser converts a regular expression to the AST(_abstract syntax tree_). Because of the grammar of regex, the AST of regex almost equals to CST(_concrete syntax tree_)
+The parser converts a regular expression to the AST(_abstract syntax tree_).
 
-Front-enders are no stranger to AST, but CST is still relatively unknown.
-As the name implies, CST is more concrete than AST.
-CST will contain enough information to reconstruct the source, such as the whitespaces in JavaScript.
+The parser is made up of two parts: the lexical analyzer and the syntactic analyzer.
+The lexical analyzer converts the regex into tokens.
+For example, the regex `/(abc)+/g` will be converted into the following tokens:
 
-The parser is composed of the lexical analyzer and the syntactic analyzer.
-The lexical analyzer will transfer regex to tokens, and the syntactic analyzer will transfer tokens to AST.
+``` js
+[RegexBodyStart, GroupStart, Characters, GroupEnd, Quantifier, RegexBodyEnd, Flag]
+```
 
-The regular expression is not a programming language, its syntax is very limited.
-But it's a good practice to write a regex parser.
+The syntactic analyzer converts the tokens into an AST.
+
+The `/a*/` regex is converted into the following AST:
+
+```js
+{
+	id: "",
+	type: "regex",
+	body: [
+		{
+			id: "",
+			type: "character",
+			kind: "string",
+			value: "a",
+			quantifier: { kind: "*", min: 0, max: Infinity, greedy: true },
+		},
+	],
+	flags: [],
+	literal: true,
+	escapeBackslash: false,
+}
+```
+
+The regular expression is not a programming language, its syntax is extremely limited.
+However, creating a regex parser is an excellent exercise.
 [The parser code](https://github.com/Bowen7/regex-vis/tree/prod/src/parser)
 
-#### RenderEngine
+#### Render
 
-The RenderEngine does not refer to the browser's own rendering engine.
-The RenderEngine input AST, output nodes' layout, contains x, y, width, height.
-We can render the final chart by the nodes' layout.
+The `Render` is responsible for converting the AST into a graphical chart.
+
+I am considering to refactoring `Render`. I will add this part later.
 
 ### Editing the chart
 
 #### Generator
 
-The Generator transfer AST back to the regular expression. I use a DFS to implement it.
+The `Generator` transfers AST back into the regular expression. It is implemented using DFS to generate every node.
 
 #### Special cases
 
-Such as the regex `/abc/` and select the node of `abc`, then add a `0 or 1(?)` quantifier.
-If we add a quantifier for `abc` directly, the quantifier would impact the char `c` only.
-So in this case, it's necessary to wrap `abc` with a non-captured group.
-The final output is `/(?:abc)?/`
-
-### Samples
-
-You can click the `Samples` to view some charts of commonly used regular expressions.
-These charts are not real-time rendered. These are static svgs outputed before bundle.
-It's an optimization to improve the website performance.
-
-I use esbuild to bundle and export the chart component, then use the API `renderToString` of React to generate the html strings and save these.
+For example, take the regex `/abc/` and select the node of `abc`, then add a `0 or 1(?)` quantifier.
+If we directly add a quantifier for `abc`, it would impact only the char c(abc+).
+Therefore, it's necessary to wrap `abc` with a non-captured group.
+.The final result would be /(?:abc)?/.
 
 ## About
 
