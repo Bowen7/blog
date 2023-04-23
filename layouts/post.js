@@ -11,14 +11,19 @@ const components = {
 }
 
 function PostLayout({ children, meta = {} }) {
-  const { title, time, tags = [] } = meta
+  const { title, time, tags = [], description } = meta
   return (
     <>
       <article>
         <Head>
           <base target="_blank" rel="noopener noreferrer" />
           <title>{title}</title>
-          <meta name="og:description" content={title} />
+          <meta name="og:title" content={title} />
+          {description ? (
+            <meta name="og:description" content={description} />
+          ) : (
+            <meta name="og:description" content="A blog written by Bowen" />
+          )}
         </Head>
         <h1>
           <Balancer>{title}</Balancer>

@@ -87,6 +87,7 @@ export default function Home({ postsByYear = [] }) {
     <>
       <Head>
         <title>Bowen Codes</title>
+        <meta name="og:title" content="Bowen Codes" />
         <meta name="og:description" content="Bowen's tech blog" />
       </Head>
       {postsByYear.map(({ year, posts }) => (

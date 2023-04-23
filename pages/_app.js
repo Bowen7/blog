@@ -18,7 +18,6 @@ function App({ Component, pageProps }) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icons/logo.ico" />
         <link rel="apple-touch-icon" href="/icons/apple-icon.png" />
-        <meta name="og:title" content="Bowen Codes" />
         <meta
           name="og:image"
           content="https://www.bowencodes.com/icons/og.jpeg"
