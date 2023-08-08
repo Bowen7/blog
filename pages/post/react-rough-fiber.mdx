@@ -172,9 +172,25 @@ But then, when I reconsidered, I realized that these problems were not unsolvabl
 	It has a [diffProps](https://github.com/preactjs/preact/blob/master/src/diff/props.js) function for updating properties and events, which is implemented in 157 lines of code.
 	`preact` has been proven by many applications. I created my custom renderer using this function as a basis.
 - I tried three ways to solve the problem of the fill attribute being inherited from the parent element:
-	1. HostContext
-	2. SVG `<defs>`
-	3. CSS variables
+	1. Use a fill path to replace the stroke path
+	2. HostContext
+	3. SVG `<defs>`
+	4. CSS variables
+
+#### Use a fill path to mock the stroke path
+
+The method asked us to calculate the fill path `d` from the stroke path `d` and `stroke-width`. Look at the following SVG code:
+
+``` html
+<path d="M 4 12 L 32 12" stroke-width="2"></path>
+<path d="M 4 24 L 32 24 L 32 26 L 4 26 Z" stroke="none"></path>
+```
+
+The first path is the outline stroke path, and the second path is the fill path used to create a mock stroke path. They are rendered in the same result.
+
+This method is my first attempt, and it works well at first. But then I found that it has a problem: the fill path is not smooth, when the stroke-width is thin.
+
+I haven't solved this problem. I guess it's because of rasterization.
 
 #### HostContext
 
