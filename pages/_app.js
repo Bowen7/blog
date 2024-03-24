@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { Analytics } from '@vercel/analytics/react'
+import Script from 'next/script'
 import Layout from 'layouts/layout'
 import './globals.css'
 
@@ -26,7 +26,11 @@ function App({ Component, pageProps }) {
       <Layout>
         <Component {...pageProps} />
       </Layout>
-      <Analytics />
+      <Script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "205adde9f0de4965abd4d406480e6bc7"}'
+      />
     </>
   )
 }
