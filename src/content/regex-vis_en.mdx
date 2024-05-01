@@ -1,0 +1,92 @@
+---
+title: Using regex-vis.com to visualize regular expressions
+time: 2022/02/01
+---
+
+[regex-vis.com](https://regex-vis.com) is a website for learning, writing and testing regular expressions.
+Not only does [regex-vis.com](https://regex-vis.com) convert regular expressions to charts but it also allows us to edit these charts.
+
+## Features
+
+You can input a regular expression, and [regex-vis.com](https://regex-vis.com) will convert it into a graphical chart.
+Yan can select a node/nodes in the chart by clicking and dragging them. This will allow you to insert an empty node, group nodes, add a quantifier, and more.
+
+Other features include:
+
+- Dark mode/light mode
+- The ability to test the regular expression
+- Samples of regular expressions.
+
+You can directly visit [regex-vis.com](https://regex-vis.com) to experience its features.
+There is a simple demo available in the repository at [regex-vis](https://github.com/Bowen7/regex-vis).
+
+If you like it, please give me ⭐.
+Please [report the issue](https://github.com/Bowen7/regex-vis/issues) if you find any bugs.
+You can also open a new discussion to ask questions about this repository or seek help.
+
+## Workflow
+
+### A regular expression to a graphical chart
+
+#### Parser
+
+The parser converts a regular expression to the AST(_abstract syntax tree_).
+
+The parser is made up of two parts: the lexical analyzer and the syntactic analyzer.
+The lexical analyzer converts the regex into tokens.
+For example, the regex `/(abc)+/g` will be converted into the following tokens:
+
+``` js
+[RegexBodyStart, GroupStart, Characters, GroupEnd, Quantifier, RegexBodyEnd, Flag]
+```
+
+The syntactic analyzer converts the tokens into an AST.
+
+The `/a*/` regex is converted into the following AST:
+
+```js
+{
+	id: "",
+	type: "regex",
+	body: [
+		{
+			id: "",
+			type: "character",
+			kind: "string",
+			value: "a",
+			quantifier: { kind: "*", min: 0, max: Infinity, greedy: true },
+		},
+	],
+	flags: [],
+	literal: true,
+	escapeBackslash: false,
+}
+```
+
+The regular expression is not a programming language, its syntax is extremely limited.
+However, creating a regex parser is an excellent exercise.
+[The parser code](https://github.com/Bowen7/regex-vis/tree/prod/src/parser)
+
+#### Render
+
+The `Render` is responsible for converting the AST into a graphical chart.
+
+I am considering to refactoring `Render`. I will add this part later.
+
+### Editing the chart
+
+#### Generator
+
+The `Generator` transfers AST back into the regular expression. It is implemented using DFS to generate every node.
+
+#### Special cases
+
+For example, take the regex `/abc/` and select the node of `abc`, then add a `0 or 1(?)` quantifier.
+If we directly add a quantifier for `abc`, it would impact only the char c(abc+).
+Therefore, it's necessary to wrap `abc` with a non-captured group.
+.The final result would be /(?:abc)?/.
+
+## About
+
+- Inspired by [Regulex](https://jex.im/regulex/) and [Regexper](https://regexper.com/).
+- Use [@geist-ui/core](https://github.com/geist-org/geist-ui), a modern and minimalist React UI library.

@@ -1,0 +1,144 @@
+---
+title: JavaScript 中的双向链表
+time: 2020/07/23
+---
+
+最近看[https://github.com/isaacs/node-lru-cache/blob/master/index.js](https://github.com/isaacs/node-lru-cache/blob/master/index.js)源码，发现用到一个叫`yallist`的库，`yallist`的readme上写着`For when an array would be too big, and a Map can't be iterated in reverse order.`，翻译一下就是当数组特别大的时候可以用它，为什么不用Map呢，因为Map不能倒序遍历
+
+翻阅lru-cache的issue，我们可以看到[https://github.com/isaacs/node-lru-cache/issues/63](https://github.com/isaacs/node-lru-cache/issues/63)，在它较早的版本中，它使用的是Map储存cache，因为Map无法直接进行倒序遍历，而是需要进行`reverseKeys`，每一次倒序遍历都先需要进行一次正序遍历&创建一个额外的数组；若是使用数组储存，则无法很快捷地拿到在缓存中的位置
+
+后来作者进行了修改，`yallist`也由此诞生。`yallist`使用的是双向链表储存，很好地解决了上述问题
+
+### 双向链表的实现
+
+用js实现一波双向链表（这是我自己的实现，想看`yallist`的实现可移步至[https://github.com/isaacs/yallist/blob/master/yallist.js](https://github.com/isaacs/yallist/blob/master/yallist.js)）：
+
+```js
+class DoublyLinkedNode {
+  constructor(val) {
+    this.val = val
+    this.prev = null
+    this.next = null
+  }
+}
+
+class DoublyLinkedList {
+  constructor() {
+    this.head = null
+    this.tail = null
+    this.length = 0
+  }
+
+  push(val) {
+    const node = new DoublyLinkedNode(val)
+    if (!this.head) {
+      this.head = node
+      this.tail = node
+    } else {
+      this.tail.next = node
+      node.prev = this.tail
+      this.tail = node
+    }
+    this.length++
+    return this
+  }
+
+  pop() {
+    let result
+    if (this.tail !== null) {
+      const newTail = this.tail.pre
+      result = this.tail
+      if (newTail) {
+        newTail.next = null
+      } else {
+        this.head = null
+      }
+      this.tail = newTail
+      this.length--
+    }
+    return result
+  }
+
+  unshift(val) {
+    const node = new DoublyLinkedNode(val)
+    if (!this.head) {
+      this.head = node
+      this.tail = node
+    } else {
+      this.head.prev = node
+      node.next = this.head
+      this.head = node
+    }
+    this.length++
+    return this
+  }
+
+  shift() {
+    let result
+    if (this.head !== null) {
+      const newHead = this.head.next
+      result = this.head
+      if (newHead) {
+        newHead.prev = null
+      } else {
+        this.tail = null
+      }
+      this.head = newHead
+      this.length--
+    }
+    return result
+  }
+
+  get(index) {
+    if (index < 0 || index >= this.length) {
+      return null
+    }
+    let current = this.head
+    let currentIndex = 0
+    while (currentIndex !== index) {
+      current = current.next
+      currentIndex++
+    }
+    return current
+  }
+
+  remove(node) {
+    const beforeNode = node.prev
+    const afterNode = node.next
+    if (beforeNode === null && afterNode === null) {
+      this.head = null
+      this.tail = null
+      return
+    }
+    if (beforeNode === null) {
+      afterNode.prev = null
+      this.head = afterNode
+    }
+    if (afterNode === null) {
+      beforeNode.next = null
+      this.tail = beforeNode
+    }
+  }
+
+  forEach(fn) {
+    let current = this.head
+    while (current !== null) {
+      fn(current)
+      current = current.next
+    }
+  }
+
+  reverseForEach(fn) {
+    let current = this.tail
+    while (current !== null) {
+      fn(current)
+      current = current.prev
+    }
+  }
+}
+```
+
+##### 另
+
+研究这个问题时，我看了部分v8数组源码。可以看到（[https://github.com/v8/v8/blob/master/src/objects/js-objects-inl.h#L1030](https://github.com/v8/v8/blob/master/src/objects/js-objects-inl.h#L1030)），v8下的js array有fast和slow两种储存模式，在数组长度大于5000（新生代）/ 500（老生代）时，会检测是否需要切换到slow模式，原因是在长度过长后，fast模式使用的内存过高。而slow模式下，v8采用字典的方式存储数组，用索引index作key，节省空间，但会变慢
+

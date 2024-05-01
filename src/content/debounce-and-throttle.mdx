@@ -1,0 +1,349 @@
+---
+title: 探究防抖 (debounce) 和节流 (throttle)
+time: 2019/02/18
+---
+
+本文从防抖和节流出发，分析它们的特性，并拓展一种特殊的节流方式 requestAnimationFrame，最后对 lodash 中的 debounce 源码进行分析
+
+防抖和节流是前端开发中经常使用的一种优化手段，它们都被用来控制一段时间内方法执行的次数，可以为我们节省大量不必要的开销
+
+### 防抖(debounce)
+
+当我们需要及时获知窗口大小变化时，我们会给 window 绑定一个 resize 函数，像下面这样：
+
+```js
+window.addEventListener("resize", () => {
+  console.log("resize");
+});
+```
+
+我们会发现，即使是极小的缩放操作，也会打印数十次 resize，也就是说，如果我们需要在 onresize 函数中搞一些小动作，也会重复执行几十次。但实际上，我们只关心鼠标松开，窗口停止变化的那一次 resize，这时候，就可以使用 debounce 优化这个过程：
+
+```js
+const handleResize = debounce(() => {
+  console.log("resize");
+}, 500);
+window.addEventListener("resize", handleResize);
+```
+
+运行上面的代码(你得有现成的 debounce 函数)，在停止缩放操作 500ms 后，默认用户无继续操作了，才会打印 resize
+
+这就是防抖的功效，它把一组连续的调用变为了一个，最大程度地优化了效率
+
+再举一个防抖的常见场景：
+
+搜索栏常常会根据我们的输入，向后端请求，获取搜索候选项，显示在搜索栏下方。如果我们不使用防抖，在输入“debounce”时前端会依次向后端请求"d"、"de"、"deb"..."debounce"的搜索候选项，在用户输入很快的情况下，这些请求是无意义的，可以使用防抖优化
+
+观察上面这两个例子，我们发现，防抖非常适于只关心结果，不关心过程如何的情况，它能很好地将大量连续事件转为单个我们需要的事件
+
+为了更好理解，下面提供了最简单的 debounce 实现：返回一个 function，第一次执行这个 function 会启动一个定时器，下一次执行会清除上一次的定时器并重起一个定时器，直到这个 function 不再被调用，定时器成功跑完，执行回调函数
+
+```js
+const debounce = function(func, wait) {
+  let timer;
+  return function() {
+    !!timer && clearTimeout(timer);
+    timer = setTimeout(func, wait);
+  };
+};
+```
+
+那如果我们不仅关心结果，同时也关心过程呢？
+
+### 节流(throttle)
+
+节流让指定函数在规定的时间里执行次数不会超过一次，也就是说，在连续高频执行中，动作会被定期执行。节流的主要目的是将原本操作的频率降低
+
+实例：
+
+我们模拟一个可无限滚动的 feed 流
+
+html：
+
+```html
+<div id="wrapper">
+  <div class="feed"></div>
+  <div class="feed"></div>
+  <div class="feed"></div>
+  <div class="feed"></div>
+  <div class="feed"></div>
+</div>
+```
+
+css：
+
+```css
+#wrapper {
+  height: 500px;
+  overflow: auto;
+}
+.feed {
+  height: 200px;
+  background: #ededed;
+  margin: 20px;
+}
+```
+
+js:
+
+```js
+const wrapper = document.getElementById("wrapper");
+const loadContent = () => {
+  const { scrollHeight, clientHeight, scrollTop } = wrapper;
+  const heightFromBottom = scrollHeight - scrollTop - clientHeight;
+  if (heightFromBottom < 200) {
+    const wrapperCopy = wrapper.cloneNode(true);
+    const children = [].slice.call(wrapperCopy.children);
+    children.forEach(item => {
+      wrapper.appendChild(item);
+    });
+  }
+};
+const handleScroll = throttle(loadContent, 200);
+wrapper.addEventListener("scroll", handleScroll);
+```
+
+可以看到，在这个例子中，我们需要不停地获取滚动条距离底部的高度，以判断是否需要增加新的内容。我们知道，srcoll 同样也是种会高频触发的事件，我们需要减少它有效触发的次数。如果使用的是防抖，那么得等我们停止滚动之后一段时间才会加载新的内容，没有那种无限滚动的流畅感。这时候，我们就可以使用节流，将事件有效触发的频率降低的同时给用户流畅的浏览体验。在这个例子中，我们指定 throttle 的 wait 值为 200ms，也就是说，如果你一直在滚动页面，loadCotent 函数也只会每 200ms 执行一次
+
+同样，这里有 throttle 最简单的实现，当然，这种实现很粗糙，有不少缺陷（比如没有考虑最后一次执行），只供初步理解使用：
+
+```js
+const throttle = function(func, wait) {
+  let lastTime;
+  return function() {
+    const curTime = Date.now();
+    if (!lastTime || curTime - lastTime >= wait) {
+      lastTime = curTime;
+      return func();
+    }
+  };
+};
+```
+
+### requestAnimationFrame(rAF)
+
+rAF 在一定程度上和 throttle(func,16)的作用相似，但它是浏览器自带的 api，所以，它比 throttle 函数执行得更加平滑。调用 window.requestAnimationFrame()，浏览器会在下次刷新的时候执行指定回调函数。通常，屏幕的刷新频率是 60hz，所以，这个函数也就是大约 16.7ms 执行一次。如果你想让你的动画更加平滑，用 rAF 就再好不过了，因为它是跟着屏幕的刷新频率来的
+
+rAF 的写法与 debounce 和 throttle 不同，如果你想用它绘制动画，需要不停地在回调函数里调用自身，具体写法可以参考[mdn](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame)
+
+rAF 支持 ie10 及以上浏览器，不过因为是浏览器自带的 api，我们也就无法在 node 中使用它了
+
+### 总结
+
+debounce 将一组事件的执行转为最后一个事件的执行，如果你只关注结果，debounce 再适合不过
+
+如果你同时关注过程，可以使用 throttle，它可以用来降低高频事件的执行频率
+
+如果你的代码是在浏览器上运行，不考虑兼容 ie10，并且要求页面上的变化尽可能的平滑，可以使用 rAF
+
+参考：[https://css-tricks.com/debouncing-throttling-explained-examples/](https://css-tricks.com/debouncing-throttling-explained-examples/)
+
+### 附：lodash 源码解析
+
+lodash 的 debounce 功能十分强大，集 debounce、throttle 和 rAF 于一身，所以我特意研读一下，下面是我的解析（我删去了一些不重要的代码，比如 debounced 的 cancel 方法）：
+
+```js
+function debounce(func, wait, options) {
+  /**
+   * lastCallTime是上一次执行debounced函数的时间
+   * lastInvokeTime是上一次调用func的时间
+   */
+  let lastArgs, lastThis, maxWait, result, timerId, lastCallTime;
+
+  let lastInvokeTime = 0;
+  let leading = false;
+  let maxing = false;
+  let trailing = true;
+
+  /**
+   * 如果没设置wait且raf可用 则默认使用raf
+   */
+  const useRAF =
+    !wait && wait !== 0 && typeof root.requestAnimationFrame === "function";
+
+  if (typeof func !== "function") {
+    throw new TypeError("Expected a function");
+  }
+  wait = +wait || 0;
+  if (isObject(options)) {
+    leading = !!options.leading;
+    maxing = "maxWait" in options;
+    maxWait = maxing ? Math.max(+options.maxWait || 0, wait) : maxWait;
+    trailing = "trailing" in options ? !!options.trailing : trailing;
+  }
+
+  /**
+   * 执行func
+   */
+  function invokeFunc(time) {
+    const args = lastArgs;
+    const thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    /**
+     * 更新lastInvokeTime
+     */
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  /**
+   * 调用定时器
+   */
+  function startTimer(pendingFunc, wait) {
+    if (useRAF) {
+      root.cancelAnimationFrame(timerId);
+      return root.requestAnimationFrame(pendingFunc);
+    }
+    return setTimeout(pendingFunc, wait);
+  }
+
+  /**
+   * 在每轮debounce开始调用
+   */
+  function leadingEdge(time) {
+    lastInvokeTime = time;
+    timerId = startTimer(timerExpired, wait);
+    return leading ? invokeFunc(time) : result;
+  }
+
+  /**
+   * 计算剩余时间
+   * 1是 wait 减去 距离上次调用debounced时间（lastCallTime）
+   * 2是 maxWait 减去 距离上次调用func时间（lastInvokeTime）
+   * 1和2取最小值
+   */
+  function remainingWait(time) {
+    const timeSinceLastCall = time - lastCallTime;
+    const timeSinceLastInvoke = time - lastInvokeTime;
+    const timeWaiting = wait - timeSinceLastCall;
+
+    return maxing
+      ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
+      : timeWaiting;
+  }
+
+  /**
+   * 判断是否需要执行
+   */
+  function shouldInvoke(time) {
+    const timeSinceLastCall = time - lastCallTime;
+    const timeSinceLastInvoke = time - lastInvokeTime;
+    /**
+     * 4种情况返回true，否则返回false
+     * 1.第一次调用
+     * 2.距离上次调用debounced时间（lastCallTime）>=wait
+     * 3.系统时间倒退
+     * 4.设置了maxWait，距离上次调用func时间（lastInvokeTime）>=maxWait
+     */
+    return (
+      lastCallTime === undefined ||
+      timeSinceLastCall >= wait ||
+      timeSinceLastCall < 0 ||
+      (maxing && timeSinceLastInvoke >= maxWait)
+    );
+  }
+
+  /**
+   * 通过shouldInvoke函数判断是否执行
+   * 执行：调用trailingEdge函数
+   * 不执行：调用startTimer函数重新开始timer，wait值通过remainingWait函数计算
+   */
+  function timerExpired() {
+    const time = Date.now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer.
+    timerId = startTimer(timerExpired, remainingWait(time));
+  }
+
+  /**
+   * 在每轮debounce结束调用
+   */
+  function trailingEdge(time) {
+    timerId = undefined;
+
+    /**
+     * trailing为true且lastArgs不为undefined时调用
+     */
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function debounced(...args) {
+    const time = Date.now();
+    const isInvoking = shouldInvoke(time);
+
+    lastArgs = args;
+    lastThis = this;
+    /**
+     * 更新lastCallTime
+     */
+    lastCallTime = time;
+
+    if (isInvoking) {
+      /**
+       * 第一次调用
+       */
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      /**
+       * 【注1】
+       */
+      if (maxing) {
+        timerId = startTimer(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    /**
+     * 【注2】
+     */
+    if (timerId === undefined) {
+      timerId = startTimer(timerExpired, wait);
+    }
+    return result;
+  }
+  return debounced;
+}
+```
+
+推荐是从返回的方法 debounced 开始，顺着执行顺序阅读，理解起来更轻松
+
+【注 1】一开始我没看明白 if(maxing)里面这段代码的作用，按理说，是不会执行这段代码的，后来我去 lodash 的仓库里看了 test 文件，发现对这段代码，专门有一个 case 对其测试。我剥除了一些代码，并修改了测试用例以便展示，如下：
+
+```js
+var limit = 320,
+  withCount = 0;
+
+var withMaxWait = debounce(
+  function() {
+    console.log("invoke");
+    withCount++;
+  },
+  64,
+  {
+    maxWait: 128
+  }
+);
+
+var start = +new Date();
+while (new Date() - start < limit) {
+  withMaxWait();
+}
+```
+
+执行代码，打印了 3 次 invoke；我又将 if(maxing){}这段代码注释，再执行代码，结果只打印了 1 次。结合源码的英文注释`Handle invocations in a tight loop`，我们不难理解，原本理想的执行顺序是 withMaxWait->timer->withMaxWait->timer 这种交替进行，但由于 setTimeout 需等待主线程的代码执行完毕，所以这种短时间快速调用就会导致 withMaxWait->withMaxWait->timer->timer，从第二个 timer 开始，由于 lastArgs 被置为 undefined，也就不会再调用 invokeFunc 函数，所以只会打印一次 invoke。
+
+同时，由于每次执行 invokeFunc 时都会将`lastArgs`置为 undefined，在执行 trailingEdge 时会对 lastArgs 进行判断，确保不会出现执行了 if(maxing){}中的 invokeFunc 函数又执行了 timer 的 invokeFunc 函数
+
+这段代码保证了设置 maxWait 参数后的正确性和时效性
+
+【注 2】执行过一次 trailingEdge 后，再执行 debounced 函数，可能会遇到 shouldInvoke 返回 false 的情况，需单独处理
+
+【注 3】对于 lodash 的 debounce 来说，throttle 是一种 leading 为 true 且 maxWait 等于 wait 的特殊 debounce
